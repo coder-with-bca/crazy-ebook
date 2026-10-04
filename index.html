@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crazy E-Book — digital ebooks, notes, previews and free samples for students and learners." />
+  <title>Crazy E-Book — by Akki & Aadi</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <!-- =========================================================
+       ADMIN PORTAL
+       Static-site admin: browser-persistent data, export/import
+       ========================================================= -->
+  <div id="adminModal"
+       class="admin-modal fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/70 p-3 backdrop-blur-sm"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="adminModalTitle">
+    <div class="admin-panel w-full max-w-6xl rounded-3xl bg-white shadow-2xl">
+      <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur sm:p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Owner only</p>
+            <h2 id="adminModalTitle" class="mt-1 text-2xl font-black">Crazy E-Book Admin Portal</h2>
+            <p class="mt-1 text-sm text-slate-500">Manage books, pricing, ratings, free samples and the homepage showcase.</p>
+          </div>
+          <button id="closeAdminModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div id="adminLoginView" class="p-6 sm:p-10">
+        <div class="mx-auto max-w-md rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
+          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-950 text-sm font-black text-white">CE</div>
+          <h3 class="mt-5 text-xl font-black">Admin Login</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Enter your admin access code to open the store dashboard.</p>
+          <label for="adminCodeInput" class="mt-6 block text-xs font-black uppercase tracking-widest text-slate-500">Access Code</label>
+          <input id="adminCodeInput" type="password" autocomplete="current-password"
+                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                 placeholder="Enter admin code" />
+          <button id="adminLoginBtn" type="button" class="mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">Login to Admin</button>
+          <p id="adminLoginError" class="mt-3 hidden text-center text-xs font-bold text-rose-600">Incorrect admin code.</p>
+          <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900">
+            <strong>Static-site note:</strong> this login protects the admin UI in the browser, but it is not a server-side security boundary. Use a real backend/auth system before handling sensitive or high-value operations.
+          </div>
+        </div>
+      </div>
+
+      <div id="adminDashboardView" class="hidden p-5 sm:p-6">
+        <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4">
+          <button class="admin-tab active rounded-xl border px-4 py-2.5 text-xs font-black" data-admin-tab="books">Books</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
+          <button id="adminLogoutBtn" type="button" class="ml-auto rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600 hover:bg-slate-50">Log out</button>
+        </div>
+
+        <section id="adminTabBooks" class="admin-tab-panel pt-6">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Library manager</p>
+              <h3 class="mt-1 text-2xl font-black">Add or edit books</h3>
+              <p class="mt-2 text-sm text-slate-500">Update title, cover, category, pricing, rating, preview and private delivery link.</p>
+            </div>
+            <button id="newBookBtn" type="button" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white hover:bg-indigo-500">+ New Book</button>
+          </div>
+
+          <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
+            <div class="admin-table-wrap rounded-2xl border border-slate-200 bg-white">
+              <table class="min-w-full text-left text-sm">
+                <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                  <tr>
+                    <th class="px-4 py-3">Book</th>
+                    <th class="px-4 py-3">Price</th>
+                    <th class="px-4 py-3">Rating</th>
+                    <th class="px-4 py-3">Showcase</th>
+                    <th class="px-4 py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminBooksTable"></tbody>
+              </table>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="flex items-center justify-between">
+                <h4 id="bookFormHeading" class="font-black">New Book</h4>
+                <button id="cancelBookEditBtn" type="button" class="hidden text-xs font-black text-slate-500 hover:text-slate-900">Cancel</button>
+              </div>
+
+              <form id="bookForm" class="mt-5 space-y-3">
+                <input type="hidden" id="bookId" />
+                <div>
+                  <label class="text-xs font-black text-slate-500">Title</label>
+                  <input id="bookTitle" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Category</label>
+                    <input id="bookCategory" required placeholder="Python & Tech" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Tag</label>
+                    <input id="bookTag" placeholder="New / Best Seller / Free" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Subjects (comma separated)</label>
+                  <input id="bookSubjects" placeholder="Python, Programming, Coding" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Summary</label>
+                  <textarea id="bookSummary" rows="3" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">MRP (Rs)</label>
+                    <input id="bookMrp" type="number" min="0" step="1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Price (Rs)</label>
+                    <input id="bookPrice" type="number" min="0" step="1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Rating</label>
+                    <input id="bookRating" type="number" min="0" max="5" step="0.1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-xs font-black text-slate-500">Cover image URL</label>
+                  <input id="bookCoverImage" type="url" placeholder="https://..." class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  <div class="field-note mt-1">Use a publicly reachable image URL. A data URL also works, but large images are not recommended.</div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Cover background</label>
+                    <input id="bookCoverClass" value="bg-slate-950 text-white" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Cover label</label>
+                    <input id="bookCoverLabel" placeholder="PYTHON" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-xs font-black text-slate-500">Free preview / sample URL</label>
+                  <input id="bookSampleLink" type="url" placeholder="https://.../sample.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Preview URL (optional PDF/page)</label>
+                  <input id="bookPreviewLink" type="url" placeholder="https://.../preview.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Private book delivery URL</label>
+                  <input id="bookFileLink" type="url" placeholder="https://private-link.example/ebook.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  <div class="field-note mt-1">Stored in your browser data and never rendered into the public book card. Your Telegram/manual-delivery flow stays unchanged.</div>
+                </div>
+
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3">
+                  <input id="bookFree" type="checkbox" class="h-4 w-4 rounded" />
+                  <span class="text-sm font-bold">This is a free book</span>
+                </label>
+
+                <button type="submit" class="w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white hover:bg-slate-800">Save Book</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="adminTabShowcase" class="admin-tab-panel hidden pt-6">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Homepage controls</p>
+            <h3 class="mt-1 text-2xl font-black">Change the front-page showcase</h3>
+            <p class="mt-2 text-sm text-slate-500">Choose the featured book and change the hero copy shown above the library.</p>
+          </div>
+
+          <div class="mt-6 grid gap-5 lg:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <label class="text-xs font-black text-slate-500">Hero title</label>
+              <textarea id="heroTitleInput" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
+
+              <label class="mt-4 block text-xs font-black text-slate-500">Hero description</label>
+              <textarea id="heroTextInput" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
+
+              <label class="mt-4 block text-xs font-black text-slate-500">Featured book</label>
+              <select id="featuredBookSelect" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></select>
+
+              <button id="saveShowcaseBtn" type="button" class="mt-5 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-extrabold text-white hover:bg-indigo-500">Save Homepage</button>
+            </div>
+
+            <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6">
+              <div class="text-xs font-black uppercase tracking-widest text-indigo-600">Live preview</div>
+              <div class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
+                <p id="showcasePreviewCategory" class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600"></p>
+                <h4 id="showcasePreviewTitle" class="mt-2 text-2xl font-black"></h4>
+                <p id="showcasePreviewText" class="mt-3 text-sm leading-6 text-slate-600"></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="adminTabData" class="admin-tab-panel hidden pt-6">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Store data</p>
+            <h3 class="mt-1 text-2xl font-black">Backup & restore</h3>
+            <p class="mt-2 text-sm text-slate-500">Export your store data before moving the site to another browser/device. Import it there to restore the catalogue.</p>
+          </div>
+
+          <div class="mt-6 grid gap-5 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h4 class="font-black">Export</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Download a JSON backup of books, showcase settings and contact settings. The admin login code is excluded.</p>
+              <button id="exportDataBtn" type="button" class="mt-4 rounded-xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white hover:bg-slate-800">Export Store Data</button>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h4 class="font-black">Import</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Choose a previously exported JSON file. Importing replaces the current browser-stored store data.</p>
+              <input id="importDataInput" type="file" accept="application/json,.json" class="mt-4 block w-full text-sm" />
+              <button id="importDataBtn" type="button" class="mt-4 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Import Store Data</button>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
+            <strong>Publishing reality:</strong> because this version is a single static HTML file, browser-stored admin edits do not automatically sync to every visitor. For real multi-device publishing, the same dashboard should be connected to a backend/database (for example Supabase/Firebase) and server-side authentication.
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white shadow-xl"></div>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]
+          },
+          boxShadow: {
+            soft: "0 18px 50px rgba(15, 23, 42, 0.08)"
+          },
+          keyframes: {
+            float: {
+              "0%, 100%": { transform: "translateY(0)" },
+              "50%": { transform: "translateY(-6px)" }
+            }
+          },
+          animation: {
+            float: "float 4s ease-in-out infinite"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { overflow-x: hidden; }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .cover-shadow {
+      box-shadow: 14px 18px 0 rgba(15, 23, 42, .08), 0 25px 45px rgba(15, 23, 42, .14);
+    }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .modal-open { overflow: hidden; }
+
+    .admin-btn {
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+    }
+    .admin-btn:hover { background: rgba(255,255,255,.12); }
+    .admin-modal { overflow-y: auto; }
+    .admin-panel { max-height: 92vh; overflow-y: auto; }
+    .admin-tab.active { background: #0f172a; color: white; border-color: #0f172a; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 80;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .field-note { font-size: 11px; line-height: 1.5; color: #64748b; }
+    .admin-cover-preview {
+      width: 82px;
+      height: 108px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+    .admin-table-wrap { overflow-x: auto; }
+    @media (max-width: 640px) {
+      .admin-panel { max-height: 96vh; }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+  <!-- =========================================================
+       HEADER / NAVIGATION
+       ========================================================= -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <a href="#home" class="flex items-center gap-3" aria-label="Crazy E-Book home">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 text-sm font-black text-white shadow-lg">
+          CE
+        </div>
+        <div>
+          <div class="font-extrabold tracking-tight">Crazy E-Book</div>
+          <div class="text-[11px] text-slate-500">by Akki & Aadi</div>
+        </div>
+      </a>
+
+      <div class="hidden items-center gap-6 md:flex">
+        <a href="#books" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">Books</a>
+        <a href="#how-to-buy" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">How to Buy</a>
+        <a href="#authors" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">Authors</a>
+        <a href="#faq" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">FAQ</a>
+      </div>
+
+      <a id="navTelegram"
+         href="#"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="hidden rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 sm:inline-flex">
+        Telegram Support
+      </a>
+    </nav>
+  </header>
+
+  <main id="home">
+
+    <!-- =========================================================
+         HERO
+         ========================================================= -->
+    <section class="relative overflow-hidden bg-white">
+      <div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-indigo-100 blur-3xl"></div>
+      <div class="absolute -left-28 bottom-0 h-64 w-64 rounded-full bg-cyan-100 blur-3xl"></div>
+
+      <div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:px-8 lg:py-28">
+        <div class="reveal self-center">
+          <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-600">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            Made for students & learners
+          </div>
+
+          <h1 class="max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+            Learn faster. Study smarter. Build more.
+          </h1>
+
+          <p class="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+            Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter.
+          </p>
+
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#books"
+               class="rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800">
+              Explore Books
+            </a>
+            <button id="sampleHeroBtn"
+                    class="rounded-xl border border-slate-300 bg-white px-5 py-3.5 text-sm font-extrabold text-slate-800 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50">
+              View Free Sample
+            </button>
+          </div>
+
+          <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-500">
+            <span>✓ Instant payment verification</span>
+            <span>✓ Mobile-friendly files</span>
+            <span>✓ Private delivery after confirmation</span>
+          </div>
+        </div>
+
+        <div class="reveal flex items-center justify-center lg:justify-end">
+          <div class="relative w-full max-w-md">
+            <div class="absolute inset-4 rounded-[2rem] bg-indigo-500/10 blur-2xl"></div>
+            <div class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft">
+              <div class="mb-3 flex items-center justify-between">
+                <span class="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-700">Featured</span>
+                <span id="heroShowcaseTag" class="text-xs font-bold text-slate-400"></span>
+              </div>
+
+              <div class="grid gap-5 sm:grid-cols-[145px_1fr]">
+                <div id="heroShowcaseCover" class="cover-shadow aspect-[3/4] overflow-hidden rounded-2xl bg-slate-950"></div>
+                <div class="flex flex-col justify-between">
+                  <div>
+                    <div id="heroShowcaseCategory" class="text-[10px] font-black uppercase tracking-[0.25em] text-indigo-600"></div>
+                    <h3 id="heroShowcaseTitle" class="mt-2 text-2xl font-black tracking-tight text-slate-950"></h3>
+                    <p id="heroShowcaseSummary" class="mt-3 text-sm leading-6 text-slate-600"></p>
+                    <div class="mt-4 flex items-center gap-2 text-sm">
+                      <span id="heroShowcaseStars" class="font-black text-amber-500"></span>
+                      <span id="heroShowcaseRating" class="font-bold text-slate-500"></span>
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <div class="flex items-end gap-2">
+                      <span id="heroShowcaseMrp" class="text-xs font-bold text-slate-400 line-through"></span>
+                      <span id="heroShowcasePrice" class="text-xl font-black text-slate-950"></span>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-2">
+                      <button id="heroPreviewBtn" type="button" class="rounded-xl border border-slate-300 px-3 py-3 text-xs font-extrabold text-slate-700 transition hover:bg-slate-50">Preview</button>
+                      <button id="heroBuyBtn" type="button" class="rounded-xl bg-slate-950 px-3 py-3 text-xs font-extrabold text-white transition hover:bg-slate-800">Buy Now</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-5 flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span id="heroShowcaseFooter" class="text-xs font-bold text-slate-500">Crazy E-Book</span>
+                <span class="text-xs font-black text-slate-900">Original digital content</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         BOOKS / FILTERS
+         ========================================================= -->
+    <section id="books" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div class="reveal flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Library</p>
+          <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Pick your next read.</h2>
+          <p class="mt-3 max-w-2xl text-slate-600">
+            Browse original guides and notes. Search by title or subject, then preview before buying.
+          </p>
+        </div>
+
+        <div class="relative w-full lg:max-w-sm">
+          <label for="searchInput" class="sr-only">Search books</label>
+          <input id="searchInput"
+                 type="search"
+                 placeholder="Search titles or subjects..."
+                 class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pl-11 text-sm outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5" />
+          <svg class="absolute left-4 top-3.5 h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-4-4"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div id="filterPills" class="reveal mt-7 flex flex-wrap gap-2"></div>
+
+      <div id="bookGrid" class="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+
+      <div id="emptyBooks" class="hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+        <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-xl">⌕</div>
+        <h3 class="mt-4 font-black">No books found</h3>
+        <p class="mt-1 text-sm text-slate-500">Try another title, subject, or category.</p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HOW TO BUY
+         ========================================================= -->
+    <section id="how-to-buy" class="border-y border-slate-200 bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="reveal text-center">
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Simple process</p>
+          <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">How to Buy</h2>
+          <p class="mx-auto mt-3 max-w-2xl text-slate-600">
+            Payment is verified manually. Your private ebook link is sent only after confirmation.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div class="grid h-11 w-11 place-items-center rounded-xl bg-slate-950 text-sm font-black text-white">1</div>
+            <h3 class="mt-5 text-lg font-black">Choose a book</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Open a book card, check the summary and preview, then tap Buy Now.</p>
+          </div>
+
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div class="grid h-11 w-11 place-items-center rounded-xl bg-indigo-600 text-sm font-black text-white">2</div>
+            <h3 class="mt-5 text-lg font-black">Scan QR / pay via UPI</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Pay the exact displayed amount using the UPI ID or QR shown in the checkout modal.</p>
+          </div>
+
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white">3</div>
+            <h3 class="mt-5 text-lg font-black">Send screenshot on Telegram</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Send your payment screenshot. After manual confirmation, the private Google Drive link is sent on Telegram.</p>
+          </div>
+        </div>
+
+        <div class="reveal mt-7 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <strong>Important:</strong> Never share payment screenshots containing unrelated private information. Crazy E-Book never publishes a public Drive or PDF download link.
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         AUTHORS + TRUST
+         ========================================================= -->
+    <section id="authors" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-2">
+        <div class="reveal">
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Our story</p>
+          <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">About the Authors</h2>
+          <p class="mt-5 leading-7 text-slate-600">
+            Akki & Aadi are two teenage creators from India who enjoy turning complicated topics into cleaner, more useful digital learning material.
+          </p>
+          <p class="mt-4 leading-7 text-slate-600">
+            Crazy E-Book started as a small student-led project: make notes easier to understand, make practical tech learning less intimidating, and create original content that feels useful rather than overwhelming.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">Student-led</span>
+            <span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">Original content</span>
+            <span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">India</span>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Reader feedback</p>
+                <h3 class="mt-1 text-xl font-black">Testimonials</h3>
+              </div>
+              <div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 reviews</div>
+            </div>
+            <div id="reviewsGrid" class="mt-6"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         FAQ
+         ========================================================= -->
+    <section id="faq" class="border-y border-slate-200 bg-white">
+      <div class="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+        <div class="reveal text-center">
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Questions</p>
+          <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">FAQ</h2>
+        </div>
+
+        <div id="faqList" class="reveal mt-10 space-y-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer class="bg-slate-950 text-slate-300">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <div class="text-lg font-black text-white">Crazy E-Book</div>
+          <p class="mt-3 text-sm leading-6 text-slate-400">Digital learning material for students and curious learners.</p>
+          <p class="mt-4 text-xs font-semibold text-slate-500">by Akki & Aadi</p>
+        </div>
+
+        <div>
+          <h3 class="font-black text-white">Contact</h3>
+          <div class="mt-4 space-y-2 text-sm">
+            <a id="footerTelegram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Telegram</a>
+            <a id="footerInstagram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Instagram</a>
+            <a id="footerEmail" href="#" class="block transition hover:text-white">Support Email</a>
+            <button id="openAdminBtn" type="button" class="admin-btn mt-3 rounded-lg px-3 py-2 text-xs font-black transition">Admin Portal</button>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-black text-white">Digital Goods Policy</h3>
+          <p class="mt-4 text-sm leading-6 text-slate-400">
+            Digital purchases are delivered after manual payment confirmation. If a delivered file is corrupted or unusable, contact support for a replacement.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-black text-white">Privacy & Delivery</h3>
+          <p class="mt-4 text-sm leading-6 text-slate-400">
+            No public download links are displayed. Private delivery links are sent through Telegram after payment verification.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-10 border-t border-white/10 pt-6 text-xs text-slate-500">
+        © <span id="year"></span> Crazy E-Book. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       BUY MODAL
+       ========================================================= -->
+  <div id="buyModal"
+       class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="buyModalTitle">
+    <div class="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Checkout</p>
+          <h2 id="buyModalTitle" class="mt-1 text-2xl font-black">Buy Now</h2>
+          <p id="buyModalBook" class="mt-1 text-sm text-slate-500"></p>
+        </div>
+        <button id="closeBuyModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
+        <img id="upiQr"
+             src="upi-qr.jpg"
+             alt="UPI payment QR code"
+             class="mx-auto aspect-square w-52 rounded-xl border border-slate-200 bg-white object-contain"
+             onerror="this.style.display='none'; document.getElementById('qrFallback').classList.remove('hidden');" />
+        <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
+          Add your local <strong>upi-qr.jpg</strong> file beside index.html to show the QR here.
+        </div>
+
+        <div class="mt-5">
+          <div class="text-xs font-bold uppercase tracking-widest text-slate-400">UPI ID</div>
+          <div class="mt-1 flex items-center justify-center gap-2">
+            <code id="upiIdText" class="break-all text-sm font-black text-slate-900"></code>
+            <button id="copyUpiBtn" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold transition hover:bg-slate-100">
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-5 flex items-center justify-center gap-2">
+          <span class="text-sm font-semibold text-slate-500">Amount</span>
+          <span id="modalPrice" class="text-xl font-black text-slate-950"></span>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+        Pay the exact amount, then send the screenshot. You will get your ebook link after confirmation.
+      </div>
+
+      <a id="verifyTelegram"
+         href="#"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="mt-5 flex w-full items-center justify-center rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">
+        Verify on Telegram
+      </a>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       PREVIEW MODAL
+       ========================================================= -->
+  <div id="previewModal"
+       class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="previewTitle">
+    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Free Preview</p>
+          <h2 id="previewTitle" class="mt-1 text-2xl font-black"></h2>
+        </div>
+        <button id="closePreviewModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div id="previewFrameWrap" class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <iframe id="previewFrame" title="Book preview" class="h-[60vh] w-full" loading="lazy"></iframe>
+        </div>
+        <div id="previewTextWrap" class="rounded-xl border border-slate-200 bg-white p-5">
+          <p class="text-sm font-bold text-slate-500">Sample content</p>
+          <p id="previewText" class="mt-3 leading-7 text-slate-700"></p>
+        </div>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <a id="sampleLinkBtn"
+             href="#"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="hidden rounded-xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-slate-800">
+            Open Free Sample
+          </a>
+          <a id="previewExternalBtn"
+             href="#"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="hidden rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">
+            Open Preview
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       CONFIG + LOCAL STORE
+       ========================================================= */
+    const ADMIN_CODE = "CE-ADMIN-2026"; // Change this before sharing the file.
+    const STORE_KEY = "crazyEbookStoreV2";
+
+    const DEFAULT_STORE = {
+      brandName: "Crazy E-Book",
+      telegramLink: "https://t.me/crazyebookofficial",
+      instagramLink: "https://instagram.com/crazyebook.official",
+      supportEmail: "crazyebook.official@gmail.com",
+      upiId: "akashmaurya18@upi",
+      upiQrImage: "upi-qr.jpg",
+      heroTitle: "Learn faster. Study smarter. Build more.",
+      heroText: "Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter.",
+      featuredBookId: 1,
+      reviews: [],
+      books: [
+        {
+          id: 1,
+          title: "Python Jumpstart",
+          category: "Python & Tech",
+          subjects: ["Python", "Programming", "Coding"],
+          summary: "A beginner-friendly guide to Python syntax, logic, functions, and small practical programs.",
+          rating: 4.9,
+          mrp: 299,
+          price: 149,
+          tag: "Best Seller",
+          coverClass: "bg-slate-950 text-white",
+          coverLabel: "PYTHON",
+          coverImage: "",
+          previewLink: "",
+          sampleLink: "",
+          fileLink: "",
+          free: false
+        },
+        {
+          id: 2,
+          title: "Tech Notes: Web Basics",
+          category: "Python & Tech",
+          subjects: ["HTML", "CSS", "JavaScript", "Web Development"],
+          summary: "Compact notes covering the core ideas behind modern web pages and beginner JavaScript.",
+          rating: 4.8,
+          mrp: 249,
+          price: 129,
+          tag: "New",
+          coverClass: "bg-indigo-600 text-white",
+          coverLabel: "WEB",
+          coverImage: "",
+          previewLink: "",
+          sampleLink: "",
+          fileLink: "",
+          free: false
+        },
+        {
+          id: 3,
+          title: "CUET Quick Revision Notes",
+          category: "CUET Notes",
+          subjects: ["CUET", "Revision", "Exam Notes"],
+          summary: "Fast-revision notes designed to help students organize important concepts before an exam.",
+          rating: 4.7,
+          mrp: 199,
+          price: 99,
+          tag: "Best Seller",
+          coverClass: "bg-amber-300 text-slate-950",
+          coverLabel: "CUET",
+          coverImage: "",
+          previewLink: "",
+          sampleLink: "",
+          fileLink: "",
+          free: false
+        },
+        {
+          id: 4,
+          title: "The Pixel Quest",
+          category: "Comics",
+          subjects: ["Comic", "Story", "Adventure"],
+          summary: "An original short digital comic about curiosity, teamwork, and a strange world inside a screen.",
+          rating: 4.9,
+          mrp: 0,
+          price: 0,
+          tag: "Free",
+          coverClass: "bg-emerald-600 text-white",
+          coverLabel: "QUEST",
+          coverImage: "",
+          previewLink: "",
+          sampleLink: "",
+          fileLink: "",
+          free: true
+        }
+      ]
+    };
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function loadStore() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+        if (!saved || !Array.isArray(saved.books)) return clone(DEFAULT_STORE);
+        return {
+          ...clone(DEFAULT_STORE),
+          ...saved,
+          books: saved.books.map(book => ({
+            ...clone(DEFAULT_STORE.books[0]),
+            ...book,
+            subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
+          }))
+        };
+      } catch {
+        return clone(DEFAULT_STORE);
+      }
+    }
+
+    let STORE = loadStore();
+    let activeCategory = "All";
+    let selectedBook = null;
+    let editingBookId = null;
+    let adminAuthenticated = sessionStorage.getItem("crazyEbookAdmin") === "1";
+
+    function saveStore() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
+    }
+
+    function money(value) {
+      const amount = Number(value) || 0;
+      return amount === 0 ? "Free" : `Rs ${Math.round(amount)}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function safeUrl(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "#";
+      try {
+        const parsed = new URL(raw, window.location.href);
+        if (["http:", "https:", "mailto:"].includes(parsed.protocol)) return parsed.href;
+      } catch {}
+      return "#";
+    }
+
+    function safeHrefOrBlank(value) {
+      const url = safeUrl(value);
+      return url === "#" ? "" : url;
+    }
+
+    function telegramPaymentLink(book) {
+      const message = `Hi, I paid Rs ${book.price} for ${book.title}. Screenshot attached.`;
+      const base = safeUrl(STORE.telegramLink);
+      if (base === "#") return "#";
+      return `${base}${STORE.telegramLink.includes("?") ? "&" : "?"}text=${encodeURIComponent(message)}`;
+    }
+
+    const categories = () => {
+      const unique = [...new Set(STORE.books.map(book => book.category).filter(Boolean))];
+      return ["All", ...unique];
+    };
+
+    /* =========================================================
+       PUBLIC NAV / HERO / FOOTER
+       ========================================================= */
+    function setupLinks() {
+      document.getElementById("navTelegram").href = safeUrl(STORE.telegramLink);
+      document.getElementById("footerTelegram").href = safeUrl(STORE.telegramLink);
+      document.getElementById("footerInstagram").href = safeUrl(STORE.instagramLink);
+
+      const email = document.getElementById("footerEmail");
+      email.href = `mailto:${STORE.supportEmail}`;
+      email.textContent = STORE.supportEmail;
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+      document.getElementById("upiQr").src = STORE.upiQrImage || "upi-qr.jpg";
+      renderHero();
+    }
+
+    function renderHero() {
+      document.querySelector("#home h1").textContent = STORE.heroTitle;
+      document.querySelector("#home p.mt-6").textContent = STORE.heroText;
+
+      const book = STORE.books.find(item => Number(item.id) === Number(STORE.featuredBookId)) || STORE.books[0];
+      const title = document.getElementById("heroShowcaseTitle");
+      const category = document.getElementById("heroShowcaseCategory");
+      const summary = document.getElementById("heroShowcaseSummary");
+      const rating = document.getElementById("heroShowcaseRating");
+      const stars = document.getElementById("heroShowcaseStars");
+      const mrp = document.getElementById("heroShowcaseMrp");
+      const price = document.getElementById("heroShowcasePrice");
+      const tag = document.getElementById("heroShowcaseTag");
+      const cover = document.getElementById("heroShowcaseCover");
+      const footer = document.getElementById("heroShowcaseFooter");
+      const previewBtn = document.getElementById("heroPreviewBtn");
+      const buyBtn = document.getElementById("heroBuyBtn");
+
+      if (!book) {
+        title.textContent = "Add your first book";
+        category.textContent = "";
+        summary.textContent = "Use Admin Portal to add a product.";
+        rating.textContent = "";
+        stars.textContent = "";
+        mrp.textContent = "";
+        price.textContent = "";
+        tag.textContent = "";
+        cover.innerHTML = `<div class="grid h-full place-items-center bg-slate-100 text-sm font-black text-slate-400">No featured book</div>`;
+        previewBtn.disabled = true;
+        buyBtn.disabled = true;
+        return;
+      }
+
+      category.textContent = book.category || "Digital Book";
+      title.textContent = book.title;
+      summary.textContent = book.summary || "";
+      rating.textContent = Number(book.rating || 0).toFixed(1);
+      stars.innerHTML = renderStars(book.rating);
+      tag.textContent = book.tag || "Featured";
+      mrp.textContent = Number(book.mrp) > Number(book.price) ? money(book.mrp) : "";
+      price.textContent = money(book.price);
+      footer.textContent = STORE.brandName;
+
+      cover.innerHTML = book.coverImage
+        ? `<img src="${escapeHtml(safeUrl(book.coverImage))}" alt="${escapeHtml(book.title)} cover" class="h-full w-full object-cover" />`
+        : `<div class="${escapeHtml(book.coverClass || "bg-slate-950 text-white")} flex h-full flex-col justify-between p-5">
+             <div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div>
+             <div>
+               <div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || "BOOK")}</div>
+               <div class="mt-2 text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div>
+             </div>
+           </div>`;
+
+      previewBtn.disabled = false;
+      buyBtn.disabled = false;
+      previewBtn.onclick = () => openPreviewModal(book.id);
+      buyBtn.onclick = () => openBuyModal(book.id);
+    }
+
+    function renderStars(rating) {
+      return `<span aria-label="${escapeHtml(rating)} out of 5 stars">★★★★★</span>`;
+    }
+
+    /* =========================================================
+       CATEGORY FILTERS
+       ========================================================= */
+    function renderFilters() {
+      const container = document.getElementById("filterPills");
+      const cats = categories();
+      if (!cats.includes(activeCategory)) activeCategory = "All";
+
+      container.innerHTML = cats.map(category => {
+        const active = activeCategory === category;
+        return `
+          <button type="button"
+                  data-category="${escapeHtml(category)}"
+                  class="category-btn rounded-full border px-4 py-2 text-xs font-extrabold transition ${
+                    active
+                      ? "border-slate-950 bg-slate-950 text-white"
+                      : "border-slate-300 bg-white text-slate-600 hover:border-slate-400 hover:bg-slate-50"
+                  }">
+            ${escapeHtml(category)}
+          </button>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".category-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          activeCategory = button.dataset.category;
+          renderFilters();
+          renderBooks();
+        });
+      });
+    }
+
+    /* =========================================================
+       BOOK CARDS
+       ========================================================= */
+    function renderBooks() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const filtered = STORE.books.filter(book => {
+        const categoryMatch = activeCategory === "All" || book.category === activeCategory;
+        const searchText = [
+          book.title,
+          book.category,
+          book.summary,
+          ...(Array.isArray(book.subjects) ? book.subjects : [])
+        ].join(" ").toLowerCase();
+        return categoryMatch && searchText.includes(query);
+      });
+
+      const grid = document.getElementById("bookGrid");
+      const empty = document.getElementById("emptyBooks");
+
+      empty.classList.toggle("hidden", filtered.length !== 0);
+
+      grid.innerHTML = filtered.map(book => {
+        const preview = safeHrefOrBlank(book.previewLink || book.sampleLink);
+        const imageUrl = safeHrefOrBlank(book.coverImage);
+
+        return `
+          <article class="reveal group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+            <div class="relative mx-auto w-full max-w-[210px] pt-2">
+              <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
+                ${imageUrl
+                  ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" class="h-full w-full object-cover" />`
+                  : `<div class="${escapeHtml(book.coverClass || "bg-slate-950 text-white")} flex h-full flex-col justify-between p-5">
+                       <div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div>
+                       <div>
+                         <div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || "BOOK")}</div>
+                         <div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div>
+                       </div>
+                     </div>`
+                }
+              </div>
+              <span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">
+                ${escapeHtml(book.tag || (book.free ? "Free" : "New"))}
+              </span>
+            </div>
+
+            <div class="mt-6 flex flex-1 flex-col">
+              <div class="flex flex-wrap gap-1.5">
+                ${(Array.isArray(book.subjects) ? book.subjects : []).slice(0, 3).map(subject =>
+                  `<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">${escapeHtml(subject)}</span>`
+                ).join("")}
+              </div>
+
+              <h3 class="mt-4 text-lg font-black tracking-tight">${escapeHtml(book.title)}</h3>
+              <p class="line-clamp-2 mt-2 min-h-[42px] text-sm leading-5 text-slate-600">${escapeHtml(book.summary)}</p>
+
+              <div class="mt-4 flex items-center gap-2 text-sm">
+                <span class="font-black text-amber-500">${renderStars(book.rating)}</span>
+                <span class="font-bold text-slate-500">${Number(book.rating || 0).toFixed(1)}</span>
+              </div>
+
+              <div class="mt-4 flex items-end gap-2">
+                ${Number(book.mrp) > Number(book.price) ? `<span class="text-xs font-bold text-slate-400 line-through">${money(book.mrp)}</span>` : ""}
+                <span class="text-xl font-black text-slate-950">${money(book.price)}</span>
+              </div>
+
+              <div class="mt-5 grid grid-cols-2 gap-2">
+                <button type="button" data-preview="${book.id}"
+                        class="preview-btn rounded-xl border border-slate-300 px-3 py-3 text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
+                  ${preview ? "Preview / Sample" : "Preview"}
+                </button>
+                <button type="button" data-buy="${book.id}"
+                        class="buy-btn rounded-xl bg-slate-950 px-3 py-3 text-xs font-extrabold text-white transition hover:bg-slate-800">
+                  ${book.free ? "Get Free" : "Buy Now"}
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".buy-btn").forEach(button => {
+        button.addEventListener("click", () => openBuyModal(Number(button.dataset.buy)));
+      });
+
+      document.querySelectorAll(".preview-btn").forEach(button => {
+        button.addEventListener("click", () => openPreviewModal(Number(button.dataset.preview)));
+      });
+
+      requestAnimationFrame(() => observeReveals());
+    }
+
+    /* =========================================================
+       BUY / PREVIEW
+       ========================================================= */
+    function openBuyModal(bookId) {
+      selectedBook = STORE.books.find(book => Number(book.id) === Number(bookId));
+      if (!selectedBook) return;
+
+      document.getElementById("buyModalBook").textContent = selectedBook.title;
+
+      const isFree = !!selectedBook.free || Number(selectedBook.price) === 0;
+      document.getElementById("modalPrice").textContent = isFree ? "Free" : money(selectedBook.price);
+      document.getElementById("upiIdText").textContent = STORE.upiId;
+      document.getElementById("copyUpiBtn").disabled = isFree;
+
+      const verify = document.getElementById("verifyTelegram");
+      if (isFree) {
+        const sample = safeHrefOrBlank(selectedBook.sampleLink || selectedBook.previewLink);
+        verify.textContent = sample ? "Open Free Book" : "Contact on Telegram";
+        verify.href = sample || safeUrl(STORE.telegramLink);
+      } else {
+        verify.textContent = "Verify on Telegram";
+        verify.href = telegramPaymentLink(selectedBook);
+      }
+
+      document.querySelector("#buyModal .mt-5.rounded-2xl.border.border-amber-200")?.classList.toggle("hidden", isFree);
+
+      const modal = document.getElementById("buyModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeBuyModal() {
+      const modal = document.getElementById("buyModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.classList.remove("modal-open");
+    }
+
+    function openPreviewModal(bookId) {
+      const book = STORE.books.find(item => Number(item.id) === Number(bookId));
+      if (!book) return;
+
+      document.getElementById("previewTitle").textContent = book.title;
+      document.getElementById("previewText").textContent = book.preview || "Preview details are managed from the Admin Portal.";
+
+      const previewUrl = safeHrefOrBlank(book.previewLink);
+      const sampleUrl = safeHrefOrBlank(book.sampleLink);
+      const frameWrap = document.getElementById("previewFrameWrap");
+      const frame = document.getElementById("previewFrame");
+      const textWrap = document.getElementById("previewTextWrap");
+      const sampleBtn = document.getElementById("sampleLinkBtn");
+      const externalBtn = document.getElementById("previewExternalBtn");
+
+      if (previewUrl && /\.(pdf)(\?.*)?$/i.test(previewUrl)) {
+        frame.src = previewUrl;
+        frameWrap.classList.remove("hidden");
+      } else {
+        frame.src = "about:blank";
+        frameWrap.classList.add("hidden");
+      }
+
+      textWrap.classList.toggle("hidden", Boolean(previewUrl));
+      if (!previewUrl) {
+        document.getElementById("previewText").textContent =
+          book.preview || "No preview file has been linked yet. Add a preview URL from the Admin Portal.";
+      }
+
+      if (sampleUrl) {
+        sampleBtn.href = sampleUrl;
+        sampleBtn.classList.remove("hidden");
+      } else {
+        sampleBtn.classList.add("hidden");
+        sampleBtn.href = "#";
+      }
+
+      if (previewUrl) {
+        externalBtn.href = previewUrl;
+        externalBtn.classList.remove("hidden");
+      } else {
+        externalBtn.classList.add("hidden");
+        externalBtn.href = "#";
+      }
+
+      const modal = document.getElementById("previewModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.classList.add("modal-open");
+    }
+
+    function closePreviewModal() {
+      const modal = document.getElementById("previewModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.getElementById("previewFrame").src = "about:blank";
+      document.body.classList.remove("modal-open");
+    }
+
+    /* =========================================================
+       REVIEWS / FAQ
+       ========================================================= */
+    function renderReviews() {
+      const grid = document.getElementById("reviewsGrid");
+      const reviews = Array.isArray(STORE.reviews) ? STORE.reviews : [];
+      document.getElementById("reviewCount").textContent =
+        `${reviews.length} review${reviews.length === 1 ? "" : "s"}`;
+
+      if (!reviews.length) {
+        grid.innerHTML = `
+          <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+            <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-xl shadow-sm">☆</div>
+            <h4 class="mt-4 font-black">Be the first to review</h4>
+            <p class="mt-1 text-sm text-slate-500">Reader testimonials will appear here after real reviews are added.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = reviews.map(review => `
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <div class="text-sm font-black text-amber-500">★★★★★</div>
+          <p class="mt-3 text-sm leading-6 text-slate-600">“${escapeHtml(review.text)}”</p>
+          <div class="mt-4 text-xs font-black text-slate-900">${escapeHtml(review.name)}</div>
+        </div>
+      `).join("");
+    }
+
+    const faqs = [
+      { q: "How long does delivery take?", a: "After you send the payment screenshot on Telegram, payment is manually checked. Once confirmed, the private ebook link is sent on Telegram." },
+      { q: "Can I print the ebook?", a: "Printability depends on the individual file and your intended use. Check the product information or ask support before buying if printing is important to you." },
+      { q: "Will it work on my phone?", a: "Yes. The ebooks are intended for common mobile and desktop PDF readers unless a product specifically says otherwise." },
+      { q: "What file format will I receive?", a: "Digital products are generally delivered as PDF files. The exact format can be confirmed with support before purchase." }
+    ];
+
+    function renderFaq() {
+      const list = document.getElementById("faqList");
+      list.innerHTML = faqs.map((faq, index) => `
+        <div class="rounded-2xl border border-slate-200 bg-white">
+          <button type="button" class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left" aria-expanded="false" data-faq="${index}">
+            <span class="text-sm font-extrabold text-slate-900">${escapeHtml(faq.q)}</span>
+            <span class="faq-icon text-xl font-light text-slate-400">+</span>
+          </button>
+          <div class="faq-answer hidden px-5 pb-5 text-sm leading-6 text-slate-600">${escapeHtml(faq.a)}</div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".faq-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const answer = button.parentElement.querySelector(".faq-answer");
+          const icon = button.querySelector(".faq-icon");
+          const isOpen = !answer.classList.contains("hidden");
+
+          document.querySelectorAll(".faq-answer").forEach(item => item.classList.add("hidden"));
+          document.querySelectorAll(".faq-btn").forEach(item => item.setAttribute("aria-expanded", "false"));
+          document.querySelectorAll(".faq-icon").forEach(item => item.textContent = "+");
+
+          if (!isOpen) {
+            answer.classList.remove("hidden");
+            button.setAttribute("aria-expanded", "true");
+            icon.textContent = "−";
+          }
+        });
+      });
+    }
+
+    /* =========================================================
+       REVEAL ANIMATION
+       ========================================================= */
+    let revealObserver;
+    function observeReveals() {
+      if (!revealObserver && "IntersectionObserver" in window) {
+        revealObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08 });
+      }
+
+      if (revealObserver) {
+        document.querySelectorAll(".reveal:not(.visible)").forEach(element => revealObserver.observe(element));
+      } else {
+        document.querySelectorAll(".reveal").forEach(element => element.classList.add("visible"));
+      }
+    }
+
+    /* =========================================================
+       ADMIN PORTAL
+       ========================================================= */
+    function showAdminToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showAdminToast.timer);
+      showAdminToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function openAdminModal() {
+      const modal = document.getElementById("adminModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.classList.add("modal-open");
+      refreshAdminView();
+    }
+
+    function closeAdminModal() {
+      const modal = document.getElementById("adminModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.classList.remove("modal-open");
+    }
+
+    function refreshAdminView() {
+      document.getElementById("adminLoginView").classList.toggle("hidden", adminAuthenticated);
+      document.getElementById("adminDashboardView").classList.toggle("hidden", !adminAuthenticated);
+      if (adminAuthenticated) {
+        renderAdminBooks();
+        loadShowcaseForm();
+      } else {
+        document.getElementById("adminCodeInput").value = "";
+        document.getElementById("adminLoginError").classList.add("hidden");
+      }
+    }
+
+    function renderAdminBooks() {
+      const table = document.getElementById("adminBooksTable");
+      if (!STORE.books.length) {
+        table.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-sm text-slate-500">No books yet. Add your first book.</td></tr>`;
+        return;
+      }
+
+      table.innerHTML = STORE.books.map(book => `
+        <tr class="border-t border-slate-200 align-top">
+          <td class="px-4 py-4">
+            <div class="flex min-w-[260px] items-center gap-3">
+              ${book.coverImage
+                ? `<img class="admin-cover-preview" src="${escapeHtml(safeUrl(book.coverImage))}" alt="" />`
+                : `<div class="${escapeHtml(book.coverClass || "bg-slate-950 text-white")} grid h-[108px] w-[82px] place-items-center rounded-[10px] p-2 text-center text-[10px] font-black">${escapeHtml(book.coverLabel || "BOOK")}</div>`
+              }
+              <div>
+                <div class="font-black">${escapeHtml(book.title)}</div>
+                <div class="mt-1 text-xs text-slate-500">${escapeHtml(book.category)}</div>
+                <div class="mt-1 text-[10px] font-black uppercase tracking-widest text-indigo-600">${book.free ? "FREE" : escapeHtml(book.tag || "Book")}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-4 whitespace-nowrap">
+            <div class="font-black">${money(book.price)}</div>
+            <div class="text-xs text-slate-400">${Number(book.mrp) > Number(book.price) ? `MRP ${money(book.mrp)}` : ""}</div>
+          </td>
+          <td class="px-4 py-4 whitespace-nowrap font-black">${Number(book.rating || 0).toFixed(1)} / 5</td>
+          <td class="px-4 py-4 whitespace-nowrap">
+            ${Number(book.id) === Number(STORE.featuredBookId)
+              ? `<span class="rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-black text-indigo-700">Featured</span>`
+              : `<button type="button" data-feature="${book.id}" class="feature-btn text-xs font-black text-indigo-600 hover:text-indigo-800">Make featured</button>`
+            }
+          </td>
+          <td class="px-4 py-4 whitespace-nowrap">
+            <div class="flex gap-2">
+              <button type="button" data-edit="${book.id}" class="edit-book-btn rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-black hover:bg-slate-50">Edit</button>
+              <button type="button" data-delete="${book.id}" class="delete-book-btn rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-black text-rose-600 hover:bg-rose-50">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+
+      document.querySelectorAll(".edit-book-btn").forEach(btn => btn.addEventListener("click", () => startBookEdit(Number(btn.dataset.edit))));
+      document.querySelectorAll(".delete-book-btn").forEach(btn => btn.addEventListener("click", () => deleteBook(Number(btn.dataset.delete))));
+      document.querySelectorAll(".feature-btn").forEach(btn => btn.addEventListener("click", () => makeFeatured(Number(btn.dataset.feature))));
+    }
+
+    function resetBookForm() {
+      editingBookId = null;
+      document.getElementById("bookFormHeading").textContent = "New Book";
+      document.getElementById("cancelBookEditBtn").classList.add("hidden");
+      document.getElementById("bookForm").reset();
+      document.getElementById("bookId").value = "";
+      document.getElementById("bookRating").value = "5";
+      document.getElementById("bookCoverClass").value = "bg-slate-950 text-white";
+    }
+
+    function startBookEdit(id) {
+      const book = STORE.books.find(item => Number(item.id) === id);
+      if (!book) return;
+      editingBookId = id;
+      document.getElementById("bookFormHeading").textContent = "Edit Book";
+      document.getElementById("cancelBookEditBtn").classList.remove("hidden");
+      document.getElementById("bookId").value = book.id;
+      document.getElementById("bookTitle").value = book.title || "";
+      document.getElementById("bookCategory").value = book.category || "";
+      document.getElementById("bookTag").value = book.tag || "";
+      document.getElementById("bookSubjects").value = (book.subjects || []).join(", ");
+      document.getElementById("bookSummary").value = book.summary || "";
+      document.getElementById("bookMrp").value = book.mrp ?? 0;
+      document.getElementById("bookPrice").value = book.price ?? 0;
+      document.getElementById("bookRating").value = book.rating ?? 5;
+      document.getElementById("bookCoverImage").value = book.coverImage || "";
+      document.getElementById("bookCoverClass").value = book.coverClass || "bg-slate-950 text-white";
+      document.getElementById("bookCoverLabel").value = book.coverLabel || "BOOK";
+      document.getElementById("bookSampleLink").value = book.sampleLink || "";
+      document.getElementById("bookPreviewLink").value = book.previewLink || "";
+      document.getElementById("bookFileLink").value = book.fileLink || "";
+      document.getElementById("bookFree").checked = !!book.free;
+      document.getElementById("bookTitle").focus();
+    }
+
+    function saveBookFromForm(event) {
+      event.preventDefault();
+
+      const title = document.getElementById("bookTitle").value.trim();
+      const category = document.getElementById("bookCategory").value.trim();
+      const newBook = {
+        id: editingBookId || Date.now(),
+        title,
+        category,
+        tag: document.getElementById("bookTag").value.trim(),
+        subjects: document.getElementById("bookSubjects").value.split(",").map(s => s.trim()).filter(Boolean),
+        summary: document.getElementById("bookSummary").value.trim(),
+        mrp: Math.max(0, Number(document.getElementById("bookMrp").value) || 0),
+        price: Math.max(0, Number(document.getElementById("bookPrice").value) || 0),
+        rating: Math.min(5, Math.max(0, Number(document.getElementById("bookRating").value) || 0)),
+        coverImage: document.getElementById("bookCoverImage").value.trim(),
+        coverClass: document.getElementById("bookCoverClass").value.trim() || "bg-slate-950 text-white",
+        coverLabel: document.getElementById("bookCoverLabel").value.trim() || "BOOK",
+        sampleLink: document.getElementById("bookSampleLink").value.trim(),
+        previewLink: document.getElementById("bookPreviewLink").value.trim(),
+        fileLink: document.getElementById("bookFileLink").value.trim(),
+        free: document.getElementById("bookFree").checked
+      };
+
+      if (!newBook.title || !newBook.category) return;
+
+      if (newBook.free) {
+        newBook.price = 0;
+        newBook.mrp = 0;
+        newBook.tag = newBook.tag || "Free";
+      }
+
+      if (editingBookId) {
+        const index = STORE.books.findIndex(book => Number(book.id) === Number(editingBookId));
+        if (index >= 0) STORE.books[index] = newBook;
+      } else {
+        STORE.books.push(newBook);
+        if (!STORE.featuredBookId) STORE.featuredBookId = newBook.id;
+      }
+
+      saveStore();
+      setupLinks();
+      renderFilters();
+      renderBooks();
+      renderAdminBooks();
+      loadShowcaseForm();
+      resetBookForm();
+      showAdminToast(editingBookId ? "Book updated" : "Book added");
+    }
+
+    function deleteBook(id) {
+      const book = STORE.books.find(item => Number(item.id) === id);
+      if (!book) return;
+      if (!window.confirm(`Delete "${book.title}"?`)) return;
+
+      STORE.books = STORE.books.filter(item => Number(item.id) !== id);
+      if (Number(STORE.featuredBookId) === id) {
+        STORE.featuredBookId = STORE.books[0]?.id || null;
+      }
+      saveStore();
+      setupLinks();
+      renderFilters();
+      renderBooks();
+      renderAdminBooks();
+      loadShowcaseForm();
+      resetBookForm();
+      showAdminToast("Book deleted");
+    }
+
+    function makeFeatured(id) {
+      if (!STORE.books.some(book => Number(book.id) === id)) return;
+      STORE.featuredBookId = id;
+      saveStore();
+      renderHero();
+      renderAdminBooks();
+      loadShowcaseForm();
+      showAdminToast("Featured book changed");
+    }
+
+    function loadShowcaseForm() {
+      document.getElementById("heroTitleInput").value = STORE.heroTitle || "";
+      document.getElementById("heroTextInput").value = STORE.heroText || "";
+
+      const select = document.getElementById("featuredBookSelect");
+      select.innerHTML = STORE.books.map(book =>
+        `<option value="${escapeHtml(book.id)}">${escapeHtml(book.title)}</option>`
+      ).join("");
+      if (STORE.books.length && STORE.featuredBookId != null) {
+        select.value = String(STORE.featuredBookId);
+      }
+
+      const current = STORE.books.find(book => Number(book.id) === Number(STORE.featuredBookId)) || STORE.books[0];
+      document.getElementById("showcasePreviewCategory").textContent = current?.category || "";
+      document.getElementById("showcasePreviewTitle").textContent = current?.title || "No book selected";
+      document.getElementById("showcasePreviewText").textContent = current?.summary || "Add a book to preview the homepage showcase.";
+    }
+
+    function saveShowcase() {
+      STORE.heroTitle = document.getElementById("heroTitleInput").value.trim() || DEFAULT_STORE.heroTitle;
+      STORE.heroText = document.getElementById("heroTextInput").value.trim() || DEFAULT_STORE.heroText;
+      STORE.featuredBookId = Number(document.getElementById("featuredBookSelect").value) || STORE.books[0]?.id || null;
+
+      saveStore();
+      renderHero();
+      showAdminToast("Homepage updated");
+    }
+
+    function exportStore() {
+      const backup = {
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        brandName: STORE.brandName,
+        telegramLink: STORE.telegramLink,
+        instagramLink: STORE.instagramLink,
+        supportEmail: STORE.supportEmail,
+        upiId: STORE.upiId,
+        upiQrImage: STORE.upiQrImage,
+        heroTitle: STORE.heroTitle,
+        heroText: STORE.heroText,
+        featuredBookId: STORE.featuredBookId,
+        reviews: STORE.reviews,
+        books: STORE.books
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "crazy-ebook-store-backup.json";
+      link.click();
+      URL.revokeObjectURL(url);
+      showAdminToast("Backup exported");
+    }
+
+    async function importStore() {
+      const input = document.getElementById("importDataInput");
+      const file = input.files?.[0];
+      if (!file) {
+        showAdminToast("Choose a JSON backup first");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(await file.text());
+        if (!parsed || !Array.isArray(parsed.books)) throw new Error("Invalid backup");
+        STORE = {
+          ...clone(DEFAULT_STORE),
+          ...parsed,
+          books: parsed.books.map(book => ({
+            ...clone(DEFAULT_STORE.books[0]),
+            ...book,
+            subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
+          }))
+        };
+        saveStore();
+        setupLinks();
+        renderFilters();
+        renderBooks();
+        renderReviews();
+        renderAdminBooks();
+        loadShowcaseForm();
+        resetBookForm();
+        showAdminToast("Store data imported");
+        input.value = "";
+      } catch {
+        showAdminToast("Import failed: invalid JSON backup");
+      }
+    }
+
+    function switchAdminTab(tab) {
+      document.querySelectorAll(".admin-tab").forEach(button => {
+        button.classList.toggle("active", button.dataset.adminTab === tab);
+      });
+      document.getElementById("adminTabBooks").classList.toggle("hidden", tab !== "books");
+      document.getElementById("adminTabShowcase").classList.toggle("hidden", tab !== "showcase");
+      document.getElementById("adminTabData").classList.toggle("hidden", tab !== "data");
+    }
+
+    /* =========================================================
+       EVENTS
+       ========================================================= */
+    document.getElementById("searchInput").addEventListener("input", renderBooks);
+    document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
+    document.getElementById("closePreviewModal").addEventListener("click", closePreviewModal);
+
+    document.getElementById("buyModal").addEventListener("click", event => {
+      if (event.target === event.currentTarget) closeBuyModal();
+    });
+
+    document.getElementById("previewModal").addEventListener("click", event => {
+      if (event.target === event.currentTarget) closePreviewModal();
+    });
+
+    document.getElementById("copyUpiBtn").addEventListener("click", async () => {
+      if (!selectedBook || selectedBook.free) return;
+      try {
+        await navigator.clipboard.writeText(STORE.upiId);
+        const button = document.getElementById("copyUpiBtn");
+        const original = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => button.textContent = original, 1400);
+      } catch {
+        alert(`Copy failed. UPI ID: ${STORE.upiId}`);
+      }
+    });
+
+    document.getElementById("sampleHeroBtn").addEventListener("click", () => {
+      const book = STORE.books.find(item => Number(item.id) === Number(STORE.featuredBookId)) || STORE.books[0];
+      if (!book) return;
+      openPreviewModal(book.id);
+    });
+
+    document.getElementById("openAdminBtn").addEventListener("click", openAdminModal);
+    document.getElementById("closeAdminModal").addEventListener("click", closeAdminModal);
+
+    document.getElementById("adminLoginBtn").addEventListener("click", () => {
+      const input = document.getElementById("adminCodeInput").value;
+      if (input === ADMIN_CODE) {
+        adminAuthenticated = true;
+        sessionStorage.setItem("crazyEbookAdmin", "1");
+        refreshAdminView();
+        showAdminToast("Admin access granted");
+      } else {
+        document.getElementById("adminLoginError").classList.remove("hidden");
+      }
+    });
+
+    document.getElementById("adminCodeInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") document.getElementById("adminLoginBtn").click();
+    });
+
+    document.querySelectorAll(".admin-tab").forEach(button => {
+      button.addEventListener("click", () => switchAdminTab(button.dataset.adminTab));
+    });
+
+    document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+      adminAuthenticated = false;
+      sessionStorage.removeItem("crazyEbookAdmin");
+      refreshAdminView();
+    });
+
+    document.getElementById("newBookBtn").addEventListener("click", () => {
+      resetBookForm();
+      document.getElementById("bookTitle").focus();
+    });
+
+    document.getElementById("cancelBookEditBtn").addEventListener("click", resetBookForm);
+    document.getElementById("bookForm").addEventListener("submit", saveBookFromForm);
+    document.getElementById("saveShowcaseBtn").addEventListener("click", saveShowcase);
+    document.getElementById("featuredBookSelect").addEventListener("change", loadShowcaseForm);
+    document.getElementById("exportDataBtn").addEventListener("click", exportStore);
+    document.getElementById("importDataBtn").addEventListener("click", importStore);
+
+    document.getElementById("adminModal").addEventListener("click", event => {
+      if (event.target === event.currentTarget) closeAdminModal();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeBuyModal();
+        closePreviewModal();
+        closeAdminModal();
+      }
+    });
+
+    /* =========================================================
+       INITIALIZE
+       ========================================================= */
+    setupLinks();
+    renderFilters();
+    renderBooks();
+    renderReviews();
+    renderFaq();
+    observeReveals();
+    refreshAdminView();
+  </script>
+</body>
+</html>
