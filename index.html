@@ -35,15 +35,19 @@
         <div class="mx-auto max-w-md rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
           <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-950 text-sm font-black text-white">CE</div>
           <h3 class="mt-5 text-xl font-black">Admin Login</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-500">Enter your admin access code to open the store dashboard.</p>
-          <label for="adminCodeInput" class="mt-6 block text-xs font-black uppercase tracking-widest text-slate-500">Access Code</label>
-          <input id="adminCodeInput" type="password" autocomplete="current-password"
+          <p class="mt-2 text-sm leading-6 text-slate-500">Sign in with the owner account authorized for this store.</p>
+          <label for="adminEmailInput" class="mt-6 block text-xs font-black uppercase tracking-widest text-slate-500">Owner email</label>
+          <input id="adminEmailInput" type="email" autocomplete="username"
                  class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
-                 placeholder="Enter admin code" />
-          <button id="adminLoginBtn" type="button" class="mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">Login to Admin</button>
-          <p id="adminLoginError" class="mt-3 hidden text-center text-xs font-bold text-rose-600">Incorrect admin code.</p>
+                 placeholder="you@example.com" />
+          <label for="adminPasswordInput" class="mt-4 block text-xs font-black uppercase tracking-widest text-slate-500">Password</label>
+          <input id="adminPasswordInput" type="password" autocomplete="current-password"
+                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                 placeholder="Supabase Auth password" />
+          <button id="adminLoginBtn" type="button" class="mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">Sign in</button>
+          <p id="adminLoginError" class="mt-3 hidden text-center text-xs font-bold text-rose-600"></p>
           <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900">
-            <strong>Static-site note:</strong> this login protects the admin UI in the browser, but it is not a server-side security boundary. Use a real backend/auth system before handling sensitive or high-value operations.
+            <strong>Setup required:</strong> configure the Supabase project URL and public anon key in the site settings. Never put a service-role key here.
           </div>
         </div>
       </div>
@@ -716,9 +720,11 @@
 
   <script>
     /* =========================================================
-       CONFIG + LOCAL STORE
+       CONFIG + STORE
        ========================================================= */
-    const ADMIN_CODE = "CE-ADMIN-2026"; // Change this before sharing the file.
+    const SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
+    const ADMIN_EMAIL = "YOUR_OWNER_EMAIL@example.com";
     const STORE_KEY = "crazyEbookStoreV2";
 
     const DEFAULT_STORE = {
@@ -834,10 +840,62 @@
     let activeCategory = "All";
     let selectedBook = null;
     let editingBookId = null;
-    let adminAuthenticated = sessionStorage.getItem("crazyEbookAdmin") === "1";
+    let adminAuthenticated = false;
+    let supabase = null;
+    let privateLinks = {};
+    let supabaseReady = false;
 
-    function saveStore() {
-      localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
+    async function initializeSupabase() {
+      if (SUPABASE_URL.includes("YOUR_PROJECT_REF") || SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") || ADMIN_EMAIL.includes("YOUR_OWNER_EMAIL")) return;
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+      supabaseReady = true;
+      const { data: sessionData } = await supabase.auth.getSession();
+      adminAuthenticated = sessionData.session?.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+      supabase.auth.onAuthStateChange((_event, session) => {
+        adminAuthenticated = session?.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        if (!adminAuthenticated) privateLinks = {};
+        refreshAdminView();
+      });
+      const { data, error } = await supabase.from("storefront_public").select("data").eq("id", 1).maybeSingle();
+      if (error) throw error;
+      if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
+      if (adminAuthenticated) await loadPrivateLinks();
+    }
+
+    function mergeStore(saved) {
+      return { ...clone(DEFAULT_STORE), ...saved, books: saved.books.map(book => ({ ...clone(DEFAULT_STORE.books[0]), ...book, fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
+    }
+
+    async function loadPrivateLinks() {
+      if (!supabase || !adminAuthenticated) return;
+      const { data, error } = await supabase.from("admin_store_private").select("delivery_links").eq("id", 1).maybeSingle();
+      if (error) throw error;
+      privateLinks = data?.delivery_links || {};
+      STORE.books.forEach(book => { book.fileLink = privateLinks[String(book.id)] || ""; });
+    }
+
+    async function saveStore() {
+      if (!supabase || !adminAuthenticated) {
+        showAdminToast("Sign in to Supabase before saving");
+        return false;
+      }
+      try {
+        const publicData = { ...STORE, books: STORE.books.map(({ fileLink, ...book }) => book) };
+        const links = Object.fromEntries(STORE.books.filter(book => book.fileLink).map(book => [String(book.id), book.fileLink]));
+        const [publicResult, privateResult] = await Promise.all([
+          supabase.from("storefront_public").upsert({ id: 1, data: publicData }),
+          supabase.from("admin_store_private").upsert({ id: 1, delivery_links: links })
+        ]);
+        if (publicResult.error) throw publicResult.error;
+        if (privateResult.error) throw privateResult.error;
+        privateLinks = links;
+        return true;
+      } catch (error) {
+        console.error("Store save failed:", error);
+        showAdminToast("Save failed. Check Supabase setup and try again.");
+        return false;
+      }
     }
 
     function money(value) {
@@ -1305,7 +1363,7 @@
         renderAdminBooks();
         loadShowcaseForm();
       } else {
-        document.getElementById("adminCodeInput").value = "";
+        document.getElementById("adminPasswordInput").value = "";
         document.getElementById("adminLoginError").classList.add("hidden");
       }
     }
@@ -1392,7 +1450,7 @@
       document.getElementById("bookTitle").focus();
     }
 
-    function saveBookFromForm(event) {
+    async function saveBookFromForm(event) {
       event.preventDefault();
 
       const title = document.getElementById("bookTitle").value.trim();
@@ -1432,7 +1490,7 @@
         if (!STORE.featuredBookId) STORE.featuredBookId = newBook.id;
       }
 
-      saveStore();
+      if (!await saveStore()) return;
       setupLinks();
       renderFilters();
       renderBooks();
@@ -1442,7 +1500,7 @@
       showAdminToast(editingBookId ? "Book updated" : "Book added");
     }
 
-    function deleteBook(id) {
+    async function deleteBook(id) {
       const book = STORE.books.find(item => Number(item.id) === id);
       if (!book) return;
       if (!window.confirm(`Delete "${book.title}"?`)) return;
@@ -1451,7 +1509,7 @@
       if (Number(STORE.featuredBookId) === id) {
         STORE.featuredBookId = STORE.books[0]?.id || null;
       }
-      saveStore();
+      if (!await saveStore()) return;
       setupLinks();
       renderFilters();
       renderBooks();
@@ -1461,10 +1519,10 @@
       showAdminToast("Book deleted");
     }
 
-    function makeFeatured(id) {
+    async function makeFeatured(id) {
       if (!STORE.books.some(book => Number(book.id) === id)) return;
       STORE.featuredBookId = id;
-      saveStore();
+      if (!await saveStore()) return;
       renderHero();
       renderAdminBooks();
       loadShowcaseForm();
@@ -1489,12 +1547,12 @@
       document.getElementById("showcasePreviewText").textContent = current?.summary || "Add a book to preview the homepage showcase.";
     }
 
-    function saveShowcase() {
+    async function saveShowcase() {
       STORE.heroTitle = document.getElementById("heroTitleInput").value.trim() || DEFAULT_STORE.heroTitle;
       STORE.heroText = document.getElementById("heroTextInput").value.trim() || DEFAULT_STORE.heroText;
       STORE.featuredBookId = Number(document.getElementById("featuredBookSelect").value) || STORE.books[0]?.id || null;
 
-      saveStore();
+      if (!await saveStore()) return;
       renderHero();
       showAdminToast("Homepage updated");
     }
@@ -1545,7 +1603,7 @@
             subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
           }))
         };
-        saveStore();
+        if (!await saveStore()) return;
         setupLinks();
         renderFilters();
         renderBooks();
@@ -1555,8 +1613,9 @@
         resetBookForm();
         showAdminToast("Store data imported");
         input.value = "";
-      } catch {
-        showAdminToast("Import failed: invalid JSON backup");
+      } catch (error) {
+        console.error("Store import failed:", error);
+        showAdminToast("Import failed. Check the JSON backup and Supabase connection.");
       }
     }
 
@@ -1606,19 +1665,44 @@
     document.getElementById("openAdminBtn").addEventListener("click", openAdminModal);
     document.getElementById("closeAdminModal").addEventListener("click", closeAdminModal);
 
-    document.getElementById("adminLoginBtn").addEventListener("click", () => {
-      const input = document.getElementById("adminCodeInput").value;
-      if (input === ADMIN_CODE) {
-        adminAuthenticated = true;
-        sessionStorage.setItem("crazyEbookAdmin", "1");
-        refreshAdminView();
-        showAdminToast("Admin access granted");
-      } else {
-        document.getElementById("adminLoginError").classList.remove("hidden");
+    async function adminLogin() {
+      const errorElement = document.getElementById("adminLoginError");
+      errorElement.textContent = "";
+      errorElement.classList.add("hidden");
+      if (!supabaseReady) {
+        errorElement.textContent = "Supabase is not configured. Add the project URL, public anon key and owner email in index.html.";
+        errorElement.classList.remove("hidden");
+        return;
       }
-    });
+      const email = document.getElementById("adminEmailInput").value.trim();
+      const password = document.getElementById("adminPasswordInput").value;
+      if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        errorElement.textContent = "This account is not authorized for the admin portal.";
+        errorElement.classList.remove("hidden");
+        return;
+      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        errorElement.textContent = "Sign-in failed. Check the owner email and password.";
+        errorElement.classList.remove("hidden");
+        return;
+      }
+      try {
+        await loadPrivateLinks();
+        adminAuthenticated = true;
+        refreshAdminView();
+        showAdminToast("Signed in");
+      } catch (saveError) {
+        errorElement.textContent = `Signed in, but store access failed: ${saveError.message}`;
+        errorElement.classList.remove("hidden");
+      }
+    }
 
-    document.getElementById("adminCodeInput").addEventListener("keydown", event => {
+    document.getElementById("adminLoginBtn").addEventListener("click", adminLogin);
+    document.getElementById("adminPasswordInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") document.getElementById("adminLoginBtn").click();
+    });
+    document.getElementById("adminEmailInput").addEventListener("keydown", event => {
       if (event.key === "Enter") document.getElementById("adminLoginBtn").click();
     });
 
@@ -1626,9 +1710,10 @@
       button.addEventListener("click", () => switchAdminTab(button.dataset.adminTab));
     });
 
-    document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+    document.getElementById("adminLogoutBtn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
       adminAuthenticated = false;
-      sessionStorage.removeItem("crazyEbookAdmin");
+      privateLinks = {};
       refreshAdminView();
     });
 
@@ -1661,6 +1746,12 @@
        ========================================================= */
     setupLinks();
     renderFilters();
+    initializeSupabase().then(() => {
+      setupLinks(); renderFilters(); renderHero(); renderBooks(); renderReviews(); refreshAdminView();
+    }).catch(error => {
+      console.error("Supabase initialization failed:", error);
+      document.getElementById("adminLoginError").textContent = "Could not connect to Supabase. Check your project configuration and SQL setup.";
+    });
     renderBooks();
     renderReviews();
     renderFaq();
