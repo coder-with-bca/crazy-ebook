@@ -55,7 +55,10 @@
       <div id="adminDashboardView" class="hidden p-5 sm:p-6">
         <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4">
           <button class="admin-tab active rounded-xl border px-4 py-2.5 text-xs font-black" data-admin-tab="books">Books</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="purchases">Purchases</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews / Testimonials</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="settings">Settings</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
           <button id="adminLogoutBtn" type="button" class="ml-auto rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600 hover:bg-slate-50">Log out</button>
         </div>
@@ -95,7 +98,7 @@
               <form id="bookForm" class="mt-5 space-y-3">
                 <input type="hidden" id="bookId" />
                 <div>
-                  <label class="text-xs font-black text-slate-500">Title</label>
+                  <label class="text-xs font-black text-slate-500">Unique Book ID</label><input id="bookCode" required pattern="[A-Za-z0-9_-]{3,40}" placeholder="PYTHON001" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm uppercase" /></div><div><label class="text-xs font-black text-slate-500">Title</label>
                   <input id="bookTitle" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
                 </div>
                 <div class="grid grid-cols-2 gap-3">
@@ -159,9 +162,10 @@
                 <div>
                   <label class="text-xs font-black text-slate-500">Private book delivery URL</label>
                   <input id="bookFileLink" type="url" placeholder="https://private-link.example/ebook.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  <div class="field-note mt-1">Stored in your browser data and never rendered into the public book card. Your Telegram/manual-delivery flow stays unchanged.</div>
+                  <div class="field-note mt-1">Stored in Supabase's private delivery data. Customers can retrieve it only for their own Paid and Approved purchase.</div>
                 </div>
 
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3"><input id="bookActive" type="checkbox" checked class="h-4 w-4 rounded" /><span class="text-sm font-bold">Available for purchase</span></label>
                 <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3">
                   <input id="bookFree" type="checkbox" class="h-4 w-4 rounded" />
                   <span class="text-sm font-bold">This is a free book</span>
@@ -172,6 +176,11 @@
             </div>
           </div>
         </section>
+
+        <section id="adminTabPurchases" class="admin-tab-panel hidden pt-6"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Order management</p><h3 class="mt-1 text-2xl font-black">Purchases</h3><p class="mt-2 text-sm text-slate-500">Mark Paid only after checking payment. Mark Delivered after sending the ebook.</p></div><button id="refreshPurchasesBtn" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">Refresh</button></div><div class="mt-4 flex flex-wrap gap-2" id="purchaseFilters"><button class="purchase-filter rounded-full bg-slate-950 px-3 py-2 text-xs font-bold text-white" data-filter="All">All</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Pending">Pending</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Paid">Paid</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Delivered">Delivered</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Rejected">Rejected</button></div><div id="purchasesList" class="mt-5 grid gap-4"></div></section>
+        <section id="adminTabReviews" class="admin-tab-panel hidden pt-6"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Admin-created featured comments</p><h3 class="mt-1 text-2xl font-black">Reviews / Testimonials</h3><p class="mt-2 text-sm text-slate-500">These are admin-managed comments, not verified purchase reviews.</p></div><form id="reviewForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="reviewId" type="hidden"><label class="text-xs font-bold">Name<input id="reviewName" required maxlength="100" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Rating<select id="reviewRating" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label><label class="text-xs font-bold sm:col-span-2">Comment<textarea id="reviewComment" required maxlength="1000" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea></label><label class="flex items-center gap-2 text-sm font-bold"><input id="reviewVisible" type="checkbox" checked> Visible publicly</label><div class="flex gap-2"><button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white" type="submit">Save testimonial</button><button class="rounded-xl border px-4 py-2.5 text-sm font-bold" id="cancelReviewEdit" type="button">Clear</button></div></form><div id="adminReviewsList" class="mt-5 grid gap-3"></div></section>
+
+        <section id="adminTabSettings" class="admin-tab-panel hidden pt-6"><h3 class="text-2xl font-black">Business Settings</h3><p class="mt-2 text-sm text-slate-500">Update the public contact and payment details stored with your Supabase storefront.</p><form id="settingsForm" class="mt-5 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><label class="text-xs font-bold">Brand<input id="settingBrand" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Creators<input id="settingCreators" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">UPI ID<input id="settingUpi" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support email<input id="settingEmail" type="email" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support Telegram URL<input id="settingTelegram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Purchase channel URL<input id="settingPurchaseChannel" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Instagram URL<input id="settingInstagram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Telegram bot username<input id="settingBot" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><button class="rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white sm:col-span-2" type="submit">Save Settings</button><p class="text-xs text-amber-800 sm:col-span-2">The bot token and notification channel ID are secrets configured in Supabase and are never saved here.</p></form></section>
 
         <section id="adminTabShowcase" class="admin-tab-panel hidden pt-6">
           <div>
@@ -215,7 +224,7 @@
           <div class="mt-6 grid gap-5 md:grid-cols-2">
             <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <h4 class="font-black">Export</h4>
-              <p class="mt-2 text-sm leading-6 text-slate-600">Download a JSON backup of books, showcase settings and contact settings. The admin login code is excluded.</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Download a JSON backup of books, showcase settings and contact settings. The admin login and private downloads are excluded.</p>
               <button id="exportDataBtn" type="button" class="mt-4 rounded-xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white hover:bg-slate-800">Export Store Data</button>
             </div>
 
@@ -228,7 +237,7 @@
           </div>
 
           <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
-            <strong>Publishing reality:</strong> because this version is a single static HTML file, browser-stored admin edits do not automatically sync to every visitor. For real multi-device publishing, the same dashboard should be connected to a backend/database (for example Supabase/Firebase) and server-side authentication.
+            <strong>Catalog, purchases, private delivery links, and testimonials sync through the configured Supabase project. Keep the project URL and publishable key aligned with your Supabase project.
           </div>
         </section>
       </div>
@@ -332,8 +341,8 @@
           CE
         </div>
         <div>
-          <div class="font-extrabold tracking-tight">Crazy E-Book</div>
-          <div class="text-[11px] text-slate-500">by Akki & Aadi</div>
+          <div id="siteBrand" class="font-extrabold tracking-tight">Crazy E-Book</div>
+          <div id="siteCreators" class="text-[11px] text-slate-500">by Akki & Aadi</div>
         </div>
       </a>
 
@@ -541,10 +550,10 @@
           <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Reader feedback</p>
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Admin-created testimonials</p>
                 <h3 class="mt-1 text-xl font-black">Testimonials</h3>
               </div>
-              <div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 reviews</div>
+              <div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 featured comments</div>
             </div>
             <div id="reviewsGrid" class="mt-6"></div>
           </div>
@@ -631,6 +640,7 @@
         </button>
       </div>
 
+      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800">Order <span id="createdPurchaseId"></span> saved. Payment status: Pending.</div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
         <img id="upiQr"
              src="upi-qr.jpg"
@@ -657,9 +667,7 @@
         </div>
       </div>
 
-      <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-        Pay the exact amount, then send the screenshot. You will get your ebook link after confirmation.
-      </div>
+      <button id="payNowBtn" type="button" class="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-extrabold text-white">Pay Now</button><p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Please use the QR code below.</p><div class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Payment starts as Pending. We verify it manually.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
 
       <a id="verifyTelegram"
          href="#"
@@ -668,12 +676,17 @@
          class="mt-5 flex w-full items-center justify-center rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">
         Verify on Telegram
       </a>
+      </div>
     </div>
   </div>
 
   <!-- =========================================================
        PREVIEW MODAL
        ========================================================= -->
+  <div id="customerPurchaseStatusCard" class="hidden fixed bottom-4 right-4 z-[80] w-[min(26rem,calc(100vw-2rem))] rounded-2xl bg-white shadow-2xl">
+    <div id="customerPurchaseStatusCardContent" class="rounded-2xl border border-slate-200 p-4 text-sm" aria-live="polite"></div>
+  </div>
+
   <div id="previewModal"
        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
        role="dialog"
@@ -726,21 +739,28 @@
     const SUPABASE_ANON_KEY = "sb_publishable_pTvzDVljJoxdSdJeTh5CKg_jsPfSIMH";
     const ADMIN_EMAIL = "crazyebook.official@gmail.com";
     const STORE_KEY = "crazyEbookStoreV2";
+    const PAYMENT_UPI_ID = "akashmaurya18@upi";
 
     const DEFAULT_STORE = {
       brandName: "Crazy E-Book",
       telegramLink: "https://t.me/crazyebookofficial",
-      instagramLink: "https://instagram.com/crazyebook.official",
+      purchaseTelegramLink: "https://t.me/crazyebook",
+      instagramLink: "https://www.instagram.com/crazyebook.official?stkn=YmNlZm9iN2Nlczhl",
+      botUsername: "@CrazyEbookPurchaseBot",
+      creators: "Akki & Aadi",
       supportEmail: "crazyebook.official@gmail.com",
       upiId: "akashmaurya18@upi",
       upiQrImage: "upi-qr.jpg",
       heroTitle: "Learn faster. Study smarter. Build more.",
       heroText: "Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter.",
-      featuredBookId: 1,
+      featuredBookId: null,
       reviews: [],
+      books: [] /* Real books are added by the admin; no demo products are published. */
+      /* Previous fictional sample books intentionally removed from the default catalog.
       books: [
         {
           id: 1,
+          bookCode: "PYTHON001",
           title: "Python Jumpstart",
           category: "Python & Tech",
           subjects: ["Python", "Programming", "Coding"],
@@ -759,6 +779,7 @@
         },
         {
           id: 2,
+          bookCode: "WEB001",
           title: "Tech Notes: Web Basics",
           category: "Python & Tech",
           subjects: ["HTML", "CSS", "JavaScript", "Web Development"],
@@ -777,6 +798,7 @@
         },
         {
           id: 3,
+          bookCode: "CUET001",
           title: "CUET Quick Revision Notes",
           category: "CUET Notes",
           subjects: ["CUET", "Revision", "Exam Notes"],
@@ -795,6 +817,7 @@
         },
         {
           id: 4,
+          bookCode: "COMIC001",
           title: "The Pixel Quest",
           category: "Comics",
           subjects: ["Comic", "Story", "Adventure"],
@@ -811,8 +834,10 @@
           fileLink: "",
           free: true
         }
-      ]
+      ] */
     };
+
+    function makeBookCode(title, id) { return `${String(title || "BOOK").toUpperCase().replace(/[^A-Z0-9]+/g, "").slice(0,28) || "BOOK"}${String(id || "").replace(/[^0-9]/g, "")}`.slice(0,40); }
 
     function clone(value) {
       return JSON.parse(JSON.stringify(value));
@@ -828,6 +853,7 @@
           books: saved.books.map(book => ({
             ...clone(DEFAULT_STORE.books[0]),
             ...book,
+            bookCode: book.bookCode || makeBookCode(book.title, book.id),
             subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
           }))
         };
@@ -837,6 +863,7 @@
     }
 
     let STORE = loadStore();
+    STORE.reviews = [];
     let activeCategory = "All";
     let selectedBook = null;
     let editingBookId = null;
@@ -857,14 +884,25 @@
         if (!adminAuthenticated) privateLinks = {};
         refreshAdminView();
       });
+      setInterval(() => {
+        const purchasesTab = document.getElementById("adminTabPurchases");
+        if (adminAuthenticated && purchasesTab && !purchasesTab.classList.contains("hidden")) loadPurchases();
+      }, 15000);
       const { data, error } = await supabase.from("storefront_public").select("data").eq("id", 1).maybeSingle();
       if (error) throw error;
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
+      const { data: publicReviews } = await supabase.from("reviews").select("name,comment,rating,is_visible").eq("is_visible", true);
+      if (publicReviews) STORE.reviews = publicReviews.map(r => ({ name:r.name, comment:r.comment, rating:r.rating, visible:true }));
       if (adminAuthenticated) await loadPrivateLinks();
+      const savedPurchaseId = localStorage.getItem("crazyebook-latest-purchase");
+      const savedAccessToken = savedPurchaseId ? localStorage.getItem(`crazyebook-purchase-token:${savedPurchaseId}`) : null;
+      if (/^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(savedPurchaseId || "") && /^[a-f0-9]{64}$/.test(savedAccessToken || "")) {
+        startCustomerPurchaseStatus(savedPurchaseId, savedAccessToken);
+      }
     }
 
     function mergeStore(saved) {
-      return { ...clone(DEFAULT_STORE), ...saved, books: saved.books.map(book => ({ ...clone(DEFAULT_STORE.books[0]), ...book, fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
+      return { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: saved.books.map(book => ({ ...clone(DEFAULT_STORE.books[0]), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
     }
 
     async function loadPrivateLinks() {
@@ -880,15 +918,26 @@
         showAdminToast("Sign in to Supabase before saving");
         return false;
       }
+      const codes = STORE.books.map(book => String(book.bookCode || "").trim().toUpperCase());
+      if (codes.some(code => !/^[A-Z0-9_-]{3,40}$/.test(code)) || new Set(codes).size !== codes.length) {
+        showAdminToast("Every book needs a unique ID with 3–40 letters or numbers."); return false;
+      }
       try {
         const publicData = { ...STORE, books: STORE.books.map(({ fileLink, ...book }) => book) };
-        const links = Object.fromEntries(STORE.books.filter(book => book.fileLink).map(book => [String(book.id), book.fileLink]));
+        const currentBookIds = new Set(STORE.books.map(book => String(book.id)));
+        const retainedDeletedBookLinks = Object.fromEntries(Object.entries(privateLinks).filter(([bookKey]) => !currentBookIds.has(bookKey)));
+        const links = { ...retainedDeletedBookLinks, ...Object.fromEntries(STORE.books.filter(book => book.fileLink).map(book => [String(book.id), book.fileLink])) };
         const [publicResult, privateResult] = await Promise.all([
           supabase.from("storefront_public").upsert({ id: 1, data: publicData }),
           supabase.from("admin_store_private").upsert({ id: 1, delivery_links: links })
         ]);
         if (publicResult.error) throw publicResult.error;
         if (privateResult.error) throw privateResult.error;
+        const catalogue = STORE.books.map(book => ({ id: String(book.id), book_id: book.bookCode, title: book.title, description: book.summary || "", category: book.category || "", price: Number(book.price) || 0, cover_image: book.coverImage || "", sample_link: book.sampleLink || book.previewLink || "", status: book.status === "inactive" ? "inactive" : "active" }));
+        const catResult = await supabase.from("books").upsert(catalogue, { onConflict: "id" }); if (catResult.error) throw catResult.error;
+        const { data: existingBooks, error: listErr } = await supabase.from("books").select("id"); if (listErr) throw listErr;
+        const keep = catalogue.map(book => book.id), stale = (existingBooks || []).map(row => row.id).filter(id => !keep.includes(id));
+        if (stale.length) { const { error: archiveErr } = await supabase.from("books").update({ status: "inactive" }).in("id", stale); if (archiveErr) throw archiveErr; }
         privateLinks = links;
         return true;
       } catch (error) {
@@ -935,7 +984,7 @@
     }
 
     const categories = () => {
-      const unique = [...new Set(STORE.books.map(book => book.category).filter(Boolean))];
+      const unique = [...new Set(STORE.books.filter(book => book.status !== "inactive").map(book => book.category).filter(Boolean))];
       return ["All", ...unique];
     };
 
@@ -943,6 +992,8 @@
        PUBLIC NAV / HERO / FOOTER
        ========================================================= */
     function setupLinks() {
+      document.getElementById("siteBrand").textContent = STORE.brandName || "Crazy E-Book";
+      document.getElementById("siteCreators").textContent = `by ${STORE.creators || "Akki & Aadi"}`;
       document.getElementById("navTelegram").href = safeUrl(STORE.telegramLink);
       document.getElementById("footerTelegram").href = safeUrl(STORE.telegramLink);
       document.getElementById("footerInstagram").href = safeUrl(STORE.instagramLink);
@@ -950,6 +1001,8 @@
       const email = document.getElementById("footerEmail");
       email.href = `mailto:${STORE.supportEmail}`;
       email.textContent = STORE.supportEmail;
+      const title = document.querySelector("title");
+      if (title) title.textContent = `${STORE.brandName || "Crazy E-Book"} — by ${STORE.creators || "Akki & Aadi"}`;
 
       document.getElementById("year").textContent = new Date().getFullYear();
       document.getElementById("upiQr").src = STORE.upiQrImage || "upi-qr.jpg";
@@ -1057,6 +1110,7 @@
     function renderBooks() {
       const query = document.getElementById("searchInput").value.trim().toLowerCase();
       const filtered = STORE.books.filter(book => {
+        if (book.status === "inactive") return false;
         const categoryMatch = activeCategory === "All" || book.category === activeCategory;
         const searchText = [
           book.title,
@@ -1145,22 +1199,182 @@
     /* =========================================================
        BUY / PREVIEW
        ========================================================= */
+    async function createPurchase(event) {
+      event.preventDefault();
+      const errorBox = document.getElementById("purchaseFormError");
+      errorBox.classList.add("hidden");
+      const name = document.getElementById("customerName").value.trim();
+      const whatsapp = document.getElementById("customerWhatsapp").value.trim();
+      const telegram = document.getElementById("customerTelegram").value.trim();
+      if (!whatsapp && !telegram) { errorBox.textContent = "Please provide either your WhatsApp number or Telegram username."; errorBox.classList.remove("hidden"); return; }
+      const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
+      try {
+        if (!supabaseReady || !selectedBook) throw new Error("unavailable");
+        const accessToken = createPurchaseAccessToken();
+        const { data, error } = await supabase.rpc("create_purchase", { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken });
+        if (error || !data) throw error || new Error("Order creation failed");
+        const purchase = Array.isArray(data) ? data[0] : data;
+        latestPurchaseId = purchase.purchase_id; latestPurchasePrice = Number(purchase.price); latestPurchaseAccessToken = accessToken;
+        try {
+          localStorage.setItem(`crazyebook-purchase-token:${latestPurchaseId}`, accessToken);
+          localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId);
+        } catch (storageError) { console.warn("Purchase access will remain available in this tab only.", storageError); }
+        document.getElementById("modalPrice").textContent = money(latestPurchasePrice);
+        document.getElementById("createdPurchaseId").textContent = latestPurchaseId;
+        document.getElementById("purchaseForm").classList.add("hidden");
+        document.getElementById("purchasePayment").classList.remove("hidden");
+        document.getElementById("payNowBtn").classList.remove("hidden");
+        startCustomerPurchaseStatus(latestPurchaseId, latestPurchaseAccessToken);
+        try {
+          const { error: notifyError } = await supabase.functions.invoke("send-purchase-telegram", { body: { purchase_id: latestPurchaseId } });
+          if (notifyError) console.warn("Telegram notification could not be sent; purchase remains saved.", notifyError);
+        } catch (notifyError) { console.warn("Telegram notification could not be sent; purchase remains saved.", notifyError); }
+      } catch (error) {
+        console.error("Purchase creation failed", error);
+        errorBox.textContent = "Something went wrong while creating your order. Please try again.";
+        errorBox.classList.remove("hidden");
+      } finally { button.disabled = false; button.textContent = "Create order and continue"; }
+    }
+
+    function createPurchaseAccessToken() {
+      const bytes = new Uint8Array(32);
+      if (!globalThis.crypto?.getRandomValues) throw new Error("Secure purchase access is unavailable. Please open the HTTPS website and try again.");
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    let customerStatusTimer = null;
+    async function refreshCustomerPurchaseStatus(purchaseId, accessToken = latestPurchaseAccessToken) {
+      if (!supabase || !purchaseId || !accessToken) return;
+      const { data, error } = await supabase.rpc("get_purchase_status", { p_purchase_id: purchaseId, p_access_token: accessToken });
+      if (error || !data?.length) return;
+      const p = data[0], boxes = [document.getElementById("customerOrderStatus"), document.getElementById("customerPurchaseStatusCardContent")];
+      document.getElementById("customerPurchaseStatusCard").classList.remove("hidden");
+      for (const box of boxes) {
+        box.classList.remove("hidden");
+        box.replaceChildren();
+        if (p.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(p.order_status)) {
+          box.className = "rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800";
+          box.append(document.createTextNode("✅ Payment Successful! Your payment has been approved. Your ebook is ready."));
+          const deliveryUrl = safeHrefOrBlank(p.delivery_url);
+          if (deliveryUrl.startsWith("https://")) {
+            const download = document.createElement("a");
+            download.href = deliveryUrl; download.target = "_blank"; download.rel = "noopener noreferrer";
+            download.textContent = "📥 Download Your Ebook";
+            download.className = "mt-3 block rounded-xl bg-emerald-700 px-4 py-3 text-center font-extrabold text-white";
+            box.append(download);
+          } else {
+            const missing = document.createElement("p");
+            missing.className = "mt-2 font-medium";
+            missing.textContent = "Your payment is approved, but the delivery link is not available yet. Please contact support.";
+            box.append(missing);
+          }
+        } else if (p.payment_status === "Rejected") {
+          box.className = "rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-800";
+          box.textContent = "❌ Payment Not Approved. Your payment was not successfully verified. Your order has been declined.";
+        } else {
+          box.className = "rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-900";
+          box.textContent = "⏳ Payment Pending. Your payment is waiting for verification.";
+        }
+      }
+    }
+    function startCustomerPurchaseStatus(purchaseId, accessToken = latestPurchaseAccessToken) {
+      if (customerStatusTimer) clearInterval(customerStatusTimer);
+      refreshCustomerPurchaseStatus(purchaseId, accessToken);
+      customerStatusTimer = setInterval(() => refreshCustomerPurchaseStatus(purchaseId, accessToken), 15000);
+    }
+
+    function launchUpiPayment() {
+      if (!selectedBook || !latestPurchaseId) return;
+      const params = new URLSearchParams({ pa: PAYMENT_UPI_ID, pn: STORE.brandName || "Crazy E-Book", am: String(Number(latestPurchasePrice ?? selectedBook.price).toFixed(2)), cu: "INR", tn: `Purchase ${latestPurchaseId}` });
+      const link = `upi://pay?${params.toString()}`;
+      document.getElementById("paymentError").classList.add("hidden");
+      window.location.href = link;
+      setTimeout(() => document.getElementById("paymentError").classList.remove("hidden"), 1500);
+    }
+
+    let purchaseFilter = "All";
+    let adminPurchases = [];
+    function renderPurchases() {
+      const list = document.getElementById("purchasesList");
+      const visible = adminPurchases.filter(p => purchaseFilter === "All" || (purchaseFilter === "Pending" ? p.payment_status === "Pending" : purchaseFilter === "Paid" ? p.payment_status === "Paid" && p.order_status !== "Delivered" : purchaseFilter === "Delivered" ? p.order_status === "Delivered" : p.payment_status === "Rejected" || p.order_status === "Rejected"));
+      if (!visible.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-5 text-sm text-slate-500">No purchases in this view.</p>'; return; }
+      list.innerHTML = visible.map(p => `<article class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"><div class="flex flex-wrap justify-between gap-2"><strong>${escapeHtml(p.purchase_id)}</strong><span class="text-xs text-slate-500">${new Date(p.created_at).toLocaleString()}</span></div><div class="mt-3 grid gap-1 text-sm sm:grid-cols-2"><p><b>Book:</b> ${escapeHtml(p.book_title)} (${escapeHtml(p.book_id)})</p><p><b>Price:</b> ${money(p.price)}</p><p><b>Customer:</b> ${escapeHtml(p.customer_name)}</p>${p.whatsapp ? `<p><b>WhatsApp:</b> ${escapeHtml(p.whatsapp)} · <a class="font-bold text-emerald-700 underline" target="_blank" rel="noopener" href="https://wa.me/${encodeURIComponent(p.whatsapp.replace(/\D/g,''))}">Open WhatsApp</a></p>` : ''}${p.telegram ? `<p><b>Telegram:</b> ${escapeHtml(p.telegram)} · <a class="font-bold text-indigo-700 underline" target="_blank" rel="noopener" href="https://t.me/${encodeURIComponent(p.telegram.replace(/^@/,''))}">Open Telegram</a></p>` : ''}<p><b>Payment:</b> ${escapeHtml(p.payment_status)}</p><p><b>Order:</b> ${escapeHtml(p.order_status)}</p><p><b>Telegram alert:</b> ${escapeHtml(p.telegram_notification_status)}</p></div><div class="mt-4 flex flex-wrap gap-2"><button data-view-purchase="${p.id}" class="purchase-view rounded-lg border px-3 py-2 text-xs font-bold">View</button><button data-copy-purchase="${p.id}" class="purchase-copy rounded-lg border px-3 py-2 text-xs font-bold">Copy Purchase Details</button>${p.payment_status === 'Pending' ? `<button data-purchase-action="approve" data-id="${p.id}" class="purchase-action rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white">Approve / Accept</button><button data-purchase-action="reject" data-id="${p.id}" class="purchase-action rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Reject / Decline</button>` : ''}${p.order_status !== 'Delivered' && p.payment_status === 'Paid' ? `<button data-purchase-action="deliver" data-id="${p.id}" class="purchase-action rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white">Mark Delivered</button>` : ''}${p.payment_status === 'Paid' && privateLinks[String(p.book_key)] ? `<button data-copy-delivery="${p.id}" class="copy-delivery rounded-lg border px-3 py-2 text-xs font-bold">Copy Delivery Link</button>` : ''}</div></article>`).join('');
+      document.querySelectorAll('.purchase-action').forEach(btn => btn.addEventListener('click', async () => {
+        const p = adminPurchases.find(row => row.id === btn.dataset.id); if (!p) return;
+        const action = btn.dataset.purchaseAction;
+        if (action === 'deliver' && p.payment_status !== 'Paid') { showAdminToast('Approve payment before marking delivery'); return; }
+        const update = action === 'approve' ? { payment_status: 'Paid', order_status: 'Approved' } : action === 'reject' ? { payment_status: 'Rejected', order_status: 'Rejected' } : { order_status: 'Delivered' };
+        btn.disabled = true;
+        let updateQuery = supabase.from('purchases').update(update).eq('id', p.id);
+        if (action === 'approve' || action === 'reject') updateQuery = updateQuery.eq('payment_status', 'Pending').in('order_status', ['Pending', 'New']);
+        else updateQuery = updateQuery.eq('payment_status', 'Paid').in('order_status', ['Approved', 'Paid']);
+        const { data: updatedPurchase, error: updateError } = await updateQuery.select('id').maybeSingle();
+        if (updateError || !updatedPurchase) { btn.disabled = false; showAdminToast('Could not update order. Check the database migration and permissions.'); return; }
+        let telegramSyncFailed = false;
+        if (action === 'approve' || action === 'reject') {
+          try {
+            const { error } = await supabase.functions.invoke('send-purchase-telegram', { body: { action: 'sync_purchase', purchase_id: p.purchase_id } });
+            telegramSyncFailed = Boolean(error);
+          } catch { telegramSyncFailed = true; }
+        }
+        if (telegramSyncFailed) showAdminToast('Purchase updated. Telegram message could not be refreshed.');
+        else showAdminToast(action === 'approve' ? 'Payment approved and marked Paid' : action === 'reject' ? 'Payment rejected; order declined' : 'Order marked Delivered');
+        await loadPurchases();
+      }));
+      document.querySelectorAll('.copy-delivery').forEach(btn => btn.addEventListener('click', async () => { const p=adminPurchases.find(row=>row.id===btn.dataset.copyDelivery); const link=p&&privateLinks[String(p.book_key)]; if(!link)return; try{await navigator.clipboard.writeText(link);showAdminToast('Private delivery link copied');}catch{showAdminToast('Could not access clipboard');} }));
+      document.querySelectorAll('.purchase-view').forEach(btn => btn.addEventListener('click', () => { const p = adminPurchases.find(row => row.id === btn.dataset.viewPurchase); if (p) alert(`Purchase ${p.purchase_id}\nBook: ${p.book_title} (${p.book_id})\nPrice: ${money(p.price)}\nCustomer: ${p.customer_name}\nWhatsApp: ${p.whatsapp || '—'}\nTelegram: ${p.telegram || '—'}\nPayment: ${p.payment_status}\nOrder: ${p.order_status}\nCreated: ${new Date(p.created_at).toLocaleString()}`); }));
+      document.querySelectorAll('.purchase-copy').forEach(btn => btn.addEventListener('click', async () => { const p = adminPurchases.find(row => row.id === btn.dataset.copyPurchase); if (!p) return; const details = `Purchase ID: ${p.purchase_id}\nBook ID: ${p.book_id}\nBook: ${p.book_title}\nPrice: ${money(p.price)}\nCustomer: ${p.customer_name}\nWhatsApp: ${p.whatsapp || '—'}\nTelegram: ${p.telegram || '—'}\nPayment: ${p.payment_status}\nOrder: ${p.order_status}\nDate: ${new Date(p.created_at).toLocaleString()}`; try { await navigator.clipboard.writeText(details); showAdminToast('Purchase details copied'); } catch { showAdminToast('Could not access clipboard'); } }));
+    }
+    async function loadPurchases() {
+      if (!supabase || !adminAuthenticated || !document.getElementById("purchasesList")) return;
+      const list = document.getElementById("purchasesList"); list.innerHTML = '<p class="text-sm text-slate-500">Loading purchases…</p>';
+      const { data, error } = await supabase.from("purchases").select("*").order("created_at", { ascending: false });
+      if (error) { list.innerHTML = '<p class="text-sm text-rose-600">Could not load purchases. Check the SQL policies.</p>'; return; }
+      adminPurchases = data || []; renderPurchases();
+    }
+
+    function resetReviewForm() { document.getElementById('reviewForm').reset(); document.getElementById('reviewId').value=''; document.getElementById('reviewVisible').checked=true; }
+    async function renderAdminReviews() {
+      if (!supabase || !adminAuthenticated) return;
+      const { data, error } = await supabase.from('reviews').select('*').order('created_at',{ascending:false});
+      const list=document.getElementById('adminReviewsList'); if(error){list.textContent='Could not load testimonials.';return;}
+      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No testimonials saved.</p>';
+      (data||[]).forEach(r=>{ document.querySelector(`[data-edit-review="${r.id}"]`)?.addEventListener('click',()=>{document.getElementById('reviewId').value=r.id;document.getElementById('reviewName').value=r.name;document.getElementById('reviewComment').value=r.comment;document.getElementById('reviewRating').value=r.rating;document.getElementById('reviewVisible').checked=r.is_visible;}); document.querySelector(`[data-toggle-review="${r.id}"]`)?.addEventListener('click',async e=>{await supabase.from('reviews').update({is_visible:e.currentTarget.dataset.visible==='true',updated_at:new Date().toISOString()}).eq('id',r.id);renderAdminReviews();}); document.querySelector(`[data-delete-review="${r.id}"]`)?.addEventListener('click',async()=>{if(confirm('Delete this testimonial?')){await supabase.from('reviews').delete().eq('id',r.id);renderAdminReviews();}}); });
+    }
+    async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save testimonial');return;} resetReviewForm();await renderAdminReviews(); STORE.reviews=((await supabase.from('reviews').select('name,comment,rating,is_visible')).data||[]).filter(r=>r.is_visible);renderReviews();showAdminToast('Testimonial saved'); }
+
+    let latestPurchaseId = null;
+    let latestPurchasePrice = null;
+    let latestPurchaseAccessToken = null;
     function openBuyModal(bookId) {
+
       selectedBook = STORE.books.find(book => Number(book.id) === Number(bookId));
       if (!selectedBook) return;
 
-      document.getElementById("buyModalBook").textContent = selectedBook.title;
+      latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
+      document.getElementById("buyModalBook").textContent = `${selectedBook.title} · ${selectedBook.bookCode || makeBookCode(selectedBook.title, selectedBook.id)}`;
+      document.getElementById("purchaseForm").classList.toggle("hidden", !!selectedBook.free || Number(selectedBook.price) === 0);
+      document.getElementById("purchasePayment").classList.add("hidden");
+      document.getElementById("customerOrderStatus").classList.add("hidden");
+      document.getElementById("freeAccessLink").classList.add("hidden");
+      document.getElementById("purchaseForm").reset();
+      document.getElementById("purchaseFormError").classList.add("hidden");
 
       const isFree = !!selectedBook.free || Number(selectedBook.price) === 0;
       document.getElementById("modalPrice").textContent = isFree ? "Free" : money(selectedBook.price);
-      document.getElementById("upiIdText").textContent = STORE.upiId;
+      document.getElementById("upiIdText").textContent = PAYMENT_UPI_ID;
       document.getElementById("copyUpiBtn").disabled = isFree;
 
       const verify = document.getElementById("verifyTelegram");
+      verify.classList.add("hidden");
+      document.getElementById("payNowBtn").classList.toggle("hidden", isFree);
       if (isFree) {
         const sample = safeHrefOrBlank(selectedBook.sampleLink || selectedBook.previewLink);
-        verify.textContent = sample ? "Open Free Book" : "Contact on Telegram";
-        verify.href = sample || safeUrl(STORE.telegramLink);
+        const freeLink = document.getElementById("freeAccessLink");
+        freeLink.textContent = sample ? "Open Free Book" : "Contact on Telegram";
+        freeLink.href = sample || safeUrl(STORE.telegramLink);
+        freeLink.classList.remove("hidden");
       } else {
         verify.textContent = "Verify on Telegram";
         verify.href = telegramPaymentLink(selectedBook);
@@ -1245,16 +1459,16 @@
        ========================================================= */
     function renderReviews() {
       const grid = document.getElementById("reviewsGrid");
-      const reviews = Array.isArray(STORE.reviews) ? STORE.reviews : [];
+      const reviews = (Array.isArray(STORE.reviews) ? STORE.reviews : []).filter(review => review.visible !== false);
       document.getElementById("reviewCount").textContent =
-        `${reviews.length} review${reviews.length === 1 ? "" : "s"}`;
+        `${reviews.length} featured comment${reviews.length === 1 ? "" : "s"}`;
 
       if (!reviews.length) {
         grid.innerHTML = `
           <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
             <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-xl shadow-sm">☆</div>
-            <h4 class="mt-4 font-black">Be the first to review</h4>
-            <p class="mt-1 text-sm text-slate-500">Reader testimonials will appear here after real reviews are added.</p>
+            <h4 class="mt-4 font-black">Featured comments</h4>
+            <p class="mt-1 text-sm text-slate-500">Admin-managed testimonials will appear here when published.</p>
           </div>
         `;
         return;
@@ -1262,8 +1476,8 @@
 
       grid.innerHTML = reviews.map(review => `
         <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <div class="text-sm font-black text-amber-500">★★★★★</div>
-          <p class="mt-3 text-sm leading-6 text-slate-600">“${escapeHtml(review.text)}”</p>
+          <div class="text-sm font-black text-amber-500">${"★".repeat(Number(review.rating) || 5)}${"☆".repeat(5 - (Number(review.rating) || 5))}</div>
+          <p class="mt-3 text-sm leading-6 text-slate-600">“${escapeHtml(review.comment || review.text)}”</p>
           <div class="mt-4 text-xs font-black text-slate-900">${escapeHtml(review.name)}</div>
         </div>
       `).join("");
@@ -1361,7 +1575,7 @@
       document.getElementById("adminDashboardView").classList.toggle("hidden", !adminAuthenticated);
       if (adminAuthenticated) {
         renderAdminBooks();
-        loadShowcaseForm();
+        loadShowcaseForm(); loadPurchases(); renderAdminReviews();
       } else {
         document.getElementById("adminPasswordInput").value = "";
         document.getElementById("adminLoginError").classList.add("hidden");
@@ -1385,8 +1599,8 @@
               }
               <div>
                 <div class="font-black">${escapeHtml(book.title)}</div>
-                <div class="mt-1 text-xs text-slate-500">${escapeHtml(book.category)}</div>
-                <div class="mt-1 text-[10px] font-black uppercase tracking-widest text-indigo-600">${book.free ? "FREE" : escapeHtml(book.tag || "Book")}</div>
+                <div class="mt-1 text-xs text-slate-500">${escapeHtml(book.category)} · ${escapeHtml(book.bookCode || "")}</div>
+                <div class="mt-1 text-[10px] font-black uppercase tracking-widest text-indigo-600">${book.free ? "FREE" : escapeHtml(book.tag || "Book")} · ${book.status === "inactive" ? "UNAVAILABLE" : "ACTIVE"}</div><div class="mt-1 text-[10px] text-slate-400">Created ${book.createdAt ? new Date(book.createdAt).toLocaleDateString() : "before date tracking"}</div>
               </div>
             </div>
           </td>
@@ -1422,6 +1636,7 @@
       document.getElementById("bookForm").reset();
       document.getElementById("bookId").value = "";
       document.getElementById("bookRating").value = "5";
+      document.getElementById("bookActive").checked = true;
       document.getElementById("bookCoverClass").value = "bg-slate-950 text-white";
     }
 
@@ -1432,6 +1647,7 @@
       document.getElementById("bookFormHeading").textContent = "Edit Book";
       document.getElementById("cancelBookEditBtn").classList.remove("hidden");
       document.getElementById("bookId").value = book.id;
+      document.getElementById("bookCode").value = book.bookCode || makeBookCode(book.title, book.id);
       document.getElementById("bookTitle").value = book.title || "";
       document.getElementById("bookCategory").value = book.category || "";
       document.getElementById("bookTag").value = book.tag || "";
@@ -1447,6 +1663,7 @@
       document.getElementById("bookPreviewLink").value = book.previewLink || "";
       document.getElementById("bookFileLink").value = book.fileLink || "";
       document.getElementById("bookFree").checked = !!book.free;
+      document.getElementById("bookActive").checked = book.status !== "inactive";
       document.getElementById("bookTitle").focus();
     }
 
@@ -1457,6 +1674,9 @@
       const category = document.getElementById("bookCategory").value.trim();
       const newBook = {
         id: editingBookId || Date.now(),
+        bookCode: document.getElementById("bookCode").value.trim().toUpperCase(),
+        status: document.getElementById("bookActive").checked ? "active" : "inactive",
+        createdAt: STORE.books.find(book => Number(book.id) === Number(editingBookId))?.createdAt || new Date().toISOString(),
         title,
         category,
         tag: document.getElementById("bookTag").value.trim(),
@@ -1474,7 +1694,8 @@
         free: document.getElementById("bookFree").checked
       };
 
-      if (!newBook.title || !newBook.category) return;
+      if (!newBook.title || !newBook.category || !newBook.bookCode) return;
+      if (STORE.books.some(book => book.bookCode?.toUpperCase() === newBook.bookCode && Number(book.id) !== Number(editingBookId))) { showAdminToast("Book ID already exists. Choose a unique ID."); return; }
 
       if (newBook.free) {
         newBook.price = 0;
@@ -1600,6 +1821,7 @@
           books: parsed.books.map(book => ({
             ...clone(DEFAULT_STORE.books[0]),
             ...book,
+            bookCode: book.bookCode || makeBookCode(book.title, book.id),
             subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
           }))
         };
@@ -1625,7 +1847,29 @@
       });
       document.getElementById("adminTabBooks").classList.toggle("hidden", tab !== "books");
       document.getElementById("adminTabShowcase").classList.toggle("hidden", tab !== "showcase");
+      document.getElementById("adminTabPurchases").classList.toggle("hidden", tab !== "purchases");
+      document.getElementById("adminTabReviews").classList.toggle("hidden", tab !== "reviews");
+      document.getElementById("adminTabSettings").classList.toggle("hidden", tab !== "settings");
+      if (tab === "settings") loadSettingsForm();
+      if (tab === "purchases") loadPurchases(); if (tab === "reviews") renderAdminReviews();
       document.getElementById("adminTabData").classList.toggle("hidden", tab !== "data");
+    }
+
+    function loadSettingsForm() {
+      const fields = {settingBrand: STORE.brandName, settingCreators: STORE.creators, settingUpi: STORE.upiId, settingEmail: STORE.supportEmail, settingTelegram: STORE.telegramLink, settingPurchaseChannel: STORE.purchaseTelegramLink, settingInstagram: STORE.instagramLink, settingBot: STORE.botUsername};
+      Object.entries(fields).forEach(([id, value]) => { const el = document.getElementById(id); if (el) el.value = value || ""; });
+    }
+    async function saveSettings(event) {
+      event.preventDefault();
+      STORE.brandName = document.getElementById("settingBrand").value.trim();
+      STORE.creators = document.getElementById("settingCreators").value.trim();
+      STORE.upiId = document.getElementById("settingUpi").value.trim();
+      STORE.supportEmail = document.getElementById("settingEmail").value.trim();
+      STORE.telegramLink = document.getElementById("settingTelegram").value.trim();
+      STORE.purchaseTelegramLink = document.getElementById("settingPurchaseChannel").value.trim();
+      STORE.instagramLink = document.getElementById("settingInstagram").value.trim();
+      STORE.botUsername = document.getElementById("settingBot").value.trim();
+      if (await saveStore()) { setupLinks(); showAdminToast("Settings saved"); }
     }
 
     /* =========================================================
@@ -1633,6 +1877,18 @@
        ========================================================= */
     document.getElementById("searchInput").addEventListener("input", renderBooks);
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
+    document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
+    document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
+    document.getElementById("refreshPurchasesBtn").addEventListener("click", loadPurchases);
+    document.querySelectorAll(".purchase-filter").forEach(button => button.addEventListener("click", () => {
+      purchaseFilter = button.dataset.filter;
+      document.querySelectorAll(".purchase-filter").forEach(item => item.classList.toggle("bg-slate-950", item === button));
+      document.querySelectorAll(".purchase-filter").forEach(item => item.classList.toggle("text-white", item === button));
+      renderPurchases();
+    }));
+    document.getElementById("reviewForm").addEventListener("submit", saveReview);
+    document.getElementById("settingsForm").addEventListener("submit", saveSettings);
+    document.getElementById("cancelReviewEdit").addEventListener("click", resetReviewForm);
     document.getElementById("closePreviewModal").addEventListener("click", closePreviewModal);
 
     document.getElementById("buyModal").addEventListener("click", event => {
@@ -1646,13 +1902,13 @@
     document.getElementById("copyUpiBtn").addEventListener("click", async () => {
       if (!selectedBook || selectedBook.free) return;
       try {
-        await navigator.clipboard.writeText(STORE.upiId);
+        await navigator.clipboard.writeText(PAYMENT_UPI_ID);
         const button = document.getElementById("copyUpiBtn");
         const original = button.textContent;
         button.textContent = "Copied";
         setTimeout(() => button.textContent = original, 1400);
       } catch {
-        alert(`Copy failed. UPI ID: ${STORE.upiId}`);
+        alert(`Copy failed. UPI ID: ${PAYMENT_UPI_ID}`);
       }
     });
 
@@ -1760,3 +2016,4 @@
   </script>
 </body>
 </html>
+      if (!name) { errorBox.textContent = "Please enter your name."; errorBox.classList.remove("hidden"); return; }
