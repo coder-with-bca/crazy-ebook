@@ -327,6 +327,10 @@
       .admin-panel { max-height: 96vh; }
     }
   </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -2014,6 +2018,13 @@
     observeReveals();
     refreshAdminView();
   </script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js");
+    });
+  }
+</script>
 </body>
 </html>
       if (!name) { errorBox.textContent = "Please enter your name."; errorBox.classList.remove("hidden"); return; }
