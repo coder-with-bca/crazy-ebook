@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Crazy E-Book — digital ebooks, notes, previews and free samples for students and learners." />
+  <meta name="theme-color" content="#111827" />
+  <meta name="application-name" content="Crazy E-Book" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <title>Crazy E-Book — by Akki & Aadi</title>
 
   <!-- Tailwind CSS CDN -->
@@ -851,7 +860,7 @@
           ...clone(DEFAULT_STORE),
           ...saved,
           books: saved.books.map(book => ({
-            ...clone(DEFAULT_STORE.books[0]),
+            ...clone(DEFAULT_STORE.books[0] || {}),
             ...book,
             bookCode: book.bookCode || makeBookCode(book.title, book.id),
             subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
@@ -902,7 +911,7 @@
     }
 
     function mergeStore(saved) {
-      return { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: saved.books.map(book => ({ ...clone(DEFAULT_STORE.books[0]), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
+      return { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: saved.books.map(book => ({ ...clone(DEFAULT_STORE.books[0] || {}), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
     }
 
     async function loadPrivateLinks() {
@@ -1206,6 +1215,11 @@
       const name = document.getElementById("customerName").value.trim();
       const whatsapp = document.getElementById("customerWhatsapp").value.trim();
       const telegram = document.getElementById("customerTelegram").value.trim();
+      if (!name) {
+        errorBox.textContent = "Please enter your name.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
       if (!whatsapp && !telegram) { errorBox.textContent = "Please provide either your WhatsApp number or Telegram username."; errorBox.classList.remove("hidden"); return; }
       const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
       try {
@@ -1819,7 +1833,7 @@
           ...clone(DEFAULT_STORE),
           ...parsed,
           books: parsed.books.map(book => ({
-            ...clone(DEFAULT_STORE.books[0]),
+            ...clone(DEFAULT_STORE.books[0] || {}),
             ...book,
             bookCode: book.bookCode || makeBookCode(book.title, book.id),
             subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean)
@@ -2016,4 +2030,3 @@
   </script>
 </body>
 </html>
-      if (!name) { errorBox.textContent = "Please enter your name."; errorBox.classList.remove("hidden"); return; }
