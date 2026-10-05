@@ -327,15 +327,6 @@
       .admin-panel { max-height: 96vh; }
     }
   </style>
-  <meta name="theme-color" content="#111827" />
-  <meta name="application-name" content="Crazy E-Book" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -1215,11 +1206,6 @@
       const name = document.getElementById("customerName").value.trim();
       const whatsapp = document.getElementById("customerWhatsapp").value.trim();
       const telegram = document.getElementById("customerTelegram").value.trim();
-      if (!name) {
-        errorBox.textContent = "Please enter your name.";
-        errorBox.classList.remove("hidden");
-        return;
-      }
       if (!whatsapp && !telegram) { errorBox.textContent = "Please provide either your WhatsApp number or Telegram username."; errorBox.classList.remove("hidden"); return; }
       const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
       try {
@@ -2028,12 +2014,6 @@
     observeReveals();
     refreshAdminView();
   </script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register("sw.js");
-    });
-  }
-</script>
 </body>
 </html>
+      if (!name) { errorBox.textContent = "Please enter your name."; errorBox.classList.remove("hidden"); return; }
