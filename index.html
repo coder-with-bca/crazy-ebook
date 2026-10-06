@@ -1281,6 +1281,7 @@
       if (!whatsapp && !telegram) { errorBox.textContent = "Please provide either your WhatsApp number or Telegram username."; errorBox.classList.remove("hidden"); return; }
       if (!STORE.upiId) { errorBox.textContent = "Saved payment details are unavailable. Please refresh or contact support."; errorBox.classList.remove("hidden"); return; }
       const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
+      let purchaseSaved = false;
       try {
         if (!supabaseReady || !selectedBook) throw new Error("unavailable");
         const accessToken = createPurchaseAccessToken();
@@ -1290,6 +1291,8 @@
         const { data, error } = result;
         if (error || !data) throw error || new Error("Order creation failed");
         const purchase = Array.isArray(data) ? data[0] : data;
+        if (!purchase?.purchase_id) throw new Error("Order creation returned no purchase ID");
+        purchaseSaved = true;
         latestPurchaseId = purchase.purchase_id; latestPurchasePrice = Number(purchase.price); latestPurchaseAccessToken = accessToken;
         renderUpiQr(latestPurchasePrice, latestPurchaseId);
         rememberPurchaseReference(latestPurchaseId, accessToken);
@@ -1301,7 +1304,6 @@
           saveCart();
         }
         document.getElementById("modalPrice").textContent = money(latestPurchasePrice);
-        document.getElementById("createdPurchaseId").textContent = latestPurchaseId;
         document.getElementById("checkoutSavedMessage").textContent = `Order ${latestPurchaseId} saved. Payment status: Pending.`;
         document.getElementById("purchaseForm").classList.add("hidden");
         document.getElementById("purchasePayment").classList.remove("hidden");
@@ -1313,7 +1315,9 @@
         } catch (notifyError) { console.warn("Telegram notification could not be sent; purchase remains saved.", notifyError); }
       } catch (error) {
         console.error("Purchase creation failed", error);
-        errorBox.textContent = "Something went wrong while creating your order. Please try again.";
+        errorBox.textContent = purchaseSaved
+          ? `Order ${latestPurchaseId} was saved, but checkout could not finish. Please do not create it again; refresh and check the saved order status.`
+          : "Something went wrong while creating your order. Please try again.";
         errorBox.classList.remove("hidden");
       } finally { button.disabled = false; button.textContent = "Create order and continue"; }
     }
