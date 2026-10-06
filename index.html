@@ -335,6 +335,7 @@
     .admin-table-wrap { overflow-x: auto; }
     .book-card { cursor: pointer; min-width: 0; }
     .customer-status-toast { max-height: 20vh; overflow: auto; }
+    .customer-status-toast p { white-space: pre-line; }
     @media (max-width: 640px) {
       .admin-panel { max-height: 96vh; }
       #bookGrid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .75rem; }
@@ -349,6 +350,11 @@
       .book-card-content .book-actions { margin-top: .55rem; gap: .35rem; }
       .book-card-content .book-actions button { padding: .5rem .35rem; font-size: .65rem; }
       .customer-status-toast { left: .75rem; right: .75rem; bottom: .75rem; width: auto; max-height: 18vh; }
+      .customer-status-toast p { white-space: pre-line; }
+    }
+    @media (max-width: 374px) {
+      #siteBrand, #siteCreators { display: none; }
+      #openCartBtn, #openLibraryBtn { margin-left: .25rem; margin-right: .25rem; padding: .45rem .55rem; font-size: .7rem; }
     }
   </style>
 </head>
@@ -377,7 +383,8 @@
         <a href="#faq" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">FAQ</a>
       </div>
 
-      <button id="openCartBtn" type="button" class="ml-auto mr-2 rounded-full border border-slate-300 px-3 py-2 text-sm font-bold md:ml-0" aria-label="Open cart">Cart <span id="cartCount" class="ml-1 rounded-full bg-slate-950 px-2 py-0.5 text-xs text-white">0</span></button>
+      <button id="openCartBtn" type="button" class="ml-auto mr-2 rounded-full border border-slate-300 px-3 py-2 text-sm font-bold md:ml-0" aria-label="Open cart">🛒 Cart <span id="cartCount" class="ml-1 rounded-full bg-slate-950 px-2 py-0.5 text-xs text-white">0</span></button>
+      <button id="openLibraryBtn" type="button" class="mr-2 rounded-full border border-slate-300 px-3 py-2 text-sm font-bold" aria-label="Open My Library">📚 <span class="hidden sm:inline">My Library</span><span class="sm:hidden">Library</span></button>
 
       <a id="navTelegram"
          href="#"
@@ -655,13 +662,17 @@
       <div class="flex justify-end"><button id="closeBookDetails" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Close">×</button></div>
         <div class="grid gap-4 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr]">
         <img id="detailsCover" class="mx-auto aspect-[3/4] w-40 rounded-xl object-cover sm:w-full" alt="Book cover">
-        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div class="mt-5 grid grid-cols-2 gap-2"><button id="detailsPreview" class="rounded-xl border px-3 py-3 text-sm font-bold">Preview</button><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-slate-950 px-3 py-3 text-sm font-bold text-white">Buy Now</button></div></div>
+        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div class="mt-5 grid grid-cols-2 gap-2"><button id="detailsPreview" class="rounded-xl border px-3 py-3 text-sm font-bold">Preview Sample</button><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-slate-950 px-3 py-3 text-sm font-bold text-white">Buy Now</button></div></div>
       </div>
     </div>
   </div>
 
   <div id="cartModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2><button id="closeCart" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close">×</button></div><div id="cartItems" class="mt-4 space-y-3"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><p class="mt-3 text-xs text-slate-500">Each book creates its own order and must be paid separately. No combined payment is created.</p><button id="cartCheckout" class="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout first item</button></div>
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2><button id="closeCart" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close">×</button></div><div id="cartItems" class="mt-4 space-y-3"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><div class="mt-4 grid grid-cols-2 gap-2"><button id="continueShopping" class="rounded-xl border px-4 py-3 font-bold">Continue shopping</button><button id="cartCheckout" class="rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout</button></div></div>
+  </div>
+
+  <div id="libraryModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
+    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div><button id="closeLibrary" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close">×</button></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500">Loading your library…</p></div></div>
   </div>
 
   <div id="buyModal"
@@ -681,7 +692,7 @@
         </button>
       </div>
 
-      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800">Order <span id="createdPurchaseId"></span> saved. Payment status: Pending.</div>
+      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"></div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
         <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
         <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
@@ -785,7 +796,7 @@
       botUsername: "@CrazyEbookPurchaseBot",
       creators: "Akki & Aadi",
       supportEmail: "crazyebook.official@gmail.com",
-      upiId: "akashmaurya18@upi",
+      upiId: "",
       upiQrImage: "upi-qr.jpg",
       heroTitle: "Learn faster. Study smarter. Build more.",
       heroText: "Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter.",
@@ -899,11 +910,16 @@
     }
 
     let STORE = loadStore();
+    STORE.upiId = "";
     STORE.reviews = [];
     let activeCategory = "All";
     let selectedBook = null;
     let editingBookId = null;
     let adminAuthenticated = false;
+    let activeAdminTab = "books";
+    let activeAdminEditState = null;
+    let adminHistoryDepth = 0;
+    let adminClosingHistory = false;
     let supabase = null;
     let privateLinks = {};
     let supabaseReady = false;
@@ -934,6 +950,7 @@
       const savedPurchaseId = localStorage.getItem("crazyebook-latest-purchase");
       const savedAccessToken = savedPurchaseId ? localStorage.getItem(`crazyebook-purchase-token:${savedPurchaseId}`) : null;
       if (/^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(savedPurchaseId || "") && /^[a-f0-9]{64}$/.test(savedAccessToken || "")) {
+        rememberPurchaseReference(savedPurchaseId, savedAccessToken);
         startCustomerPurchaseStatus(savedPurchaseId, savedAccessToken);
       }
     }
@@ -1195,6 +1212,7 @@
             </div>
 
             <div class="book-card-content mt-6 flex flex-1 flex-col">
+              <p class="book-category mb-1 text-[10px] font-bold text-slate-500 md:hidden">${escapeHtml(book.category)}</p>
               <div class="flex flex-wrap gap-1.5">
                 ${(Array.isArray(book.subjects) ? book.subjects : []).slice(0, 3).map(subject =>
                   `<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">${escapeHtml(subject)}</span>`
@@ -1219,8 +1237,9 @@
                         class="preview-btn rounded-xl border border-slate-300 px-3 py-3 text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
                   ${preview ? "Preview / Sample" : "Preview"}
                 </button>
+                <button type="button" data-add-cart="${book.id}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-3 text-xs font-extrabold text-indigo-800 md:hidden">+ Add</button>
                 <button type="button" data-buy="${book.id}"
-                        class="buy-btn rounded-xl bg-slate-950 px-3 py-3 text-xs font-extrabold text-white transition hover:bg-slate-800">
+                        class="buy-btn hidden rounded-xl bg-slate-950 px-3 py-3 text-xs font-extrabold text-white transition hover:bg-slate-800 md:block">
                   ${book.free ? "Get Free" : "Buy Now"}
                 </button>
               </div>
@@ -1236,6 +1255,7 @@
       document.querySelectorAll(".preview-btn").forEach(button => {
         button.addEventListener("click", () => openPreviewModal(Number(button.dataset.preview)));
       });
+      document.querySelectorAll(".add-cart-btn").forEach(button => button.addEventListener("click", () => addToCart(button.dataset.addCart)));
       document.querySelectorAll(".book-card").forEach(card => card.addEventListener("click", event => {
         if (!event.target.closest("button,a")) openBookDetails(Number(card.dataset.details));
       }));
@@ -1259,22 +1279,30 @@
         return;
       }
       if (!whatsapp && !telegram) { errorBox.textContent = "Please provide either your WhatsApp number or Telegram username."; errorBox.classList.remove("hidden"); return; }
+      if (!STORE.upiId) { errorBox.textContent = "Saved payment details are unavailable. Please refresh or contact support."; errorBox.classList.remove("hidden"); return; }
       const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
       try {
         if (!supabaseReady || !selectedBook) throw new Error("unavailable");
         const accessToken = createPurchaseAccessToken();
-        const { data, error } = await supabase.rpc("create_purchase", { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken });
+        const result = checkoutCartKeys.length
+          ? await supabase.rpc("create_cart_purchase", { p_book_keys: checkoutCartKeys, p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken })
+          : await supabase.rpc("create_purchase", { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken });
+        const { data, error } = result;
         if (error || !data) throw error || new Error("Order creation failed");
         const purchase = Array.isArray(data) ? data[0] : data;
         latestPurchaseId = purchase.purchase_id; latestPurchasePrice = Number(purchase.price); latestPurchaseAccessToken = accessToken;
         renderUpiQr(latestPurchasePrice, latestPurchaseId);
-        try {
-          localStorage.setItem(`crazyebook-purchase-token:${latestPurchaseId}`, accessToken);
-          localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId);
-        } catch (storageError) { console.warn("Purchase access will remain available in this tab only.", storageError); }
-        if (cartItems.some(id => String(id) === String(selectedBook.id))) { cartItems = cartItems.filter(id => String(id) !== String(selectedBook.id)); saveCart(); }
+        rememberPurchaseReference(latestPurchaseId, accessToken);
+        try { localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId); } catch {}
+        if (checkoutCartKeys.length) {
+          const purchasedKeys = new Set(checkoutCartKeys);
+          cartItems = cartItems.filter(id => !purchasedKeys.has(String(id)));
+          checkoutCartKeys = [];
+          saveCart();
+        }
         document.getElementById("modalPrice").textContent = money(latestPurchasePrice);
         document.getElementById("createdPurchaseId").textContent = latestPurchaseId;
+        document.getElementById("checkoutSavedMessage").textContent = `Order ${latestPurchaseId} saved. Payment status: Pending.`;
         document.getElementById("purchaseForm").classList.add("hidden");
         document.getElementById("purchasePayment").classList.remove("hidden");
         document.getElementById("payNowBtn").classList.remove("hidden");
@@ -1300,54 +1328,48 @@
     let customerStatusTimer = null;
     async function refreshCustomerPurchaseStatus(purchaseId, accessToken = latestPurchaseAccessToken) {
       if (!supabase || !purchaseId || !accessToken) return;
-      const { data, error } = await supabase.rpc("get_purchase_status", { p_purchase_id: purchaseId, p_access_token: accessToken });
+      const { data, error } = await supabase.rpc("get_customer_purchase_items", { p_purchase_id: purchaseId, p_access_token: accessToken });
       if (error || !data?.length) return;
-      const p = data[0], boxes = [document.getElementById("customerOrderStatus")];
-      const notificationKey = `crazyebook-notification-dismissed:${purchaseId}`;
+      const p = data[0];
+      const approved = p.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(p.order_status);
+      const declined = p.payment_status === "Rejected";
+      const noticeState = approved ? "approved" : declined ? "declined" : "pending";
+      const approvedItems = data.filter(item => safeHrefOrBlank(item.delivery_url).startsWith("https://"));
+      const notificationKey = `crazyebook-notification-dismissed:${purchaseId}:${noticeState}`;
       const dismissed = localStorage.getItem(notificationKey) === "true";
       const notification = document.getElementById("customerPurchaseStatusCard");
       notification.classList.toggle("hidden", dismissed);
       const notificationBox = document.getElementById("customerPurchaseStatusCardContent");
       notificationBox.replaceChildren();
       const note = document.createElement("p");
-      const approved = p.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(p.order_status);
-      const declined = p.payment_status === "Rejected";
       note.className = `font-bold ${approved ? "text-emerald-800" : declined ? "text-rose-800" : "text-amber-900"}`;
-      note.textContent = approved ? "Payment Approved – Ebook is ready." : declined ? "Order Declined – Your payment was not approved." : "Payment Pending – Waiting for verification.";
+      note.textContent = approved ? "Payment Approved ✓\nEbook is ready." : declined ? "Order Declined\nYour payment was not approved." : "Payment Pending\nWaiting for verification.";
       notificationBox.append(note);
-      const minimize = document.createElement("button"); minimize.textContent = approved ? "Minimize" : declined ? "Dismiss" : "Minimize"; minimize.className = "mt-2 rounded-lg border px-3 py-2 text-xs font-bold";
+      const minimize = document.createElement("button"); minimize.textContent = declined ? "Dismiss" : "Minimize"; minimize.className = "mt-2 rounded-lg border px-3 py-2 text-xs font-bold";
       minimize.addEventListener("click", () => { localStorage.setItem(notificationKey, "true"); notification.classList.add("hidden"); });
-      if (approved && p.delivery_url && safeHrefOrBlank(p.delivery_url).startsWith("https://")) {
-        const open = document.createElement("a"); open.href = safeHrefOrBlank(p.delivery_url); open.target = "_blank"; open.rel = "noopener noreferrer"; open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 inline-block rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"; notificationBox.append(open);
-      }
-      notificationBox.append(minimize);
-      for (const box of boxes) {
-        box.classList.remove("hidden");
-        box.replaceChildren();
-        if (p.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(p.order_status)) {
-          box.className = "rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800";
-          box.append(document.createTextNode("✅ Payment Successful! Your payment has been approved. Your ebook is ready."));
-          const deliveryUrl = safeHrefOrBlank(p.delivery_url);
-          if (deliveryUrl.startsWith("https://")) {
-            const download = document.createElement("a");
-            download.href = deliveryUrl; download.target = "_blank"; download.rel = "noopener noreferrer";
-            download.textContent = "📥 Download Your Ebook";
-            download.className = "mt-3 block rounded-xl bg-emerald-700 px-4 py-3 text-center font-extrabold text-white";
-            box.append(download);
-          } else {
-            const missing = document.createElement("p");
-            missing.className = "mt-2 font-medium";
-            missing.textContent = "Your payment is approved, but the delivery link is not available yet. Please contact support.";
-            box.append(missing);
-          }
-        } else if (p.payment_status === "Rejected") {
-          box.className = "rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-800";
-          box.textContent = "❌ Payment Not Approved. Your payment was not successfully verified. Your order has been declined.";
+      if (approved && approvedItems.length) {
+        if (approvedItems.length === 1) {
+          const open = document.createElement("a"); open.href = safeHrefOrBlank(approvedItems[0].delivery_url); open.target = "_blank"; open.rel = "noopener noreferrer"; open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 inline-block rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"; notificationBox.append(open);
         } else {
-          box.className = "rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-900";
-          box.textContent = "⏳ Payment Pending. Your payment is waiting for verification.";
+          const open = document.createElement("button"); open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"; open.addEventListener("click", openMyLibrary); notificationBox.append(open);
         }
       }
+      notificationBox.append(minimize);
+      const box = document.getElementById("customerOrderStatus");
+      box.classList.remove("hidden"); box.replaceChildren();
+      if (approved) {
+        box.className = "mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800";
+        box.append(document.createTextNode("✅ Payment approved. Your ebook is ready."));
+        approvedItems.forEach(item => { const link = document.createElement("a"); link.href = safeHrefOrBlank(item.delivery_url); link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = `📥 Open ${item.book_title}`; link.className = "mt-3 block rounded-xl bg-emerald-700 px-4 py-3 text-center font-extrabold text-white"; box.append(link); });
+        if (!approvedItems.length) { const pendingLink = document.createElement("p"); pendingLink.className = "mt-2 font-medium"; pendingLink.textContent = "Your payment is approved, but delivery is not available yet. Please contact support."; box.append(pendingLink); }
+      } else if (declined) {
+        box.className = "mt-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-800";
+        box.textContent = "❌ Payment was not approved. Your order has been declined.";
+      } else {
+        box.className = "mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-900";
+        box.textContent = "⏳ Payment Pending. Your payment is waiting for verification.";
+      }
+      if (!document.getElementById("libraryModal").classList.contains("hidden")) loadMyLibrary();
     }
     function startCustomerPurchaseStatus(purchaseId, accessToken = latestPurchaseAccessToken) {
       if (customerStatusTimer) clearInterval(customerStatusTimer);
@@ -1356,7 +1378,7 @@
     }
 
     function launchUpiPayment() {
-      if (!selectedBook || !latestPurchaseId) return;
+      if (!selectedBook || !latestPurchaseId || !STORE.upiId) { document.getElementById("paymentError").classList.remove("hidden"); return; }
       const params = new URLSearchParams({ pa: STORE.upiId || "", pn: STORE.brandName || "Crazy E-Book", am: String(Number(latestPurchasePrice ?? selectedBook.price).toFixed(2)), cu: "INR", tn: `Purchase ${latestPurchaseId}` });
       const link = `upi://pay?${params.toString()}`;
       document.getElementById("paymentError").classList.add("hidden");
@@ -1411,7 +1433,7 @@
       document.querySelectorAll('.purchase-delete').forEach(btn => btn.addEventListener('click', async () => {
         const p = adminPurchases.find(row => row.id === btn.dataset.deletePurchase);
         if (!p || !['Pending', 'Rejected'].includes(p.payment_status) || !adminAuthenticated) return;
-        if (!confirm(`Delete purchase ${p.purchase_id}? This cannot be undone.`)) return;
+        if (!confirm("Delete this purchase history?")) return;
         btn.disabled = true;
         const { error } = await supabase.from('purchases').delete().eq('id', p.id).in('payment_status', ['Pending', 'Rejected']);
         if (error) { btn.disabled = false; showAdminToast('Could not delete purchase. Apply the purchase-delete SQL policy.'); return; }
@@ -1423,7 +1445,14 @@
       const list = document.getElementById("purchasesList"); list.innerHTML = '<p class="text-sm text-slate-500">Loading purchases…</p>';
       const { data, error } = await supabase.from("purchases").select("*").order("created_at", { ascending: false });
       if (error) { list.innerHTML = '<p class="text-sm text-rose-600">Could not load purchases. Check the SQL policies.</p>'; return; }
-      adminPurchases = data || []; renderPurchases();
+      const rows = data || [];
+      const ids = rows.map(purchase => purchase.id);
+      let items = [];
+      if (ids.length) { const { data: savedItems } = await supabase.from("purchase_items").select("parent_id,book_id,book_title,price,position").in("parent_id", ids); items = savedItems || []; }
+      adminPurchases = rows.map(purchase => {
+        const purchaseItems = items.filter(item => item.parent_id === purchase.id).sort((a,b) => a.position - b.position);
+        return purchaseItems.length ? { ...purchase, book_title: purchaseItems.map(item => item.book_title).join(" · "), book_id: purchaseItems.map(item => item.book_id).join(", ") } : purchase;
+      }); renderPurchases();
     }
 
     function resetReviewForm() { document.getElementById('reviewForm').reset(); document.getElementById('reviewId').value=''; document.getElementById('reviewVisible').checked=true; }
@@ -1439,20 +1468,62 @@
     let latestPurchaseId = null;
     let latestPurchasePrice = null;
     let latestPurchaseAccessToken = null;
+    const PURCHASE_INDEX_KEY = "crazyebook-customer-purchase-index-v1";
+    let checkoutCartKeys = [];
     const CART_KEY = "crazyebook-cart-v1";
     let cartItems = loadCart();
     let detailsBookId = null;
+    function rememberPurchaseReference(purchaseId, accessToken) {
+      if (!/^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(purchaseId || "") || !/^[a-f0-9]{64}$/.test(accessToken || "")) return;
+      try {
+        localStorage.setItem(`crazyebook-purchase-token:${purchaseId}`, accessToken);
+        const ids = new Set(JSON.parse(localStorage.getItem(PURCHASE_INDEX_KEY) || "[]"));
+        ids.add(purchaseId);
+        localStorage.setItem(PURCHASE_INDEX_KEY, JSON.stringify([...ids]));
+      } catch (error) { console.warn("Purchase access will remain available in this tab only.", error); }
+    }
+    function getStoredPurchaseReferences() {
+      const ids = new Set();
+      try {
+        JSON.parse(localStorage.getItem(PURCHASE_INDEX_KEY) || "[]").forEach(id => ids.add(id));
+        const prefix = "crazyebook-purchase-token:";
+        for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key?.startsWith(prefix)) ids.add(key.slice(prefix.length)); }
+        const latest = localStorage.getItem("crazyebook-latest-purchase"); if (latest) ids.add(latest);
+        return [...ids].filter(id => /^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(id)).map(id => ({ purchaseId: id, accessToken: localStorage.getItem(`crazyebook-purchase-token:${id}`) })).filter(ref => /^[a-f0-9]{64}$/.test(ref.accessToken || ""));
+      } catch { return []; }
+    }
+    async function loadMyLibrary() {
+      const list = document.getElementById("libraryItems");
+      const references = getStoredPurchaseReferences();
+      if (!supabaseReady || !references.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No approved purchases are saved in this browser yet.</p>'; return; }
+      list.innerHTML = '<p class="text-sm text-slate-500">Checking approved purchases…</p>';
+      const results = await Promise.all(references.map(async ref => {
+        const { data, error } = await supabase.rpc("get_customer_purchase_items", { p_purchase_id: ref.purchaseId, p_access_token: ref.accessToken });
+        return error ? [] : (data || []);
+      }));
+      const approved = results.flat().filter(item => item.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(item.order_status));
+      if (!approved.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No approved purchases yet. Pending and declined books are not downloadable.</p>'; return; }
+      list.innerHTML = approved.map(item => {
+        const cover = safeHrefOrBlank(item.cover_image);
+        const delivery = safeHrefOrBlank(item.delivery_url);
+        return `<article class="flex items-center gap-3 rounded-xl border p-3">${cover ? `<img src="${escapeHtml(cover)}" alt="" class="h-20 w-14 shrink-0 rounded-lg object-cover">` : '<div class="h-20 w-14 shrink-0 rounded-lg bg-slate-100"></div>'}<div class="min-w-0 flex-1"><h3 class="break-words font-bold">${escapeHtml(item.book_title)}</h3><p class="mt-1 text-xs text-slate-500">Purchased ${new Date(item.created_at).toLocaleDateString()} · Approved</p></div>${delivery.startsWith("https://") ? `<a href="${escapeHtml(delivery)}" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">Open Ebook</a>` : '<span class="shrink-0 text-xs text-slate-500">Delivery pending</span>'}</article>`;
+      }).join("");
+    }
+    function openMyLibrary() {
+      const modal = document.getElementById("libraryModal"); modal.classList.remove("hidden"); modal.classList.add("flex");
+      loadMyLibrary();
+    }
     function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } catch { return []; } }
     function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cartItems)); } catch {} renderCart(); }
     function renderCart() {
       const items = cartItems.map(id => STORE.books.find(book => String(book.id) === String(id))).filter(Boolean);
       document.getElementById("cartCount").textContent = String(items.length);
-      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3"><div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
+      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(safeHrefOrBlank(book.coverImage))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
       document.getElementById("cartTotal").textContent = money(items.reduce((total, book) => total + Number(book.price || 0), 0));
       document.getElementById("cartCheckout").disabled = !items.length;
       document.querySelectorAll("[data-cart-remove]").forEach(button => button.addEventListener("click", () => { cartItems = cartItems.filter(id => String(id) !== button.dataset.cartRemove); saveCart(); }));
     }
-    function addToCart(bookId) { const book = STORE.books.find(item => String(item.id) === String(bookId)); if (!book || book.free || Number(book.price) === 0) return; if (!cartItems.some(id => String(id) === String(bookId))) cartItems.push(bookId); saveCart(); showToast("Added to cart"); }
+    function addToCart(bookId) { const book = STORE.books.find(item => String(item.id) === String(bookId)); if (!book || book.free || Number(book.price) === 0) return; if (!cartItems.some(id => String(id) === String(bookId))) cartItems.push(bookId); saveCart(); showToast("Added to cart ✓"); }
     function openBookDetails(bookId) {
       const book = STORE.books.find(item => Number(item.id) === Number(bookId)); if (!book) return; detailsBookId = book.id;
       const cover = safeHrefOrBlank(book.coverImage); const img = document.getElementById("detailsCover");
@@ -1465,13 +1536,17 @@
       document.getElementById("detailsCart").classList.toggle("hidden", !!book.free || Number(book.price) === 0);
       document.getElementById("bookDetailsModal").classList.remove("hidden"); document.getElementById("bookDetailsModal").classList.add("flex");
     }
-    function openBuyModal(bookId) {
+    function openBuyModal(bookId, cartBookKeys = null) {
 
       selectedBook = STORE.books.find(book => Number(book.id) === Number(bookId));
       if (!selectedBook) return;
+      checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
-      document.getElementById("buyModalBook").textContent = `${selectedBook.title} · ${selectedBook.bookCode || makeBookCode(selectedBook.title, selectedBook.id)}`;
+      const cartBooks = checkoutCartKeys.map(key => STORE.books.find(book => String(book.id) === key)).filter(Boolean);
+      const cartCheckout = cartBooks.length > 0;
+      document.getElementById("buyModalTitle").textContent = cartCheckout ? "Cart Checkout" : "Buy Now";
+      document.getElementById("buyModalBook").textContent = cartCheckout ? `${cartBooks.length} books · one order and one payment` : `${selectedBook.title} · ${selectedBook.bookCode || makeBookCode(selectedBook.title, selectedBook.id)}`;
       document.getElementById("purchaseForm").classList.toggle("hidden", !!selectedBook.free || Number(selectedBook.price) === 0);
       document.getElementById("purchasePayment").classList.add("hidden");
       document.getElementById("customerOrderStatus").classList.add("hidden");
@@ -1480,9 +1555,9 @@
       document.getElementById("purchaseFormError").classList.add("hidden");
 
       const isFree = !!selectedBook.free || Number(selectedBook.price) === 0;
-      document.getElementById("modalPrice").textContent = isFree ? "Free" : money(selectedBook.price);
+      document.getElementById("modalPrice").textContent = isFree ? "Free" : money(cartCheckout ? cartBooks.reduce((sum, book) => sum + Number(book.price || 0), 0) : selectedBook.price);
       document.getElementById("upiIdText").textContent = STORE.upiId || "";
-      document.getElementById("copyUpiBtn").disabled = isFree;
+      document.getElementById("copyUpiBtn").disabled = isFree || !STORE.upiId;
 
       const verify = document.getElementById("verifyTelegram");
       verify.classList.add("hidden");
@@ -1675,17 +1750,31 @@
 
     function openAdminModal() {
       const modal = document.getElementById("adminModal");
+      const wasOpen = !modal.classList.contains("hidden");
       modal.classList.remove("hidden");
       modal.classList.add("flex");
       document.body.classList.add("modal-open");
+      if (!wasOpen) { pushAdminHistory({ adminTab: activeAdminTab, adminEdit: null }); }
       refreshAdminView();
     }
 
-    function closeAdminModal() {
+    function closeAdminModal(fromPopState = false) {
       const modal = document.getElementById("adminModal");
       modal.classList.add("hidden");
       modal.classList.remove("flex");
       document.body.classList.remove("modal-open");
+      if (editingBookId !== null || activeAdminEditState !== null) resetBookForm();
+      activeAdminEditState = null;
+      if (!fromPopState && adminHistoryDepth > 0) {
+        const depth = adminHistoryDepth; adminHistoryDepth = 0; adminClosingHistory = true;
+        history.go(-depth);
+        setTimeout(() => { adminClosingHistory = false; }, 400);
+      } else if (fromPopState) adminHistoryDepth = 0;
+    }
+
+    function pushAdminHistory(state) {
+      history.pushState({ ...(history.state || {}), crazyEbookAdmin: true, ...state }, "", location.href);
+      adminHistoryDepth++;
     }
 
     function refreshAdminView() {
@@ -1749,6 +1838,7 @@
 
     function resetBookForm() {
       editingBookId = null;
+      activeAdminEditState = null;
       document.getElementById("bookFormHeading").textContent = "New Book";
       document.getElementById("cancelBookEditBtn").classList.add("hidden");
       document.getElementById("bookForm").reset();
@@ -1758,9 +1848,11 @@
       document.getElementById("bookCoverClass").value = "bg-slate-950 text-white";
     }
 
-    function startBookEdit(id) {
+    function startBookEdit(id, trackHistory = true) {
       const book = STORE.books.find(item => Number(item.id) === id);
       if (!book) return;
+      if (trackHistory) pushAdminHistory({ adminTab: "books", adminEdit: String(id) });
+      activeAdminEditState = String(id);
       editingBookId = id;
       document.getElementById("bookFormHeading").textContent = "Edit Book";
       document.getElementById("cancelBookEditBtn").classList.remove("hidden");
@@ -1830,13 +1922,16 @@
       }
 
       if (!await saveStore()) return;
+      const wasEditingBook = editingBookId !== null;
+      const shouldLeaveEditHistory = Boolean(history.state?.crazyEbookAdmin && history.state.adminEdit);
       setupLinks();
       renderFilters();
       renderBooks();
       renderAdminBooks();
       loadShowcaseForm();
       resetBookForm();
-      showAdminToast(editingBookId ? "Book updated" : "Book added");
+      if (shouldLeaveEditHistory) history.back();
+      showAdminToast(wasEditingBook ? "Book updated" : "Book added");
     }
 
     async function deleteBook(id) {
@@ -1959,7 +2054,11 @@
       }
     }
 
-    function switchAdminTab(tab) {
+    function switchAdminTab(tab, fromPopState = false) {
+      if (!fromPopState && !document.getElementById("adminModal").classList.contains("hidden") && tab !== activeAdminTab) {
+        pushAdminHistory({ adminTab: tab, adminEdit: activeAdminEditState });
+      }
+      activeAdminTab = tab;
       document.querySelectorAll(".admin-tab").forEach(button => {
         button.classList.toggle("active", button.dataset.adminTab === tab);
       });
@@ -1995,8 +2094,17 @@
        ========================================================= */
     document.getElementById("searchInput").addEventListener("input", renderBooks);
     document.getElementById("openCartBtn").addEventListener("click", () => { renderCart(); document.getElementById("cartModal").classList.remove("hidden"); document.getElementById("cartModal").classList.add("flex"); });
+    document.getElementById("openLibraryBtn").addEventListener("click", openMyLibrary);
+    document.getElementById("closeLibrary").addEventListener("click", () => { document.getElementById("libraryModal").classList.add("hidden"); document.getElementById("libraryModal").classList.remove("flex"); });
+    document.getElementById("libraryModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
     document.getElementById("closeCart").addEventListener("click", () => { document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); });
-    document.getElementById("cartCheckout").addEventListener("click", () => { const first = cartItems[0]; if (first == null) return; document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); openBuyModal(Number(first)); });
+    document.getElementById("continueShopping").addEventListener("click", () => { document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); document.getElementById("books").scrollIntoView({ behavior: "smooth" }); });
+    document.getElementById("cartCheckout").addEventListener("click", () => {
+      const keys = cartItems.map(String).filter(key => STORE.books.some(book => String(book.id) === key && book.status !== "inactive" && !book.free && Number(book.price) > 0));
+      if (!keys.length) { showToast("Your cart is empty."); return; }
+      document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex");
+      const first = STORE.books.find(book => String(book.id) === keys[0]); openBuyModal(first.id, keys);
+    });
     document.getElementById("cartModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
     document.getElementById("closeBookDetails").addEventListener("click", () => { document.getElementById("bookDetailsModal").classList.add("hidden"); document.getElementById("bookDetailsModal").classList.remove("flex"); });
     document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
@@ -2102,10 +2210,17 @@
 
     document.getElementById("newBookBtn").addEventListener("click", () => {
       resetBookForm();
+      activeAdminEditState = "new";
+      pushAdminHistory({ adminTab: "books", adminEdit: "new" });
+      document.getElementById("cancelBookEditBtn").classList.remove("hidden");
       document.getElementById("bookTitle").focus();
     });
 
-    document.getElementById("cancelBookEditBtn").addEventListener("click", resetBookForm);
+    document.getElementById("cancelBookEditBtn").addEventListener("click", () => {
+      const hasEditHistory = Boolean(history.state?.crazyEbookAdmin && history.state.adminEdit);
+      resetBookForm();
+      if (hasEditHistory) history.back();
+    });
     document.getElementById("bookForm").addEventListener("submit", saveBookFromForm);
     document.getElementById("saveShowcaseBtn").addEventListener("click", saveShowcase);
     document.getElementById("featuredBookSelect").addEventListener("change", loadShowcaseForm);
@@ -2116,6 +2231,24 @@
       if (event.target === event.currentTarget) closeAdminModal();
     });
 
+    window.addEventListener("popstate", event => {
+      if (adminClosingHistory) { adminClosingHistory = false; return; }
+      const modalOpen = !document.getElementById("adminModal").classList.contains("hidden");
+      if (event.state?.crazyEbookAdmin && modalOpen) {
+        adminHistoryDepth = Math.max(1, adminHistoryDepth - 1);
+        const targetEdit = event.state.adminEdit == null ? null : String(event.state.adminEdit);
+        if (targetEdit !== activeAdminEditState) {
+          resetBookForm();
+          if (targetEdit && targetEdit !== "new") startBookEdit(Number(targetEdit), false);
+          else if (targetEdit === "new") activeAdminEditState = "new";
+        }
+        if (event.state.adminTab && event.state.adminTab !== activeAdminTab) switchAdminTab(event.state.adminTab, true);
+      } else {
+        if (modalOpen) closeAdminModal(true);
+        else adminHistoryDepth = 0;
+      }
+    });
+
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
         closeBuyModal();
@@ -2123,6 +2256,7 @@
         closeAdminModal();
         document.getElementById("cartModal").classList.add("hidden");
         document.getElementById("bookDetailsModal").classList.add("hidden");
+        document.getElementById("libraryModal").classList.add("hidden");
       }
     });
 
@@ -2146,3 +2280,6 @@
   </script>
 </body>
 </html>
+
+
+

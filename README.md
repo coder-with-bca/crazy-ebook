@@ -4,19 +4,23 @@ Static storefront for Crazy E-Book by Akki & Aadi. It keeps the existing single-
 
 ## Files
 
-- `index.html` — storefront, Supabase admin portal, checkout, purchase management, and testimonials.
-- `supabase-setup.sql` — additive database setup, row-level security, purchase creation, and catalogue sync.
+- `index.html` — storefront, Supabase admin portal, checkout, purchase management, and reviews.
+- `supabase-setup.sql` — full setup for a new installation; includes existing catalogue sync and purchase schema.
+- `supabase-cart-library-migration.sql` — additive update for an existing installation; adds cart orders, My Library lookup, and unresolved-history deletion without updating existing books or purchases.
 - `supabase/functions/send-purchase-telegram/index.ts` — secure server-side Telegram notification function.
-- `upi-qr.jpg` — existing QR payment image.
+- Checkout QR codes are generated from the saved Business Settings UPI ID and the exact order amount.
 
 ## What changed
 
 - Each book has a unique Book ID. The existing book catalogue remains the admin-managed source; a trigger mirrors it into `public.books` for database-side price and Book ID verification.
 - Orders are created by one database function that loads the selected book's current price and snapshots its Book ID, title, price, customer contact, and unique Purchase ID. Payment and order start as Pending. A browser-generated one-time access token is stored only as a database hash.
+- Cart checkout creates one parent purchase with additive `purchase_items` snapshots and one combined payment amount. Existing single-book rows and `create_purchase` remain supported; one existing Telegram approve/reject action decides the whole cart order.
+- My Library verifies saved purchase access tokens through a restricted RPC and returns private delivery URLs only for approved purchases. The browser stores purchase IDs and access tokens, never delivery URLs.
 - WhatsApp or Telegram is required; the customer does not need to provide both.
 - Admin-only Purchases and Telegram callback buttons update the same Supabase purchase. Admin actions are mirrored to the Telegram message, and changes from Telegram appear in Purchases polling within 15 seconds.
 - Admin Purchases has status filters, customer contact shortcuts, a purchase details view, and a copy-details action. Delivery can only be marked after payment is marked Paid.
-- Testimonials are admin-created and can be edited, shown/hidden, or deleted. Public text identifies these as featured comments, not verified purchase reviews.
+- Admin Purchases can delete individual Pending or Rejected records after confirmation. Paid purchases are retained so their ebook access and audit history remain intact. The additive owner-only delete policy is included in both SQL files.
+- Reviews are admin-created and can be edited, shown/hidden, or deleted. Public text identifies these as featured comments, not verified purchase reviews.
 - Admin → Settings updates the public brand, creators, UPI ID, support email, support Telegram, purchase channel, Instagram, and bot username. Never enter the bot token there.
 - The existing Private Book Delivery URL remains in `admin_store_private`, keyed to the exact book record. Deleting a catalog entry archives its relational row and retains its private link for past purchases. A database function returns the URL only when the customer's per-purchase access token matches and the purchase is Paid and Approved. The URL is not added to the public books table. Telegram token, admin IDs, webhook secret, and service-role key are server-side only.
 
@@ -24,10 +28,10 @@ Static storefront for Crazy E-Book by Akki & Aadi. It keeps the existing single-
 
 1. Open your Supabase project at [supabase.com/dashboard](https://supabase.com/dashboard).
 2. Choose **SQL Editor** → **New query**.
-3. Open `supabase-setup.sql` from this folder, copy the whole file, paste it into the editor, and click **Run**. It preserves the existing storefront tables and policies and adds the new tables/functions.
-4. If your existing storefront row already contains books, the SQL backfills them. Otherwise sign in to the Admin Portal and save one existing book once; that writes the current catalogue and syncs every book. Do this before accepting purchases.
+3. For a brand-new installation only, open `supabase-setup.sql`, copy the whole file, paste it into the editor, and click **Run**. For this existing store, use only `supabase-cart-library-migration.sql` as described below.
+4. On a fresh installation, the setup backfills a pre-existing storefront JSON catalogue when present; otherwise, add books through Admin after setup. Existing installations should skip the full setup and run only the additive migration file.
 
-For an existing installation, rerun the full SQL file after site updates that change the purchase schema. The current script adds private access-token hashes and Telegram message IDs, guards paid/delivered/rejected transitions, and adds the customer status/delivery lookup. It does not delete purchase rows or books.
+For an existing installation, run only `supabase-cart-library-migration.sql` in the Supabase SQL Editor. It creates the cart item table and RPCs, the secure library lookup, and the owner-only unresolved-history delete policy. It does not backfill, update, or migrate existing books or purchase rows. Do not rerun `supabase-setup.sql` on an existing installation as that full setup includes catalogue synchronization and compatibility changes. The migration is additive and does not change payment, Telegram, or delivery functions.
 
 The owner email in the SQL must match the existing `ADMIN_EMAIL` in `index.html` (`crazyebook.official@gmail.com`). If you change the admin email, change the matching email in the SQL policies too. Do not turn on public signup for the owner account.
 
@@ -91,7 +95,7 @@ Replace `YOUR_PROJECT_REF` with the part of your Supabase URL before `.supabase.
 2. Sign in to Admin Portal, save an existing book once if needed to sync the catalogue, and confirm its Book ID is unique.
 3. Open the site in a private/incognito window. Choose a paid book and enter a name plus either a WhatsApp number or Telegram username. Leaving both contact fields blank should show the contact message.
 4. Create an order. It should display a unique `CEB-YYYYMMDD-` purchase ID, the database price, and Pending status. The QR remains available; **Pay Now** attempts the UPI app with the configured UPI ID and the exact amount. The button does not mark an order Paid.
-5. Confirm the Telegram post and its buttons. Approve or reject from Admin → Purchases or from Telegram. The customer status card polls while open and restores from its browser's per-purchase token; only Paid + Approved purchases receive the private URL. Mark Delivered remains an admin tracking action. Test status synchronization, contact links, and testimonial management.
+5. Confirm the Telegram post and its buttons. Approve or reject from Admin → Purchases or from Telegram. The customer status card polls while open and restores from its browser's per-purchase token; only Paid + Approved purchases receive the private URL. Mark Delivered remains an admin tracking action. Test status synchronization, contact links, and review management.
 
 If an order creation error occurs, verify that `supabase-setup.sql` ran successfully and that the relational `books` table is populated. Do not expose a service-role key or Telegram token in browser code. The browser only uses the Supabase publishable/anon key; database RLS protects admin operations.
 
@@ -105,10 +109,12 @@ If an order creation error occurs, verify that `supabase-setup.sql` ran successf
 - Brand: Crazy E-Book, by Akki & Aadi.
 - Customer/support Telegram: [@crazyebookofficial](https://t.me/crazyebookofficial).
 - Purchase notifications: [@crazyebook](https://t.me/crazyebook). Bot: [@CrazyEbookPurchaseBot](https://t.me/CrazyEbookPurchaseBot).
-- UPI: `akashmaurya18@upi`; keep the root `upi-qr.jpg` in the deployed site.
+- UPI ID is read from Admin → Settings for Copy UPI, Pay Now, and the generated payment QR.
 - Support email: `crazyebook.official@gmail.com`.
 - Instagram: [@crazyebook.official](https://www.instagram.com/crazyebook.official?stkn=YmNlZm9iN2Nlczhl).
 
-Delivery unlocks on the website after payment approval. The customer uses **Download Your Ebook** to open the matching book's private Drive link. **Mark Delivered** is for admin tracking. Use **Copy Purchase Details** when needed. Add only real books and real customer-approved testimonials in Admin; starter/demo books are not published.
+Delivery unlocks on the website after payment approval. The customer uses **Download Your Ebook** to open the matching book's private Drive link. **Mark Delivered** is for admin tracking. Use **Copy Purchase Details** when needed. Add only real books and real customer-approved reviews in Admin; starter/demo books are not published.
 
 By Akki & Aadi
+
+
