@@ -17,6 +17,7 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
   <!-- =========================================================
@@ -65,7 +66,7 @@
         <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4">
           <button class="admin-tab active rounded-xl border px-4 py-2.5 text-xs font-black" data-admin-tab="books">Books</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="purchases">Purchases</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews / Testimonials</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="settings">Settings</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
@@ -187,7 +188,7 @@
         </section>
 
         <section id="adminTabPurchases" class="admin-tab-panel hidden pt-6"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Order management</p><h3 class="mt-1 text-2xl font-black">Purchases</h3><p class="mt-2 text-sm text-slate-500">Mark Paid only after checking payment. Mark Delivered after sending the ebook.</p></div><button id="refreshPurchasesBtn" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">Refresh</button></div><div class="mt-4 flex flex-wrap gap-2" id="purchaseFilters"><button class="purchase-filter rounded-full bg-slate-950 px-3 py-2 text-xs font-bold text-white" data-filter="All">All</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Pending">Pending</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Paid">Paid</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Delivered">Delivered</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Rejected">Rejected</button></div><div id="purchasesList" class="mt-5 grid gap-4"></div></section>
-        <section id="adminTabReviews" class="admin-tab-panel hidden pt-6"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Admin-created featured comments</p><h3 class="mt-1 text-2xl font-black">Reviews / Testimonials</h3><p class="mt-2 text-sm text-slate-500">These are admin-managed comments, not verified purchase reviews.</p></div><form id="reviewForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="reviewId" type="hidden"><label class="text-xs font-bold">Name<input id="reviewName" required maxlength="100" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Rating<select id="reviewRating" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label><label class="text-xs font-bold sm:col-span-2">Comment<textarea id="reviewComment" required maxlength="1000" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea></label><label class="flex items-center gap-2 text-sm font-bold"><input id="reviewVisible" type="checkbox" checked> Visible publicly</label><div class="flex gap-2"><button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white" type="submit">Save testimonial</button><button class="rounded-xl border px-4 py-2.5 text-sm font-bold" id="cancelReviewEdit" type="button">Clear</button></div></form><div id="adminReviewsList" class="mt-5 grid gap-3"></div></section>
+        <section id="adminTabReviews" class="admin-tab-panel hidden pt-6"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Admin-created featured comments</p><h3 class="mt-1 text-2xl font-black">Reviews</h3><p class="mt-2 text-sm text-slate-500">These are admin-managed comments, not verified purchase reviews.</p></div><form id="reviewForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="reviewId" type="hidden"><label class="text-xs font-bold">Name<input id="reviewName" required maxlength="100" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Rating<select id="reviewRating" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label><label class="text-xs font-bold sm:col-span-2">Comment<textarea id="reviewComment" required maxlength="1000" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea></label><label class="flex items-center gap-2 text-sm font-bold"><input id="reviewVisible" type="checkbox" checked> Visible publicly</label><div class="flex gap-2"><button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white" type="submit">Save review</button><button class="rounded-xl border px-4 py-2.5 text-sm font-bold" id="cancelReviewEdit" type="button">Clear</button></div></form><div id="adminReviewsList" class="mt-5 grid gap-3"></div></section>
 
         <section id="adminTabSettings" class="admin-tab-panel hidden pt-6"><h3 class="text-2xl font-black">Business Settings</h3><p class="mt-2 text-sm text-slate-500">Update the public contact and payment details stored with your Supabase storefront.</p><form id="settingsForm" class="mt-5 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><label class="text-xs font-bold">Brand<input id="settingBrand" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Creators<input id="settingCreators" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">UPI ID<input id="settingUpi" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support email<input id="settingEmail" type="email" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support Telegram URL<input id="settingTelegram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Purchase channel URL<input id="settingPurchaseChannel" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Instagram URL<input id="settingInstagram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Telegram bot username<input id="settingBot" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><button class="rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white sm:col-span-2" type="submit">Save Settings</button><p class="text-xs text-amber-800 sm:col-span-2">The bot token and notification channel ID are secrets configured in Supabase and are never saved here.</p></form></section>
 
@@ -246,7 +247,7 @@
           </div>
 
           <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
-            <strong>Catalog, purchases, private delivery links, and testimonials sync through the configured Supabase project. Keep the project URL and publishable key aligned with your Supabase project.
+            <strong>Catalog, purchases, private delivery links, and reviews sync through the configured Supabase project. Keep the project URL and publishable key aligned with your Supabase project.
           </div>
         </section>
       </div>
@@ -332,8 +333,22 @@
       background: #f8fafc;
     }
     .admin-table-wrap { overflow-x: auto; }
+    .book-card { cursor: pointer; min-width: 0; }
+    .customer-status-toast { max-height: 20vh; overflow: auto; }
     @media (max-width: 640px) {
       .admin-panel { max-height: 96vh; }
+      #bookGrid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .75rem; }
+      .book-card { padding: .65rem; border-radius: 1rem; }
+      .book-card-cover { width: 100%; max-width: none; padding-top: 0; }
+      .book-card .cover-shadow { border-radius: .7rem; box-shadow: 0 8px 18px rgba(15,23,42,.14); }
+      .book-card-content { margin-top: .6rem; }
+      .book-card-content h3 { margin-top: .45rem; font-size: .88rem; line-height: 1.2rem; }
+      .book-card-content .book-summary { display: none; }
+      .book-card-content .book-price { margin-top: .45rem; font-size: 1rem; }
+      .book-card-content .book-rating { margin-top: .35rem; font-size: .75rem; }
+      .book-card-content .book-actions { margin-top: .55rem; gap: .35rem; }
+      .book-card-content .book-actions button { padding: .5rem .35rem; font-size: .65rem; }
+      .customer-status-toast { left: .75rem; right: .75rem; bottom: .75rem; width: auto; max-height: 18vh; }
     }
   </style>
 </head>
@@ -361,6 +376,8 @@
         <a href="#authors" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">Authors</a>
         <a href="#faq" class="text-sm font-semibold text-slate-600 transition hover:text-slate-950">FAQ</a>
       </div>
+
+      <button id="openCartBtn" type="button" class="ml-auto mr-2 rounded-full border border-slate-300 px-3 py-2 text-sm font-bold md:ml-0" aria-label="Open cart">Cart <span id="cartCount" class="ml-1 rounded-full bg-slate-950 px-2 py-0.5 text-xs text-white">0</span></button>
 
       <a id="navTelegram"
          href="#"
@@ -529,7 +546,7 @@
         </div>
 
         <div class="reveal mt-7 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <strong>Important:</strong> Never share payment screenshots containing unrelated private information. Crazy E-Book never publishes a public Drive or PDF download link.
+          <strong>Important:</strong> Never share payment screenshots containing unrelated private information. <span id="policyBrand">Crazy E-Book</span> never publishes a public Drive or PDF download link.
         </div>
       </div>
     </section>
@@ -542,11 +559,11 @@
         <div class="reveal">
           <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Our story</p>
           <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">About the Authors</h2>
-          <p class="mt-5 leading-7 text-slate-600">
+          <p id="aboutCreators" class="mt-5 leading-7 text-slate-600">
             Akki & Aadi are two teenage creators from India who enjoy turning complicated topics into cleaner, more useful digital learning material.
           </p>
           <p class="mt-4 leading-7 text-slate-600">
-            Crazy E-Book started as a small student-led project: make notes easier to understand, make practical tech learning less intimidating, and create original content that feels useful rather than overwhelming.
+            <span id="aboutBrand">Crazy E-Book</span> started as a small student-led project: make notes easier to understand, make practical tech learning less intimidating, and create original content that feels useful rather than overwhelming.
           </p>
           <div class="mt-6 flex flex-wrap gap-2">
             <span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">Student-led</span>
@@ -559,8 +576,8 @@
           <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Admin-created testimonials</p>
-                <h3 class="mt-1 text-xl font-black">Testimonials</h3>
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Customer comments</p>
+                <h3 class="mt-1 text-xl font-black">Reviews</h3>
               </div>
               <div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 featured comments</div>
             </div>
@@ -593,15 +610,16 @@
     <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div class="text-lg font-black text-white">Crazy E-Book</div>
+          <div id="footerBrand" class="text-lg font-black text-white">Crazy E-Book</div>
           <p class="mt-3 text-sm leading-6 text-slate-400">Digital learning material for students and curious learners.</p>
-          <p class="mt-4 text-xs font-semibold text-slate-500">by Akki & Aadi</p>
+          <p id="footerCreators" class="mt-4 text-xs font-semibold text-slate-500">by Akki & Aadi</p>
         </div>
 
         <div>
           <h3 class="font-black text-white">Contact</h3>
           <div class="mt-4 space-y-2 text-sm">
             <a id="footerTelegram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Telegram</a>
+            <a id="footerPurchaseChannel" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Purchase Channel</a>
             <a id="footerInstagram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Instagram</a>
             <a id="footerEmail" href="#" class="block transition hover:text-white">Support Email</a>
             <button id="openAdminBtn" type="button" class="admin-btn mt-3 rounded-lg px-3 py-2 text-xs font-black transition">Admin Portal</button>
@@ -624,7 +642,7 @@
       </div>
 
       <div class="mt-10 border-t border-white/10 pt-6 text-xs text-slate-500">
-        © <span id="year"></span> Crazy E-Book. All rights reserved.
+        © <span id="year"></span> <span id="copyrightBrand">Crazy E-Book</span>. All rights reserved.
       </div>
     </div>
   </footer>
@@ -632,6 +650,20 @@
   <!-- =========================================================
        BUY MODAL
        ========================================================= -->
+  <div id="bookDetailsModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="bookDetailsTitle">
+    <div class="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-4 shadow-2xl sm:p-7">
+      <div class="flex justify-end"><button id="closeBookDetails" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Close">×</button></div>
+        <div class="grid gap-4 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr]">
+        <img id="detailsCover" class="mx-auto aspect-[3/4] w-40 rounded-xl object-cover sm:w-full" alt="Book cover">
+        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div class="mt-5 grid grid-cols-2 gap-2"><button id="detailsPreview" class="rounded-xl border px-3 py-3 text-sm font-bold">Preview</button><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-slate-950 px-3 py-3 text-sm font-bold text-white">Buy Now</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cartModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2><button id="closeCart" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close">×</button></div><div id="cartItems" class="mt-4 space-y-3"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><p class="mt-3 text-xs text-slate-500">Each book creates its own order and must be paid separately. No combined payment is created.</p><button id="cartCheckout" class="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout first item</button></div>
+  </div>
+
   <div id="buyModal"
        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
        role="dialog"
@@ -651,13 +683,9 @@
 
       <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800">Order <span id="createdPurchaseId"></span> saved. Payment status: Pending.</div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-        <img id="upiQr"
-             src="upi-qr.jpg"
-             alt="UPI payment QR code"
-             class="mx-auto aspect-square w-52 rounded-xl border border-slate-200 bg-white object-contain"
-             onerror="this.style.display='none'; document.getElementById('qrFallback').classList.remove('hidden');" />
+        <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
         <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
-          Add your local <strong>upi-qr.jpg</strong> file beside index.html to show the QR here.
+          QR generation is unavailable. Copy the UPI ID below and pay the displayed amount.
         </div>
 
         <div class="mt-5">
@@ -692,8 +720,8 @@
   <!-- =========================================================
        PREVIEW MODAL
        ========================================================= -->
-  <div id="customerPurchaseStatusCard" class="hidden fixed bottom-4 right-4 z-[80] w-[min(26rem,calc(100vw-2rem))] rounded-2xl bg-white shadow-2xl">
-    <div id="customerPurchaseStatusCardContent" class="rounded-2xl border border-slate-200 p-4 text-sm" aria-live="polite"></div>
+  <div id="customerPurchaseStatusCard" class="customer-status-toast hidden fixed bottom-4 right-4 z-[80] w-[min(24rem,calc(100vw-2rem))] rounded-xl bg-white shadow-2xl">
+    <div id="customerPurchaseStatusCardContent" class="rounded-xl border border-slate-200 p-3 text-sm" aria-live="polite"></div>
   </div>
 
   <div id="previewModal"
@@ -748,7 +776,6 @@
     const SUPABASE_ANON_KEY = "sb_publishable_pTvzDVljJoxdSdJeTh5CKg_jsPfSIMH";
     const ADMIN_EMAIL = "crazyebook.official@gmail.com";
     const STORE_KEY = "crazyEbookStoreV2";
-    const PAYMENT_UPI_ID = "akashmaurya18@upi";
 
     const DEFAULT_STORE = {
       brandName: "Crazy E-Book",
@@ -900,6 +927,7 @@
       const { data, error } = await supabase.from("storefront_public").select("data").eq("id", 1).maybeSingle();
       if (error) throw error;
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
+      renderCart();
       const { data: publicReviews } = await supabase.from("reviews").select("name,comment,rating,is_visible").eq("is_visible", true);
       if (publicReviews) STORE.reviews = publicReviews.map(r => ({ name:r.name, comment:r.comment, rating:r.rating, visible:true }));
       if (adminAuthenticated) await loadPrivateLinks();
@@ -1002,9 +1030,17 @@
        ========================================================= */
     function setupLinks() {
       document.getElementById("siteBrand").textContent = STORE.brandName || "Crazy E-Book";
+      document.getElementById("footerBrand").textContent = STORE.brandName || "Crazy E-Book";
+      document.getElementById("policyBrand").textContent = STORE.brandName || "Crazy E-Book";
+      document.getElementById("aboutBrand").textContent = STORE.brandName || "Crazy E-Book";
+      document.getElementById("copyrightBrand").textContent = STORE.brandName || "Crazy E-Book";
+      document.getElementById("footerCreators").textContent = `by ${STORE.creators || "Akki & Aadi"}`;
+      document.getElementById("aboutCreators").textContent = `${STORE.creators || "The creators"} create clearer, more useful digital learning material.`;
+      document.getElementById("heroShowcaseFooter").textContent = STORE.brandName || "Crazy E-Book";
       document.getElementById("siteCreators").textContent = `by ${STORE.creators || "Akki & Aadi"}`;
       document.getElementById("navTelegram").href = safeUrl(STORE.telegramLink);
       document.getElementById("footerTelegram").href = safeUrl(STORE.telegramLink);
+      document.getElementById("footerPurchaseChannel").href = safeUrl(STORE.purchaseTelegramLink);
       document.getElementById("footerInstagram").href = safeUrl(STORE.instagramLink);
 
       const email = document.getElementById("footerEmail");
@@ -1014,7 +1050,6 @@
       if (title) title.textContent = `${STORE.brandName || "Crazy E-Book"} — by ${STORE.creators || "Akki & Aadi"}`;
 
       document.getElementById("year").textContent = new Date().getFullYear();
-      document.getElementById("upiQr").src = STORE.upiQrImage || "upi-qr.jpg";
       renderHero();
     }
 
@@ -1140,8 +1175,8 @@
         const imageUrl = safeHrefOrBlank(book.coverImage);
 
         return `
-          <article class="reveal group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
-            <div class="relative mx-auto w-full max-w-[210px] pt-2">
+          <article data-details="${book.id}" class="book-card reveal group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+            <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
               <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
                 ${imageUrl
                   ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" class="h-full w-full object-cover" />`
@@ -1159,27 +1194,27 @@
               </span>
             </div>
 
-            <div class="mt-6 flex flex-1 flex-col">
+            <div class="book-card-content mt-6 flex flex-1 flex-col">
               <div class="flex flex-wrap gap-1.5">
                 ${(Array.isArray(book.subjects) ? book.subjects : []).slice(0, 3).map(subject =>
                   `<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">${escapeHtml(subject)}</span>`
                 ).join("")}
               </div>
 
-              <h3 class="mt-4 text-lg font-black tracking-tight">${escapeHtml(book.title)}</h3>
-              <p class="line-clamp-2 mt-2 min-h-[42px] text-sm leading-5 text-slate-600">${escapeHtml(book.summary)}</p>
+              <h3 class="mt-4 break-words text-lg font-black tracking-tight">${escapeHtml(book.title)}</h3>
+              <p class="book-summary line-clamp-2 mt-2 min-h-[42px] text-sm leading-5 text-slate-600">${escapeHtml(book.summary)}</p>
 
-              <div class="mt-4 flex items-center gap-2 text-sm">
+              <div class="book-rating mt-4 flex items-center gap-2 text-sm">
                 <span class="font-black text-amber-500">${renderStars(book.rating)}</span>
                 <span class="font-bold text-slate-500">${Number(book.rating || 0).toFixed(1)}</span>
               </div>
 
               <div class="mt-4 flex items-end gap-2">
                 ${Number(book.mrp) > Number(book.price) ? `<span class="text-xs font-bold text-slate-400 line-through">${money(book.mrp)}</span>` : ""}
-                <span class="text-xl font-black text-slate-950">${money(book.price)}</span>
+                <span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span>
               </div>
 
-              <div class="mt-5 grid grid-cols-2 gap-2">
+              <div class="book-actions mt-5 grid grid-cols-2 gap-2">
                 <button type="button" data-preview="${book.id}"
                         class="preview-btn rounded-xl border border-slate-300 px-3 py-3 text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
                   ${preview ? "Preview / Sample" : "Preview"}
@@ -1201,6 +1236,9 @@
       document.querySelectorAll(".preview-btn").forEach(button => {
         button.addEventListener("click", () => openPreviewModal(Number(button.dataset.preview)));
       });
+      document.querySelectorAll(".book-card").forEach(card => card.addEventListener("click", event => {
+        if (!event.target.closest("button,a")) openBookDetails(Number(card.dataset.details));
+      }));
 
       requestAnimationFrame(() => observeReveals());
     }
@@ -1229,10 +1267,12 @@
         if (error || !data) throw error || new Error("Order creation failed");
         const purchase = Array.isArray(data) ? data[0] : data;
         latestPurchaseId = purchase.purchase_id; latestPurchasePrice = Number(purchase.price); latestPurchaseAccessToken = accessToken;
+        renderUpiQr(latestPurchasePrice, latestPurchaseId);
         try {
           localStorage.setItem(`crazyebook-purchase-token:${latestPurchaseId}`, accessToken);
           localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId);
         } catch (storageError) { console.warn("Purchase access will remain available in this tab only.", storageError); }
+        if (cartItems.some(id => String(id) === String(selectedBook.id))) { cartItems = cartItems.filter(id => String(id) !== String(selectedBook.id)); saveCart(); }
         document.getElementById("modalPrice").textContent = money(latestPurchasePrice);
         document.getElementById("createdPurchaseId").textContent = latestPurchaseId;
         document.getElementById("purchaseForm").classList.add("hidden");
@@ -1262,8 +1302,25 @@
       if (!supabase || !purchaseId || !accessToken) return;
       const { data, error } = await supabase.rpc("get_purchase_status", { p_purchase_id: purchaseId, p_access_token: accessToken });
       if (error || !data?.length) return;
-      const p = data[0], boxes = [document.getElementById("customerOrderStatus"), document.getElementById("customerPurchaseStatusCardContent")];
-      document.getElementById("customerPurchaseStatusCard").classList.remove("hidden");
+      const p = data[0], boxes = [document.getElementById("customerOrderStatus")];
+      const notificationKey = `crazyebook-notification-dismissed:${purchaseId}`;
+      const dismissed = localStorage.getItem(notificationKey) === "true";
+      const notification = document.getElementById("customerPurchaseStatusCard");
+      notification.classList.toggle("hidden", dismissed);
+      const notificationBox = document.getElementById("customerPurchaseStatusCardContent");
+      notificationBox.replaceChildren();
+      const note = document.createElement("p");
+      const approved = p.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(p.order_status);
+      const declined = p.payment_status === "Rejected";
+      note.className = `font-bold ${approved ? "text-emerald-800" : declined ? "text-rose-800" : "text-amber-900"}`;
+      note.textContent = approved ? "Payment Approved – Ebook is ready." : declined ? "Order Declined – Your payment was not approved." : "Payment Pending – Waiting for verification.";
+      notificationBox.append(note);
+      const minimize = document.createElement("button"); minimize.textContent = approved ? "Minimize" : declined ? "Dismiss" : "Minimize"; minimize.className = "mt-2 rounded-lg border px-3 py-2 text-xs font-bold";
+      minimize.addEventListener("click", () => { localStorage.setItem(notificationKey, "true"); notification.classList.add("hidden"); });
+      if (approved && p.delivery_url && safeHrefOrBlank(p.delivery_url).startsWith("https://")) {
+        const open = document.createElement("a"); open.href = safeHrefOrBlank(p.delivery_url); open.target = "_blank"; open.rel = "noopener noreferrer"; open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 inline-block rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"; notificationBox.append(open);
+      }
+      notificationBox.append(minimize);
       for (const box of boxes) {
         box.classList.remove("hidden");
         box.replaceChildren();
@@ -1300,11 +1357,23 @@
 
     function launchUpiPayment() {
       if (!selectedBook || !latestPurchaseId) return;
-      const params = new URLSearchParams({ pa: PAYMENT_UPI_ID, pn: STORE.brandName || "Crazy E-Book", am: String(Number(latestPurchasePrice ?? selectedBook.price).toFixed(2)), cu: "INR", tn: `Purchase ${latestPurchaseId}` });
+      const params = new URLSearchParams({ pa: STORE.upiId || "", pn: STORE.brandName || "Crazy E-Book", am: String(Number(latestPurchasePrice ?? selectedBook.price).toFixed(2)), cu: "INR", tn: `Purchase ${latestPurchaseId}` });
       const link = `upi://pay?${params.toString()}`;
       document.getElementById("paymentError").classList.add("hidden");
       window.location.href = link;
       setTimeout(() => document.getElementById("paymentError").classList.remove("hidden"), 1500);
+    }
+
+    function renderUpiQr(amount, purchaseId) {
+      const container = document.getElementById("upiQrDynamic");
+      const fallback = document.getElementById("qrFallback");
+      container.replaceChildren();
+      if (!globalThis.QRCode || !STORE.upiId) { fallback.classList.remove("hidden"); return; }
+      const params = new URLSearchParams({ pa: STORE.upiId, pn: STORE.brandName || "Crazy E-Book", am: Number(amount || 0).toFixed(2), cu: "INR", tn: `Purchase ${purchaseId}` });
+      try {
+        new QRCode(container, { text: `upi://pay?${params.toString()}`, width: 192, height: 192, correctLevel: QRCode.CorrectLevel.M });
+        fallback.classList.add("hidden");
+      } catch { fallback.classList.remove("hidden"); }
     }
 
     let purchaseFilter = "All";
@@ -1313,7 +1382,7 @@
       const list = document.getElementById("purchasesList");
       const visible = adminPurchases.filter(p => purchaseFilter === "All" || (purchaseFilter === "Pending" ? p.payment_status === "Pending" : purchaseFilter === "Paid" ? p.payment_status === "Paid" && p.order_status !== "Delivered" : purchaseFilter === "Delivered" ? p.order_status === "Delivered" : p.payment_status === "Rejected" || p.order_status === "Rejected"));
       if (!visible.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-5 text-sm text-slate-500">No purchases in this view.</p>'; return; }
-      list.innerHTML = visible.map(p => `<article class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"><div class="flex flex-wrap justify-between gap-2"><strong>${escapeHtml(p.purchase_id)}</strong><span class="text-xs text-slate-500">${new Date(p.created_at).toLocaleString()}</span></div><div class="mt-3 grid gap-1 text-sm sm:grid-cols-2"><p><b>Book:</b> ${escapeHtml(p.book_title)} (${escapeHtml(p.book_id)})</p><p><b>Price:</b> ${money(p.price)}</p><p><b>Customer:</b> ${escapeHtml(p.customer_name)}</p>${p.whatsapp ? `<p><b>WhatsApp:</b> ${escapeHtml(p.whatsapp)} · <a class="font-bold text-emerald-700 underline" target="_blank" rel="noopener" href="https://wa.me/${encodeURIComponent(p.whatsapp.replace(/\D/g,''))}">Open WhatsApp</a></p>` : ''}${p.telegram ? `<p><b>Telegram:</b> ${escapeHtml(p.telegram)} · <a class="font-bold text-indigo-700 underline" target="_blank" rel="noopener" href="https://t.me/${encodeURIComponent(p.telegram.replace(/^@/,''))}">Open Telegram</a></p>` : ''}<p><b>Payment:</b> ${escapeHtml(p.payment_status)}</p><p><b>Order:</b> ${escapeHtml(p.order_status)}</p><p><b>Telegram alert:</b> ${escapeHtml(p.telegram_notification_status)}</p></div><div class="mt-4 flex flex-wrap gap-2"><button data-view-purchase="${p.id}" class="purchase-view rounded-lg border px-3 py-2 text-xs font-bold">View</button><button data-copy-purchase="${p.id}" class="purchase-copy rounded-lg border px-3 py-2 text-xs font-bold">Copy Purchase Details</button>${p.payment_status === 'Pending' ? `<button data-purchase-action="approve" data-id="${p.id}" class="purchase-action rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white">Approve / Accept</button><button data-purchase-action="reject" data-id="${p.id}" class="purchase-action rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Reject / Decline</button>` : ''}${p.order_status !== 'Delivered' && p.payment_status === 'Paid' ? `<button data-purchase-action="deliver" data-id="${p.id}" class="purchase-action rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white">Mark Delivered</button>` : ''}${p.payment_status === 'Paid' && privateLinks[String(p.book_key)] ? `<button data-copy-delivery="${p.id}" class="copy-delivery rounded-lg border px-3 py-2 text-xs font-bold">Copy Delivery Link</button>` : ''}</div></article>`).join('');
+      list.innerHTML = visible.map(p => `<article class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"><div class="flex flex-wrap justify-between gap-2 flex-shrink-0"><strong>${escapeHtml(p.purchase_id)}</strong><span class="text-xs text-slate-500">${new Date(p.created_at).toLocaleString()}</span></div><div class="mt-3 grid gap-1 text-sm sm:grid-cols-2"><p><b>Book:</b> ${escapeHtml(p.book_title)} (${escapeHtml(p.book_id)})</p><p><b>Price:</b> ${money(p.price)}</p><p><b>Customer:</b> ${escapeHtml(p.customer_name)}</p>${p.whatsapp ? `<p><b>WhatsApp:</b> ${escapeHtml(p.whatsapp)} · <a class="font-bold text-emerald-700 underline" target="_blank" rel="noopener" href="https://wa.me/${encodeURIComponent(p.whatsapp.replace(/\D/g,''))}">Open WhatsApp</a></p>` : ''}${p.telegram ? `<p><b>Telegram:</b> ${escapeHtml(p.telegram)} · <a class="font-bold text-indigo-700 underline" target="_blank" rel="noopener" href="https://t.me/${encodeURIComponent(p.telegram.replace(/^@/,''))}">Open Telegram</a></p>` : ''}<p><b>Payment:</b> ${escapeHtml(p.payment_status)}</p><p><b>Order:</b> ${escapeHtml(p.order_status)}</p><p><b>Telegram alert:</b> ${escapeHtml(p.telegram_notification_status)}</p></div><div class="mt-4 flex flex-wrap gap-2"><button data-view-purchase="${p.id}" class="purchase-view rounded-lg border px-3 py-2 text-xs font-bold">View</button><button data-copy-purchase="${p.id}" class="purchase-copy rounded-lg border px-3 py-2 text-xs font-bold">Copy Purchase Details</button>${p.payment_status === 'Pending' ? `<button data-purchase-action="approve" data-id="${p.id}" class="purchase-action rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white">Approve / Accept</button><button data-purchase-action="reject" data-id="${p.id}" class="purchase-action rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Reject / Decline</button>` : ''}${p.order_status !== 'Delivered' && p.payment_status === 'Paid' ? `<button data-purchase-action="deliver" data-id="${p.id}" class="purchase-action rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white">Mark Delivered</button>` : ''}${p.payment_status === 'Paid' && privateLinks[String(p.book_key)] ? `<button data-copy-delivery="${p.id}" class="copy-delivery rounded-lg border px-3 py-2 text-xs font-bold">Copy Delivery Link</button>` : ''}${['Pending','Rejected'].includes(p.payment_status) ? `<button data-delete-purchase="${p.id}" class="purchase-delete rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button>` : ''}</div></article>`).join('');
       document.querySelectorAll('.purchase-action').forEach(btn => btn.addEventListener('click', async () => {
         const p = adminPurchases.find(row => row.id === btn.dataset.id); if (!p) return;
         const action = btn.dataset.purchaseAction;
@@ -1339,6 +1408,15 @@
       document.querySelectorAll('.copy-delivery').forEach(btn => btn.addEventListener('click', async () => { const p=adminPurchases.find(row=>row.id===btn.dataset.copyDelivery); const link=p&&privateLinks[String(p.book_key)]; if(!link)return; try{await navigator.clipboard.writeText(link);showAdminToast('Private delivery link copied');}catch{showAdminToast('Could not access clipboard');} }));
       document.querySelectorAll('.purchase-view').forEach(btn => btn.addEventListener('click', () => { const p = adminPurchases.find(row => row.id === btn.dataset.viewPurchase); if (p) alert(`Purchase ${p.purchase_id}\nBook: ${p.book_title} (${p.book_id})\nPrice: ${money(p.price)}\nCustomer: ${p.customer_name}\nWhatsApp: ${p.whatsapp || '—'}\nTelegram: ${p.telegram || '—'}\nPayment: ${p.payment_status}\nOrder: ${p.order_status}\nCreated: ${new Date(p.created_at).toLocaleString()}`); }));
       document.querySelectorAll('.purchase-copy').forEach(btn => btn.addEventListener('click', async () => { const p = adminPurchases.find(row => row.id === btn.dataset.copyPurchase); if (!p) return; const details = `Purchase ID: ${p.purchase_id}\nBook ID: ${p.book_id}\nBook: ${p.book_title}\nPrice: ${money(p.price)}\nCustomer: ${p.customer_name}\nWhatsApp: ${p.whatsapp || '—'}\nTelegram: ${p.telegram || '—'}\nPayment: ${p.payment_status}\nOrder: ${p.order_status}\nDate: ${new Date(p.created_at).toLocaleString()}`; try { await navigator.clipboard.writeText(details); showAdminToast('Purchase details copied'); } catch { showAdminToast('Could not access clipboard'); } }));
+      document.querySelectorAll('.purchase-delete').forEach(btn => btn.addEventListener('click', async () => {
+        const p = adminPurchases.find(row => row.id === btn.dataset.deletePurchase);
+        if (!p || !['Pending', 'Rejected'].includes(p.payment_status) || !adminAuthenticated) return;
+        if (!confirm(`Delete purchase ${p.purchase_id}? This cannot be undone.`)) return;
+        btn.disabled = true;
+        const { error } = await supabase.from('purchases').delete().eq('id', p.id).in('payment_status', ['Pending', 'Rejected']);
+        if (error) { btn.disabled = false; showAdminToast('Could not delete purchase. Apply the purchase-delete SQL policy.'); return; }
+        showAdminToast('Purchase deleted'); await loadPurchases();
+      }));
     }
     async function loadPurchases() {
       if (!supabase || !adminAuthenticated || !document.getElementById("purchasesList")) return;
@@ -1352,15 +1430,41 @@
     async function renderAdminReviews() {
       if (!supabase || !adminAuthenticated) return;
       const { data, error } = await supabase.from('reviews').select('*').order('created_at',{ascending:false});
-      const list=document.getElementById('adminReviewsList'); if(error){list.textContent='Could not load testimonials.';return;}
-      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No testimonials saved.</p>';
-      (data||[]).forEach(r=>{ document.querySelector(`[data-edit-review="${r.id}"]`)?.addEventListener('click',()=>{document.getElementById('reviewId').value=r.id;document.getElementById('reviewName').value=r.name;document.getElementById('reviewComment').value=r.comment;document.getElementById('reviewRating').value=r.rating;document.getElementById('reviewVisible').checked=r.is_visible;}); document.querySelector(`[data-toggle-review="${r.id}"]`)?.addEventListener('click',async e=>{await supabase.from('reviews').update({is_visible:e.currentTarget.dataset.visible==='true',updated_at:new Date().toISOString()}).eq('id',r.id);renderAdminReviews();}); document.querySelector(`[data-delete-review="${r.id}"]`)?.addEventListener('click',async()=>{if(confirm('Delete this testimonial?')){await supabase.from('reviews').delete().eq('id',r.id);renderAdminReviews();}}); });
+      const list=document.getElementById('adminReviewsList'); if(error){list.textContent='Could not load reviews.';return;}
+      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No reviews saved.</p>';
+      (data||[]).forEach(r=>{ document.querySelector(`[data-edit-review="${r.id}"]`)?.addEventListener('click',()=>{document.getElementById('reviewId').value=r.id;document.getElementById('reviewName').value=r.name;document.getElementById('reviewComment').value=r.comment;document.getElementById('reviewRating').value=r.rating;document.getElementById('reviewVisible').checked=r.is_visible;}); document.querySelector(`[data-toggle-review="${r.id}"]`)?.addEventListener('click',async e=>{await supabase.from('reviews').update({is_visible:e.currentTarget.dataset.visible==='true',updated_at:new Date().toISOString()}).eq('id',r.id);renderAdminReviews();}); document.querySelector(`[data-delete-review="${r.id}"]`)?.addEventListener('click',async()=>{if(confirm('Delete this review?')){await supabase.from('reviews').delete().eq('id',r.id);renderAdminReviews();}}); });
     }
-    async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save testimonial');return;} resetReviewForm();await renderAdminReviews(); STORE.reviews=((await supabase.from('reviews').select('name,comment,rating,is_visible')).data||[]).filter(r=>r.is_visible);renderReviews();showAdminToast('Testimonial saved'); }
+    async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save review');return;} resetReviewForm();await renderAdminReviews(); STORE.reviews=((await supabase.from('reviews').select('name,comment,rating,is_visible')).data||[]).filter(r=>r.is_visible);renderReviews();showAdminToast('Review saved'); }
 
     let latestPurchaseId = null;
     let latestPurchasePrice = null;
     let latestPurchaseAccessToken = null;
+    const CART_KEY = "crazyebook-cart-v1";
+    let cartItems = loadCart();
+    let detailsBookId = null;
+    function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } catch { return []; } }
+    function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cartItems)); } catch {} renderCart(); }
+    function renderCart() {
+      const items = cartItems.map(id => STORE.books.find(book => String(book.id) === String(id))).filter(Boolean);
+      document.getElementById("cartCount").textContent = String(items.length);
+      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3"><div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
+      document.getElementById("cartTotal").textContent = money(items.reduce((total, book) => total + Number(book.price || 0), 0));
+      document.getElementById("cartCheckout").disabled = !items.length;
+      document.querySelectorAll("[data-cart-remove]").forEach(button => button.addEventListener("click", () => { cartItems = cartItems.filter(id => String(id) !== button.dataset.cartRemove); saveCart(); }));
+    }
+    function addToCart(bookId) { const book = STORE.books.find(item => String(item.id) === String(bookId)); if (!book || book.free || Number(book.price) === 0) return; if (!cartItems.some(id => String(id) === String(bookId))) cartItems.push(bookId); saveCart(); showToast("Added to cart"); }
+    function openBookDetails(bookId) {
+      const book = STORE.books.find(item => Number(item.id) === Number(bookId)); if (!book) return; detailsBookId = book.id;
+      const cover = safeHrefOrBlank(book.coverImage); const img = document.getElementById("detailsCover");
+      img.src = cover || ""; img.alt = `${book.title} cover`; img.classList.toggle("hidden", !cover);
+      document.getElementById("detailsCategory").textContent = book.category || "Ebook";
+      document.getElementById("bookDetailsTitle").textContent = book.title;
+      document.getElementById("detailsRating").textContent = `★ ${Number(book.rating || 0).toFixed(1)} rating`;
+      document.getElementById("detailsPrice").textContent = money(book.price);
+      document.getElementById("detailsDescription").textContent = book.summary || "";
+      document.getElementById("detailsCart").classList.toggle("hidden", !!book.free || Number(book.price) === 0);
+      document.getElementById("bookDetailsModal").classList.remove("hidden"); document.getElementById("bookDetailsModal").classList.add("flex");
+    }
     function openBuyModal(bookId) {
 
       selectedBook = STORE.books.find(book => Number(book.id) === Number(bookId));
@@ -1377,7 +1481,7 @@
 
       const isFree = !!selectedBook.free || Number(selectedBook.price) === 0;
       document.getElementById("modalPrice").textContent = isFree ? "Free" : money(selectedBook.price);
-      document.getElementById("upiIdText").textContent = PAYMENT_UPI_ID;
+      document.getElementById("upiIdText").textContent = STORE.upiId || "";
       document.getElementById("copyUpiBtn").disabled = isFree;
 
       const verify = document.getElementById("verifyTelegram");
@@ -1482,7 +1586,7 @@
           <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
             <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-xl shadow-sm">☆</div>
             <h4 class="mt-4 font-black">Featured comments</h4>
-            <p class="mt-1 text-sm text-slate-500">Admin-managed testimonials will appear here when published.</p>
+            <p class="mt-1 text-sm text-slate-500">Admin-managed reviews will appear here when published.</p>
           </div>
         `;
         return;
@@ -1890,6 +1994,15 @@
        EVENTS
        ========================================================= */
     document.getElementById("searchInput").addEventListener("input", renderBooks);
+    document.getElementById("openCartBtn").addEventListener("click", () => { renderCart(); document.getElementById("cartModal").classList.remove("hidden"); document.getElementById("cartModal").classList.add("flex"); });
+    document.getElementById("closeCart").addEventListener("click", () => { document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); });
+    document.getElementById("cartCheckout").addEventListener("click", () => { const first = cartItems[0]; if (first == null) return; document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); openBuyModal(Number(first)); });
+    document.getElementById("cartModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
+    document.getElementById("closeBookDetails").addEventListener("click", () => { document.getElementById("bookDetailsModal").classList.add("hidden"); document.getElementById("bookDetailsModal").classList.remove("flex"); });
+    document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
+    document.getElementById("detailsPreview").addEventListener("click", () => { const id = detailsBookId; document.getElementById("bookDetailsModal").classList.add("hidden"); document.getElementById("bookDetailsModal").classList.remove("flex"); openPreviewModal(Number(id)); });
+    document.getElementById("detailsCart").addEventListener("click", () => addToCart(detailsBookId));
+    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; document.getElementById("bookDetailsModal").classList.add("hidden"); document.getElementById("bookDetailsModal").classList.remove("flex"); openBuyModal(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
     document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
     document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
@@ -1916,13 +2029,13 @@
     document.getElementById("copyUpiBtn").addEventListener("click", async () => {
       if (!selectedBook || selectedBook.free) return;
       try {
-        await navigator.clipboard.writeText(PAYMENT_UPI_ID);
+        await navigator.clipboard.writeText(STORE.upiId || "");
         const button = document.getElementById("copyUpiBtn");
         const original = button.textContent;
         button.textContent = "Copied";
         setTimeout(() => button.textContent = original, 1400);
       } catch {
-        alert(`Copy failed. UPI ID: ${PAYMENT_UPI_ID}`);
+        alert(`Copy failed. UPI ID: ${STORE.upiId || ""}`);
       }
     });
 
@@ -2008,6 +2121,8 @@
         closeBuyModal();
         closePreviewModal();
         closeAdminModal();
+        document.getElementById("cartModal").classList.add("hidden");
+        document.getElementById("bookDetailsModal").classList.add("hidden");
       }
     });
 
@@ -2015,6 +2130,7 @@
        INITIALIZE
        ========================================================= */
     setupLinks();
+    renderCart();
     renderFilters();
     initializeSupabase().then(() => {
       setupLinks(); renderFilters(); renderHero(); renderBooks(); renderReviews(); refreshAdminView();
