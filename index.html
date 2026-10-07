@@ -473,7 +473,73 @@
     .hero-scene-summary { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .hero-scene-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
     .hero-scene-actions button, .hero-scene-actions a { min-height: 38px; padding: 8px 12px; }
-    .hero-scene-hint { position: absolute; z-index: 2; top: 14px; right: 16px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.75); border-radius: 9999px; background: rgba(255,255,255,.66); color: #475569; font-size: 10px; font-weight: 700; backdrop-filter: blur(10px); pointer-events: none; }
+    .hero-scene-hint { display: none; position: absolute; z-index: 2; top: 14px; right: 16px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.75); border-radius: 9999px; background: rgba(255,255,255,.66); color: #475569; font-size: 10px; font-weight: 700; backdrop-filter: blur(10px); pointer-events: none; }
+    .hero-scene.is-loaded .hero-scene-hint { display: block; }
+    /* Crazy E-Book storefront polish */
+    :root { --store-ink:#101b2d; --store-paper:#fffdf7; --store-teal:#0d9488; --store-yellow:#facc15; }
+    body { background:var(--store-paper); }
+    #heroSection { background:linear-gradient(135deg,#fffdf7 0%,#f1f7f5 58%,#e2f4f0 100%); }
+    #heroSection h1 { color:var(--store-ink); font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:-.055em; }
+    #heroSection .mt-8.flex.flex-col a { background:var(--store-teal); box-shadow:0 12px 28px #0d948833; animation:cta-breathe 3.2s ease-in-out infinite; }
+    #heroSection .mt-8.flex.flex-col a:hover { background:#0f766e; }
+    @keyframes cta-breathe { 50% { box-shadow:0 14px 34px #0d948844; } }
+    .hero-scene { border-color:#0d94882b; background:radial-gradient(ellipse at 50% 30%,#d7f5e9,transparent 58%),linear-gradient(145deg,#fdfcf7,#dcefeb); box-shadow:0 30px 80px #102b3a20; }
+    .hero-scene-glow { background:#14b8a633; }
+    .hero-model-fallback { border-color:#0f766e; background:linear-gradient(90deg,#102b3a 0 13%,#0f766e 13% 100%); }
+    .hero-model-fallback { top:25%; width:108px; height:146px; animation:featured-book-float 4.8s ease-in-out infinite; }
+    @keyframes featured-book-float { 0%,100% { translate:0 0; rotate:-1deg; } 50% { translate:0 -9px; rotate:1deg; } }
+    .hero-model-fallback.has-cover { border:0; border-left:9px solid #102b3a; border-radius:3px 9px 9px 3px; background-position:center; background-size:cover; }
+    .hero-model-fallback.has-cover::before { content:""; inset:0 auto 0 -9px; width:9px; border:0; background:linear-gradient(90deg,#091a29,#31516a 42%,#102b3a); }
+    .hero-model-fallback.has-cover::after { content:""; position:absolute; top:2px; right:-5px; bottom:2px; width:5px; border-radius:0 3px 3px 0; background:repeating-linear-gradient(180deg,#fffdf7 0 2px,#deded6 2px 3px); transform:skewY(-7deg); }
+    html[data-theme="dark"] .hero-model-fallback.has-cover::after { background:repeating-linear-gradient(180deg,#d7deea 0 2px,#9aa8ba 2px 3px); }
+    .book-card { position:relative; overflow:hidden; border-color:#e6e5dc; background:linear-gradient(165deg,#fff 0%,#fffdf7 100%); box-shadow:0 8px 22px #101b2d0b; }
+    html[data-theme="dark"] .book-card { border-color:#35445a; background:linear-gradient(165deg,#172438 0%,#111c2d 100%); box-shadow:0 10px 26px rgba(0,0,0,.22); }
+    html[data-theme="dark"] .book-card h3,
+    html[data-theme="dark"] .book-card .book-price { color:#f8fafc !important; }
+    html[data-theme="dark"] .book-card .book-category,
+    html[data-theme="dark"] .book-card .book-summary,
+    html[data-theme="dark"] .book-card .book-rating > span:last-child { color:#bdc9d8 !important; }
+    html[data-theme="dark"] .book-card .sample-btn { border-color:#475569; background:#1e2b3e; color:#e2e8f0; }
+    html[data-theme="dark"] .book-card .book-actions .buy-btn { background:#0d9488; color:#fff; }
+    .book-card .book-detail-reveal { position:absolute; z-index:4; left:12px; right:12px; bottom:12px; transform:translateY(150%); opacity:0; transition:transform .38s cubic-bezier(.2,.9,.25,1),opacity .2s ease; }
+    .book-card:hover .book-detail-reveal, .book-card:focus-within .book-detail-reveal { transform:translateY(0); opacity:1; }
+    .book-card .book-card-cover { transition:transform .35s cubic-bezier(.2,.8,.2,1); }
+    .book-card:hover .book-card-cover { transform:translateY(-5px) rotateY(-3deg); }
+    .book-card .book-card-cover img { loading:lazy; }
+    .book-detail-reveal button { width:100%; min-height:42px; border-radius:12px; background:var(--store-ink); color:white; font-size:12px; font-weight:850; box-shadow:0 8px 22px #101b2d33; }
+    #cartModal { justify-content:flex-end; padding:0; }
+    #cartModal > div { width:min(100%,460px); height:100%; max-height:100dvh; border-radius:24px 0 0 24px; padding:24px; animation:cart-drawer-in .35s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes cart-drawer-in { from { transform:translateX(36px); opacity:.7; } to { transform:translateX(0); opacity:1; } }
+    #cartCheckout { background:var(--store-teal); }
+    #emptyBooks { border-color:#b9ddd3; background:#fffdf7; }
+    #emptyBookSuggestions button { transform-style:preserve-3d; transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease; }
+    #emptyBookSuggestions button:hover { transform:translateY(-3px) rotateX(7deg); box-shadow:0 12px 22px #0d948822; }
+    @media(max-width:640px) {
+      #heroSection { background:linear-gradient(160deg,#fffdf7,#e9f5f1); }
+      .book-card .book-detail-reveal { position:static; transform:none; opacity:1; margin-top:8px; }
+      .book-card .book-detail-reveal button { min-height:34px; font-size:10px; }
+      #cartModal { justify-content:center; padding:0; }
+      #cartModal > div { width:100%; height:min(90dvh,760px); border-radius:24px 24px 0 0; animation:cart-sheet-in .3s cubic-bezier(.2,.8,.2,1) both; }
+      @keyframes cart-sheet-in { from { transform:translateY(30px); opacity:.7; } to { transform:translateY(0); opacity:1; } }
+    }
+    @media(prefers-reduced-motion:reduce) { #heroSection .mt-8.flex.flex-col a, .hero-model-fallback { animation:none; } }
+    html[data-theme="dark"] #heroSection {
+      background:radial-gradient(ellipse at 88% 12%,rgba(54,73,145,.42),transparent 42%),radial-gradient(ellipse at 8% 90%,rgba(13,148,136,.12),transparent 38%),linear-gradient(135deg,#0b1220 0%,#0d1728 62%,#101c30 100%) !important;
+    }
+    html[data-theme="dark"] #heroSection h1 { color:#f8fafc !important; }
+    html[data-theme="dark"] #heroSection p { color:#cbd5e1 !important; }
+    html[data-theme="dark"] #heroSection .mb-5 { background:#172438; border-color:#34445c; color:#dbe5f1; }
+    html[data-theme="dark"] #heroSection .mt-8.flex.flex-wrap { color:#b8c5d7; }
+    html[data-theme="dark"] #heroSection .hero-scene {
+      border-color:#334765;
+      background:radial-gradient(ellipse at 50% 30%,rgba(47,73,125,.42),transparent 59%),linear-gradient(145deg,#15243a,#0e1a2c);
+      box-shadow:0 30px 80px rgba(0,0,0,.28);
+    }
+    html[data-theme="dark"] #heroSection .hero-scene-glow { background:rgba(20,184,166,.14); }
+    html[data-theme="dark"] #heroSection .hero-scene-card { background:rgba(17,28,45,.94); border-color:#35445a; }
+    html[data-theme="dark"] #heroSection .hero-scene-copy h3,
+    html[data-theme="dark"] #heroSection #heroShowcasePrice { color:#f8fafc !important; }
+    html[data-theme="dark"] #heroSection .hero-scene-summary { color:#bdc9d8 !important; }
     html[data-theme="dark"] .hero-scene-card { background: rgba(17,28,45,.9); border-color: rgba(71,85,105,.8); }
     html[data-theme="dark"] .hero-scene-hint { background: rgba(17,28,45,.74); color: #cbd5e1; border-color: rgba(71,85,105,.8); }
     @media (max-width: 420px) {
@@ -576,7 +642,7 @@
         <div class="featured-book-panel hero-showcase flex items-center justify-center lg:justify-end">
           <div id="heroScene" class="hero-scene" aria-label="Interactive 3D ebook model">
             <div class="hero-scene-glow" aria-hidden="true"></div>
-            <div class="hero-model-fallback" aria-hidden="true"></div>
+            <div id="heroModelFallback" class="hero-model-fallback" aria-hidden="true"></div>
             <canvas id="hero3dCanvas" aria-hidden="true"></canvas>
             <span class="hero-scene-hint" aria-hidden="true">Move to explore · scroll to turn</span>
             <div class="hero-scene-card">
@@ -641,6 +707,8 @@
         <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-xl">⌕</div>
         <h3 class="mt-4 font-black">No books found</h3>
         <p class="mt-1 text-sm text-slate-500">Try another title, subject, or category.</p>
+        <p class="mt-5 text-xs font-black uppercase tracking-[.18em] text-slate-400">Explore a topic</p>
+        <div id="emptyBookSuggestions" class="mt-3 flex flex-wrap justify-center gap-2" aria-label="Suggested topics"></div>
       </div>
     </section>
 
@@ -1217,6 +1285,7 @@
       const price = document.getElementById("heroShowcasePrice");
       const tag = document.getElementById("heroShowcaseTag");
       const cover = document.getElementById("heroShowcaseCover");
+      const modelFallback = document.getElementById("heroModelFallback");
       const footer = document.getElementById("heroShowcaseFooter");
       const sampleBtn = document.getElementById("heroSampleBtn");
       const buyBtn = document.getElementById("heroBuyBtn");
@@ -1231,6 +1300,8 @@
         price.textContent = "";
         tag.textContent = "";
         cover.innerHTML = `<div class="grid h-full place-items-center bg-slate-100 text-sm font-black text-slate-400">No featured book</div>`;
+        modelFallback.classList.remove("has-cover");
+        modelFallback.style.backgroundImage = "";
         sampleBtn.classList.add("hidden");
         buyBtn.disabled = true;
         return;
@@ -1255,6 +1326,9 @@
                <div class="mt-2 text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div>
              </div>
            </div>`;
+      const modelCover = safeHrefOrBlank(book.coverImage);
+      modelFallback.classList.toggle("has-cover", !!modelCover);
+      modelFallback.style.backgroundImage = modelCover ? `url("${modelCover}")` : "";
 
       const sampleHref = bookSampleHref(book);
       if (sampleHref) {
@@ -1325,6 +1399,16 @@
       const empty = document.getElementById("emptyBooks");
 
       empty.classList.toggle("hidden", filtered.length !== 0);
+      if (!filtered.length) {
+        const topics = [...new Set(STORE.books.filter(book => book.status !== "inactive").flatMap(book => [book.category, ...(Array.isArray(book.subjects) ? book.subjects : [])]).filter(Boolean))].slice(0, 8);
+        document.getElementById("emptyBookSuggestions").innerHTML = topics.map(topic => `<button type="button" class="rounded-full border border-teal-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm" data-topic-suggestion="${escapeHtml(topic)}">${escapeHtml(topic)} <span aria-hidden="true">↗</span></button>`).join("");
+        document.querySelectorAll("[data-topic-suggestion]").forEach(button => button.addEventListener("click", () => {
+          const topic = button.dataset.topicSuggestion;
+          if (categories().includes(topic)) { activeCategory = topic; document.getElementById("searchInput").value = ""; renderFilters(); }
+          else document.getElementById("searchInput").value = topic;
+          renderBooks();
+        }));
+      }
 
       grid.innerHTML = filtered.map(book => {
         const sample = bookSampleHref(book);
@@ -1348,6 +1432,7 @@
               <span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">
                 ${escapeHtml(book.tag || (book.free ? "Free" : "New"))}
               </span>
+              <div class="book-detail-reveal"><button type="button" data-details-button="${book.id}">View details <span aria-hidden="true">↗</span></button></div>
             </div>
 
             <div class="book-card-content mt-6 flex flex-1 flex-col">
@@ -1391,9 +1476,24 @@
       });
 
       document.querySelectorAll(".add-cart-btn").forEach(button => button.addEventListener("click", () => addToCart(button.dataset.addCart)));
+      document.querySelectorAll("[data-details-button]").forEach(button => button.addEventListener("click", event => { event.stopPropagation(); openBookDetails(Number(button.dataset.detailsButton)); }));
       document.querySelectorAll(".book-card").forEach(card => card.addEventListener("click", event => {
         if (!event.target.closest("button,a")) openBookDetails(Number(card.dataset.details));
       }));
+      if (matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.querySelectorAll(".book-card").forEach(card => {
+          card.addEventListener("pointermove", event => {
+            const bounds = card.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width - .5;
+            const y = (event.clientY - bounds.top) / bounds.height - .5;
+            card.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
+            card.style.setProperty("--tilt-y", `${(x * 4).toFixed(2)}deg`);
+            card.style.transform = `perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-3px)`;
+          });
+          card.addEventListener("pointerleave", () => { card.style.transform = ""; });
+          card.animate([{ opacity: 0, transform: "translateY(12px) scale(.985)" }, { opacity: 1, transform: "translateY(0) scale(1)" }], { duration: 320, delay: Math.min([...grid.children].indexOf(card) * 35, 210), easing: "cubic-bezier(.2,.8,.2,1)" });
+        });
+      }
 
       syncCartFeedback();
       requestAnimationFrame(() => observeReveals());
