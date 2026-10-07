@@ -282,7 +282,7 @@
     .reveal {
       opacity: 0;
       transform: translateY(18px);
-      transition: opacity .65s ease, transform .65s ease;
+      transition: opacity .4s ease, transform .4s ease;
     }
     .reveal.visible {
       opacity: 1;
@@ -330,10 +330,29 @@
     }
     .admin-table-wrap { overflow-x: auto; }
     .book-card { cursor: pointer; min-width: 0; }
+    .book-card { transition: transform .2s ease, box-shadow .2s ease; }
+    .book-card .book-card-cover img { transition: transform .3s ease; }
+    .book-card button, .book-card a, #openCartBtn, #openLibraryBtn, #themeToggleBtn { transition: transform .16s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, color .2s ease; }
+    .book-card button:active, .book-card a:active, #openCartBtn:active, #openLibraryBtn:active, #themeToggleBtn:active { transform: scale(.97); }
+    .book-card:focus-within { outline: 2px solid #818cf8; outline-offset: 3px; }
+    .shop-modal { animation: modal-fade-in .2s ease both; }
+    .shop-modal-panel { animation: modal-panel-in .24s cubic-bezier(.2,.75,.25,1) both; }
+    @keyframes modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modal-panel-in { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    #cartCount { display: inline-block; }
+    #cartCount.bump { animation: cart-count-bump .24s ease-out; }
+    @keyframes cart-count-bump { 50% { transform: scale(1.25); } }
+    html { transition: background-color .2s ease, color .2s ease; }
+    :focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
+    @media (hover: hover) and (pointer: fine) {
+      .book-card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px rgba(15,23,42,.12); }
+      .book-card:hover .book-card-cover img { transform: scale(1.025); }
+    }
     .customer-status-toast { max-height: 20vh; overflow: auto; }
     .customer-status-toast p { white-space: pre-line; }
     @media (max-width: 640px) {
       .admin-panel { max-height: 96vh; }
+      .book-card:active { transform: scale(.99); }
       #bookGrid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .75rem; }
       .book-card { padding: .65rem; border-radius: 1rem; }
       .book-card-cover { width: 100%; max-width: none; padding-top: 0; }
@@ -430,9 +449,7 @@
   <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
       <a href="#home" class="flex items-center gap-3" aria-label="Crazy E-Book home">
-        <div class="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 text-sm font-black text-white shadow-lg">
-          CE
-        </div>
+        <img src="crazy-ebooks-logo.png" alt="Crazy E-Books" class="h-11 w-10 shrink-0 object-contain" width="40" height="46" fetchpriority="high" />
         <div>
           <div id="siteBrand" class="font-extrabold tracking-tight">Crazy E-Book</div>
           <div id="siteCreators" class="text-[11px] text-slate-500">by Akki & Aadi</div>
@@ -1061,6 +1078,32 @@
       if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch {} }
     }
 
+    const transientOverlayIds = { details: "bookDetailsModal", cart: "cartModal", library: "libraryModal" };
+    function openTransientOverlay(name) {
+      const modal = document.getElementById(transientOverlayIds[name]);
+      if (!modal || !modal.classList.contains("hidden")) return;
+      history.pushState({ ...(history.state || {}), crazyEbookOverlay: name }, "", location.href);
+      modal.classList.remove("hidden"); modal.classList.add("flex", "shop-modal");
+      document.body.classList.add("modal-open");
+      modal.querySelector(":scope > div")?.classList.add("shop-modal-panel");
+    }
+    function closeTransientOverlay(name, fromPopState = false) {
+      const modal = document.getElementById(transientOverlayIds[name]);
+      if (!modal || modal.classList.contains("hidden")) return;
+      if (!fromPopState && history.state?.crazyEbookOverlay === name) { history.back(); return; }
+      const panel = modal.querySelector(":scope > div");
+      const finishClose = () => {
+        modal.classList.add("hidden"); modal.classList.remove("flex", "shop-modal");
+        panel?.classList.remove("shop-modal-panel");
+        const anotherOverlayOpen = [...Object.values(transientOverlayIds), "buyModal", "adminModal"].some(id => !document.getElementById(id).classList.contains("hidden"));
+        if (!anotherOverlayOpen) document.body.classList.remove("modal-open");
+      };
+      if (fromPopState && !matchMedia("(prefers-reduced-motion: reduce)").matches && typeof modal.animate === "function") {
+        modal.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, easing: "ease-in" }).finished.then(finishClose).catch(finishClose);
+        panel?.animate([{ opacity: 1, transform: "translateY(0) scale(1)" }, { opacity: 0, transform: "translateY(8px) scale(.99)" }], { duration: 150, easing: "ease-in" });
+      } else finishClose();
+    }
+
     function initializeTheme() {
       let saved = "light";
       try { saved = localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light"; } catch {}
@@ -1560,14 +1603,16 @@
       }).join("");
     }
     function openMyLibrary() {
-      const modal = document.getElementById("libraryModal"); modal.classList.remove("hidden"); modal.classList.add("flex");
+      openTransientOverlay("library");
       loadMyLibrary();
     }
     function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } catch { return []; } }
     function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cartItems)); } catch {} renderCart(); }
     function renderCart() {
       const items = cartItems.map(id => STORE.books.find(book => String(book.id) === String(id))).filter(Boolean);
+      const oldCount = Number(document.getElementById("cartCount").textContent || 0);
       document.getElementById("cartCount").textContent = String(items.length);
+      if (items.length !== oldCount) { const count = document.getElementById("cartCount"); count.classList.remove("bump"); void count.offsetWidth; count.classList.add("bump"); }
       document.getElementById("openCartBtn").setAttribute("aria-label", `Open cart, ${items.length} item${items.length === 1 ? "" : "s"}`);
       document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(safeHrefOrBlank(book.coverImage))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
       document.getElementById("cartTotal").textContent = money(items.reduce((total, book) => total + Number(book.price || 0), 0));
@@ -1615,7 +1660,7 @@
       document.getElementById("detailsDescription").textContent = book.summary || "";
       document.getElementById("detailsCart").classList.toggle("hidden", !!book.free || Number(book.price) === 0);
       syncCartFeedback();
-      document.getElementById("bookDetailsModal").classList.remove("hidden"); document.getElementById("bookDetailsModal").classList.add("flex");
+      openTransientOverlay("details");
     }
     function openBuyModal(bookId, cartBookKeys = null) {
 
@@ -2114,24 +2159,25 @@
        EVENTS
        ========================================================= */
     document.getElementById("searchInput").addEventListener("input", renderBooks);
-    document.getElementById("openCartBtn").addEventListener("click", () => { renderCart(); document.getElementById("cartModal").classList.remove("hidden"); document.getElementById("cartModal").classList.add("flex"); });
+    document.getElementById("openCartBtn").addEventListener("click", () => { renderCart(); openTransientOverlay("cart"); });
     document.getElementById("themeToggleBtn").addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true));
     document.getElementById("openLibraryBtn").addEventListener("click", openMyLibrary);
-    document.getElementById("closeLibrary").addEventListener("click", () => { document.getElementById("libraryModal").classList.add("hidden"); document.getElementById("libraryModal").classList.remove("flex"); });
-    document.getElementById("libraryModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
-    document.getElementById("closeCart").addEventListener("click", () => { document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); });
-    document.getElementById("continueShopping").addEventListener("click", () => { document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex"); document.getElementById("books").scrollIntoView({ behavior: "smooth" }); });
+    document.getElementById("closeLibrary").addEventListener("click", () => closeTransientOverlay("library"));
+    document.getElementById("libraryModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("library"); });
+    document.getElementById("closeCart").addEventListener("click", () => closeTransientOverlay("cart"));
+    document.getElementById("continueShopping").addEventListener("click", () => { closeTransientOverlay("cart"); document.getElementById("books").scrollIntoView({ behavior: "smooth" }); });
     document.getElementById("cartCheckout").addEventListener("click", () => {
       const keys = cartItems.map(String).filter(key => STORE.books.some(book => String(book.id) === key && book.status !== "inactive" && !book.free && Number(book.price) > 0));
       if (!keys.length) { showToast("Your cart is empty."); return; }
-      document.getElementById("cartModal").classList.add("hidden"); document.getElementById("cartModal").classList.remove("flex");
+      const cleanState = { ...(history.state || {}) }; delete cleanState.crazyEbookOverlay; history.replaceState(cleanState, "", location.href);
+      closeTransientOverlay("cart", true);
       const first = STORE.books.find(book => String(book.id) === keys[0]); openBuyModal(first.id, keys);
     });
-    document.getElementById("cartModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
-    document.getElementById("closeBookDetails").addEventListener("click", () => { document.getElementById("bookDetailsModal").classList.add("hidden"); document.getElementById("bookDetailsModal").classList.remove("flex"); });
-    document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) { event.currentTarget.classList.add("hidden"); event.currentTarget.classList.remove("flex"); } });
+    document.getElementById("cartModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("cart"); });
+    document.getElementById("closeBookDetails").addEventListener("click", () => closeTransientOverlay("details"));
+    document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("details"); });
     document.getElementById("detailsCart").addEventListener("click", () => addToCart(detailsBookId));
-    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; document.getElementById("bookDetailsModal").classList.add("hidden"); document.getElementById("bookDetailsModal").classList.remove("flex"); openBuyModal(Number(id)); });
+    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; const cleanState = { ...(history.state || {}) }; delete cleanState.crazyEbookOverlay; history.replaceState(cleanState, "", location.href); closeTransientOverlay("details", true); openBuyModal(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
     document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
     document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
@@ -2242,6 +2288,8 @@
 
     window.addEventListener("popstate", event => {
       if (adminClosingHistory) { adminClosingHistory = false; return; }
+      const openOverlay = Object.entries(transientOverlayIds).find(([, id]) => !document.getElementById(id).classList.contains("hidden"));
+      if (openOverlay && event.state?.crazyEbookOverlay !== openOverlay[0]) closeTransientOverlay(openOverlay[0], true);
       const modalOpen = !document.getElementById("adminModal").classList.contains("hidden");
       if (event.state?.crazyEbookAdmin && modalOpen) {
         adminHistoryDepth = Math.max(1, adminHistoryDepth - 1);
@@ -2260,11 +2308,10 @@
 
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
-        closeBuyModal();
-        closeAdminModal();
-        document.getElementById("cartModal").classList.add("hidden");
-        document.getElementById("bookDetailsModal").classList.add("hidden");
-        document.getElementById("libraryModal").classList.add("hidden");
+        const currentOverlay = Object.entries(transientOverlayIds).find(([, id]) => !document.getElementById(id).classList.contains("hidden"));
+        if (currentOverlay) closeTransientOverlay(currentOverlay[0]);
+        else if (!document.getElementById("buyModal").classList.contains("hidden")) closeBuyModal();
+        else closeAdminModal();
       }
     });
 
