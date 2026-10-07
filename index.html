@@ -329,8 +329,9 @@
       background: #f8fafc;
     }
     .admin-table-wrap { overflow-x: auto; }
-    .book-card { cursor: pointer; min-width: 0; }
-    .book-card { transition: transform .2s ease, box-shadow .2s ease; }
+    #bookGrid { perspective: 1000px; }
+    .book-card { cursor: pointer; min-width: 0; transform-style: preserve-3d; }
+    .book-card { transition: transform .28s ease, box-shadow .28s ease, opacity .2s ease; }
     .book-card .book-card-cover img { transition: transform .3s ease; }
     .book-card button, .book-card a, #openCartBtn, #openLibraryBtn, #themeToggleBtn { transition: transform .16s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, color .2s ease; }
     .book-card button:active, .book-card a:active, #openCartBtn:active, #openLibraryBtn:active, #themeToggleBtn:active { transform: scale(.97); }
@@ -345,8 +346,10 @@
     html { transition: background-color .2s ease, color .2s ease; }
     :focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
     @media (hover: hover) and (pointer: fine) {
-      .book-card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px rgba(15,23,42,.12); }
-      .book-card:hover .book-card-cover img { transform: scale(1.025); }
+      .book-card:hover, .book-card:focus-within { transform: rotateX(3deg) rotateY(-4deg) translateZ(8px); box-shadow: 0 20px 36px rgba(15,23,42,.16); }
+      .book-card:hover .book-card-cover, .book-card:focus-within .book-card-cover { transform: translateZ(18px); }
+      .book-card .book-card-cover { transform-style: preserve-3d; transition: transform .28s ease; }
+      .book-card:hover .book-card-cover img, .book-card:focus-within .book-card-cover img { transform: scale(1.025) translateZ(2px); }
     }
     .customer-status-toast { max-height: 20vh; overflow: auto; }
     .customer-status-toast p { white-space: pre-line; }
@@ -437,6 +440,9 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      .book-card { transform: none !important; transition: opacity .2s ease !important; }
+      .book-card:hover, .book-card:focus-within { transform: none !important; opacity: .88; }
+      .book-card .book-card-cover { transform: none !important; }
     }
   </style>
 </head>
@@ -1283,7 +1289,7 @@
         const imageUrl = safeHrefOrBlank(book.coverImage);
 
         return `
-          <article data-details="${book.id}" class="book-card reveal group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+          <article data-details="${book.id}" class="book-card reveal group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
               <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
                 ${imageUrl
