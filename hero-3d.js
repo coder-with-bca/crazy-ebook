@@ -1,11 +1,17 @@
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
 const canvas = document.getElementById("hero3dCanvas");
 const host = document.getElementById("heroScene");
 const section = document.getElementById("heroSection");
 
-if (canvas && host && section) {
+async function initializeHeroScene() {
+  // Keep the decorative 3D enhancement off phones and reduced-motion devices.
+  if (!canvas || !host || !section) return;
+  if (window.matchMedia("(max-width: 767px)").matches || window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const [THREE, { GLTFLoader }] = await Promise.all([
+    import("three"),
+    import("three/addons/loaders/GLTFLoader.js")
+  ]);
+
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({
@@ -146,3 +152,11 @@ if (canvas && host && section) {
     });
   }
 }
+
+initializeHeroScene().catch(error => {
+  if (canvas) {
+    canvas.hidden = true;
+    canvas.style.display = "none";
+  }
+  console.info("The optional 3D hero is unavailable; the static featured-book UI remains active.", error);
+});

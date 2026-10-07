@@ -288,6 +288,9 @@
       opacity: 1;
       transform: translateY(0);
     }
+    /* Critical store content must not depend on the optional reveal observer. */
+    #heroSection .hero-showcase,
+    #bookGrid > .book-card { opacity: 1 !important; visibility: visible !important; }
     .cover-shadow {
       box-shadow: 14px 18px 0 rgba(15, 23, 42, .08), 0 25px 45px rgba(15, 23, 42, .14);
     }
@@ -570,7 +573,7 @@
           </div>
         </div>
 
-        <div class="featured-book-panel hero-showcase reveal flex items-center justify-center lg:justify-end">
+        <div class="featured-book-panel hero-showcase flex items-center justify-center lg:justify-end">
           <div id="heroScene" class="hero-scene" aria-label="Interactive 3D ebook model">
             <div class="hero-scene-glow" aria-hidden="true"></div>
             <div class="hero-model-fallback" aria-hidden="true"></div>
@@ -1328,7 +1331,7 @@
         const imageUrl = safeHrefOrBlank(book.coverImage);
 
         return `
-          <article data-details="${book.id}" class="book-card reveal group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <article data-details="${book.id}" class="book-card group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
               <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
                 ${imageUrl
