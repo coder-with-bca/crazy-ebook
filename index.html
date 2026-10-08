@@ -1612,9 +1612,10 @@
           ? { p_book_keys: checkoutCartKeys, p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken }
           : { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken };
         if (activeCouponCode) purchaseArgs.p_coupon_code = activeCouponCode;
-        const result = checkoutCartKeys.length
-          ? await supabase.rpc("create_cart_purchase", purchaseArgs)
-          : await supabase.rpc("create_purchase", purchaseArgs);
+        const purchaseRpc = checkoutCartKeys.length
+          ? (activeCouponCode ? "create_cart_purchase_with_coupon" : "create_cart_purchase")
+          : (activeCouponCode ? "create_purchase_with_coupon" : "create_purchase");
+        const result = await supabase.rpc(purchaseRpc, purchaseArgs);
         const { data, error } = result;
         if (error || !data) throw error || new Error("Order creation failed");
         const purchase = Array.isArray(data) ? data[0] : data;
@@ -1661,9 +1662,11 @@
           activeCouponCode = null; activeCouponPercent = 0;
           renderCheckoutCouponTotals(); showCouponStatus(message);
         }
+        const rpcIssue = String(error?.message || '').toLowerCase();
+        const couponRpcUnavailable = activeCouponCode && (rpcIssue.includes('pgrst202') || rpcIssue.includes('pgrst203') || rpcIssue.includes('schema cache') || rpcIssue.includes('function') && rpcIssue.includes('not found'));
         errorBox.textContent = purchaseSaved
           ? `Order ${latestPurchaseId} was saved, but checkout could not finish. Please do not create it again; refresh and check the saved order status.`
-          : activeCouponCode ? "Something went wrong while creating your order. Please try again." : couponIssue.includes('coupon') ? "Your coupon is no longer available. Please review the updated total and try again." : "Something went wrong while creating your order. Please try again.";
+          : couponRpcUnavailable ? "Coupon checkout is not ready in Supabase yet. Re-run the latest supabase-coupons-migration.sql, wait a minute, refresh this page, and try again." : activeCouponCode ? "Something went wrong while creating your order. Please try again." : couponIssue.includes('coupon') ? "Your coupon is no longer available. Please review the updated total and try again." : "Something went wrong while creating your order. Please try again.";
         errorBox.classList.remove("hidden");
       } finally { if (!couponPriceMismatch) { button.disabled = false; button.textContent = "Create order and continue"; } }
     }
