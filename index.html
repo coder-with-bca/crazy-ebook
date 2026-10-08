@@ -1604,6 +1604,7 @@
       if (!STORE.upiId) { errorBox.textContent = "Saved payment details are unavailable. Please refresh or contact support."; errorBox.classList.remove("hidden"); return; }
       const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
       let purchaseSaved = false;
+      let couponPriceMismatch = false;
       try {
         if (!supabaseReady || !selectedBook) throw new Error("unavailable");
         const accessToken = createPurchaseAccessToken();
@@ -1620,6 +1621,19 @@
         if (!purchase?.purchase_id) throw new Error("Order creation returned no purchase ID");
         purchaseSaved = true;
         latestPurchaseId = purchase.purchase_id; latestPurchasePrice = Number(purchase.price); latestPurchaseAccessToken = accessToken;
+        const expectedOriginal = checkoutSubtotal();
+        const expectedDiscount = activeCouponCode ? couponDiscountFor(expectedOriginal, activeCouponPercent) : 0;
+        const expectedFinal = Math.max(0, Math.round((expectedOriginal - expectedDiscount + Number.EPSILON) * 100) / 100);
+        if (activeCouponCode && Math.round(latestPurchasePrice * 100) !== Math.round(expectedFinal * 100)) {
+          couponPriceMismatch = true;
+          rememberPurchaseReference(latestPurchaseId, accessToken);
+          try { localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId); } catch {}
+          button.disabled = true; button.textContent = "Order saved · contact support";
+          errorBox.textContent = `Order ${latestPurchaseId} was saved, but Supabase returned ${money(latestPurchasePrice)} instead of the coupon total ${money(expectedFinal)}. Do not pay this order. Reapply the latest supabase-coupons-migration.sql in Supabase, then create a new order.`;
+          errorBox.classList.remove("hidden");
+          try { await supabase.functions.invoke("send-purchase-telegram", { body: { purchase_id: latestPurchaseId } }); } catch (notifyError) { console.warn("Telegram notification could not be sent; purchase remains saved.", notifyError); }
+          return;
+        }
         renderUpiQr(latestPurchasePrice, latestPurchaseId);
         rememberPurchaseReference(latestPurchaseId, accessToken);
         try { localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId); } catch {}
@@ -1651,7 +1665,7 @@
           ? `Order ${latestPurchaseId} was saved, but checkout could not finish. Please do not create it again; refresh and check the saved order status.`
           : activeCouponCode ? "Something went wrong while creating your order. Please try again." : couponIssue.includes('coupon') ? "Your coupon is no longer available. Please review the updated total and try again." : "Something went wrong while creating your order. Please try again.";
         errorBox.classList.remove("hidden");
-      } finally { button.disabled = false; button.textContent = "Create order and continue"; }
+      } finally { if (!couponPriceMismatch) { button.disabled = false; button.textContent = "Create order and continue"; } }
     }
 
     function createPurchaseAccessToken() {
