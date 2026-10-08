@@ -68,7 +68,6 @@
           <button class="admin-tab active rounded-xl border px-4 py-2.5 text-xs font-black" data-admin-tab="books">Books</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="purchases">Purchases</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="coupons">Coupons</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="settings">Settings</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
@@ -220,12 +219,6 @@
               </div>
             </div>
           </div>
-        </section>
-
-        <section id="adminTabCoupons" class="admin-tab-panel hidden pt-6">
-          <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Discounts</p><h3 class="mt-1 text-2xl font-black">Coupons</h3><p class="mt-2 text-sm text-slate-500">Create percentage coupons and manage availability.</p></div><button id="newCouponBtn" type="button" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">+ New Coupon</button></div>
-          <form id="couponForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="couponId" type="hidden"><label class="text-xs font-bold">Coupon code<input id="couponCodeInput" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" autocomplete="off" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="WELCOME10"></label><label class="text-xs font-bold">Discount (%)<input id="couponPercentInput" required type="number" min="0.01" max="100" step="0.01" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="10"></label><label class="text-xs font-bold">Expiry date (optional)<input id="couponExpiryInput" type="date" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Usage limit (optional)<input id="couponLimitInput" type="number" min="1" step="1" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="Unlimited"></label><label class="flex items-center gap-2 text-sm font-bold"><input id="couponActiveInput" type="checkbox" checked> Active</label><div class="flex gap-2 sm:col-span-2"><button id="saveCouponBtn" type="submit" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">Save Coupon</button><button id="cancelCouponEditBtn" type="button" class="hidden rounded-xl border px-4 py-2.5 text-sm font-bold">Cancel</button></div><p id="couponAdminError" class="hidden text-sm font-bold text-rose-600 sm:col-span-2" role="alert"></p></form>
-          <div id="adminCouponsList" class="mt-5 grid gap-3"></div>
         </section>
 
         <section id="adminTabData" class="admin-tab-panel hidden pt-6">
@@ -505,41 +498,12 @@
     .hero-model-fallback.has-cover::after { content:""; position:absolute; top:2px; right:-5px; bottom:2px; width:5px; border-radius:0 3px 3px 0; background:repeating-linear-gradient(180deg,#fffdf7 0 2px,#deded6 2px 3px); transform:skewY(-7deg); }
     html[data-theme="dark"] .hero-model-fallback.has-cover::after { background:repeating-linear-gradient(180deg,#d7deea 0 2px,#9aa8ba 2px 3px); }
     .book-card { position:relative; overflow:hidden; border-color:#e6e5dc; background:linear-gradient(165deg,#fff 0%,#fffdf7 100%); box-shadow:0 8px 22px #101b2d0b; }
-    .book-card { transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease; }
-    .book-card .book-card-cover img { transition:transform .3s ease; }
-    .book-card .book-actions button,.book-card .book-actions a,.book-card .buy-btn { min-height:42px; transition:transform .16s ease,box-shadow .2s ease,background-color .2s ease; }
-    .book-card .book-actions button:active,.book-card .book-actions a:active,.book-card .buy-btn:active { transform:scale(.975); }
-    .book-card .buy-btn { box-shadow:0 5px 14px rgba(16,27,45,.14); }
-    .book-card .buy-btn:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(16,27,45,.2); }
-    #bookGrid.catalog-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
-    @media(min-width:640px) { #bookGrid.catalog-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5rem; } }
-    @media(min-width:1024px) { #bookGrid.catalog-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
-    @media(min-width:1280px) { #bookGrid.catalog-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
-    .catalog-category { min-width:0; }
-    .catalog-category-heading { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.75rem; }
-    .catalog-category-heading h3 { font-size:clamp(1rem,2vw,1.25rem); font-weight:900; letter-spacing:-.025em; }
-    .category-book-row { display:grid; grid-auto-flow:column; grid-auto-columns:78%; gap:.75rem; overflow-x:auto; overscroll-behavior-inline:contain; padding:.2rem .1rem .8rem; scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:#94a3b8 transparent; }
-    .category-book-row > .book-card { width:100%; scroll-snap-align:start; }
-    .category-row-arrow { display:grid; width:36px; height:36px; place-items:center; border:1px solid #d7dce2; border-radius:999px; background:white; color:#172338; transition:transform .16s ease,background .16s ease; }
-    .category-row-arrow:hover { transform:translateY(-1px); background:#f3f6f8; }
-    .category-scroll-track { height:3px; overflow:hidden; border-radius:999px; background:#e8ebef; }
-    .category-scroll-track span { display:block; width:100%; height:100%; border-radius:inherit; background:#0d9488; transform:scaleX(0); transform-origin:left center; transition:transform .12s linear; }
-    .book-view-btn { border-color:#d5dce5; color:#64748b; }
-    .book-view-btn[aria-pressed="true"] { border-color:#0d9488; background:#0d9488; color:white; }
-    .catalog-category.reveal { transition-duration:.42s; }
-    @media(min-width:640px) { .category-book-row { grid-auto-columns:minmax(210px,245px); gap:1rem; } }
     html[data-theme="dark"] .book-card { border-color:#35445a; background:linear-gradient(165deg,#172438 0%,#111c2d 100%); box-shadow:0 10px 26px rgba(0,0,0,.22); }
-    html[data-theme="dark"] .category-row-arrow { border-color:#35445a; background:#172438; color:#e2e8f0; }
-    html[data-theme="dark"] .category-row-arrow:hover { background:#24334a; }
-    html[data-theme="dark"] .category-scroll-track { background:#26354a; }
-    html[data-theme="dark"] .book-view-btn { border-color:#35445a; color:#bdc9d8; }
-    html[data-theme="dark"] .book-view-btn[aria-pressed="true"] { border-color:#0d9488; background:#0d9488; color:#fff; }
     html[data-theme="dark"] .book-card h3,
     html[data-theme="dark"] .book-card .book-price { color:#f8fafc !important; }
+    html[data-theme="dark"] .book-card .book-category,
     html[data-theme="dark"] .book-card .book-summary,
     html[data-theme="dark"] .book-card .book-rating > span:last-child { color:#bdc9d8 !important; }
-    .book-card .book-category { display:inline-flex; width:fit-content; max-width:100%; align-items:center; border-radius:999px; background:#e8f5f3; color:#0f766e; padding:.28rem .55rem; font-size:.62rem; font-weight:900; line-height:1rem; letter-spacing:.045em; }
-    html[data-theme="dark"] .book-card .book-category { background:#123b3b; color:#7de3d2 !important; }
     html[data-theme="dark"] .book-card .sample-btn { border-color:#475569; background:#1e2b3e; color:#e2e8f0; }
     html[data-theme="dark"] .book-card .book-actions .buy-btn { background:#0d9488; color:#fff; }
     .book-card .book-detail-reveal { position:absolute; z-index:4; left:12px; right:12px; bottom:12px; transform:translateY(150%); opacity:0; transition:transform .38s cubic-bezier(.2,.9,.25,1),opacity .2s ease; }
@@ -563,7 +527,7 @@
       #cartModal > div { width:100%; height:min(90dvh,760px); border-radius:24px 24px 0 0; animation:cart-sheet-in .3s cubic-bezier(.2,.8,.2,1) both; }
       @keyframes cart-sheet-in { from { transform:translateY(30px); opacity:.7; } to { transform:translateY(0); opacity:1; } }
     }
-    @media(prefers-reduced-motion:reduce) { #heroSection .mt-8.flex.flex-col a, .hero-model-fallback { animation:none; } .category-book-row { scroll-behavior:auto; } .book-card,.book-card * { animation:none !important; transition-duration:.01ms !important; } }
+    @media(prefers-reduced-motion:reduce) { #heroSection .mt-8.flex.flex-col a, .hero-model-fallback { animation:none; } }
     html[data-theme="dark"] #heroSection {
       background:radial-gradient(ellipse at 88% 12%,rgba(54,73,145,.42),transparent 42%),radial-gradient(ellipse at 8% 90%,rgba(13,148,136,.12),transparent 38%),linear-gradient(135deg,#0b1220 0%,#0d1728 62%,#101c30 100%) !important;
     }
@@ -744,13 +708,7 @@
 
       <div id="filterPills" class="reveal mt-7 flex flex-wrap gap-2"></div>
 
-      <div class="mt-4 flex items-center justify-end gap-1" role="group" aria-label="Book display style">
-        <span class="mr-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">View</span>
-        <button type="button" class="book-view-btn rounded-lg border px-3 py-1.5 text-xs font-bold" data-book-view="slider" aria-pressed="true">↔ Slider</button>
-        <button type="button" class="book-view-btn rounded-lg border px-3 py-1.5 text-xs font-bold" data-book-view="grid" aria-pressed="false">▦ Grid</button>
-      </div>
-
-      <div id="bookGrid" class="catalog-slider-view mt-5 space-y-7 sm:mt-7"></div>
+      <div id="bookGrid" class="mt-5 grid gap-3 sm:mt-9 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"></div>
 
       <div id="emptyBooks" class="hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
         <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-xl">⌕</div>
@@ -867,7 +825,8 @@
         <div>
           <h3 class="font-black text-white">Contact</h3>
           <div class="mt-4 space-y-2 text-sm">
-            <a id="footerTelegram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Telegram Support</a>
+            <a id="footerTelegram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Telegram</a>
+            <a id="footerPurchaseChannel" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Purchase Channel</a>
             <a id="footerInstagram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Instagram</a>
             <a id="footerEmail" href="#" class="block transition hover:text-white">Support Email</a>
             <button id="openAdminBtn" type="button" class="admin-btn mt-3 rounded-lg px-3 py-2 text-xs font-black transition">Admin Portal</button>
@@ -933,7 +892,7 @@
         </button>
       </div>
 
-      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><section class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Original price</span><span id="couponOriginalTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-emerald-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"></div>
+      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"></div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
         <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
         <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
@@ -1108,14 +1067,13 @@
     STORE.upiId = "";
     STORE.reviews = [];
     let activeCategory = "All";
-    const BOOK_VIEW_KEY = "crazyebook-book-view-v1";
-    let bookView = "slider";
-    try { if (localStorage.getItem(BOOK_VIEW_KEY) === "grid") bookView = "grid"; } catch {}
     let selectedBook = null;
     let editingBookId = null;
     let adminAuthenticated = false;
     let activeAdminTab = "books";
     let activeAdminEditState = null;
+    let adminHistoryDepth = 0;
+    let adminClosingHistory = false;
     let supabase = null;
     let privateLinks = {};
     let supabaseReady = false;
@@ -1199,9 +1157,7 @@
 
     function money(value) {
       const amount = Number(value) || 0;
-      if (amount === 0) return "Free";
-      const rounded = Math.round((amount + Number.EPSILON) * 100) / 100;
-      return `Rs ${Number.isInteger(rounded) ? rounded : rounded.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")}`;
+      return amount === 0 ? "Free" : `Rs ${Math.round(amount)}`;
     }
 
     function escapeHtml(value) {
@@ -1249,13 +1205,15 @@
     function openTransientOverlay(name) {
       const modal = document.getElementById(transientOverlayIds[name]);
       if (!modal || !modal.classList.contains("hidden")) return;
+      history.pushState({ ...(history.state || {}), crazyEbookOverlay: name }, "", location.href);
       modal.classList.remove("hidden"); modal.classList.add("flex", "shop-modal");
       document.body.classList.add("modal-open");
       modal.querySelector(":scope > div")?.classList.add("shop-modal-panel");
     }
-    function closeTransientOverlay(name) {
+    function closeTransientOverlay(name, fromPopState = false) {
       const modal = document.getElementById(transientOverlayIds[name]);
       if (!modal || modal.classList.contains("hidden")) return;
+      if (!fromPopState && history.state?.crazyEbookOverlay === name) { history.back(); return; }
       const panel = modal.querySelector(":scope > div");
       const finishClose = () => {
         modal.classList.add("hidden"); modal.classList.remove("flex", "shop-modal");
@@ -1263,7 +1221,7 @@
         const anotherOverlayOpen = [...Object.values(transientOverlayIds), "buyModal", "adminModal"].some(id => !document.getElementById(id).classList.contains("hidden"));
         if (!anotherOverlayOpen) document.body.classList.remove("modal-open");
       };
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches && typeof modal.animate === "function") {
+      if (fromPopState && !matchMedia("(prefers-reduced-motion: reduce)").matches && typeof modal.animate === "function") {
         modal.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, easing: "ease-in" }).finished.then(finishClose).catch(finishClose);
         panel?.animate([{ opacity: 1, transform: "translateY(0) scale(1)" }, { opacity: 0, transform: "translateY(8px) scale(.99)" }], { duration: 150, easing: "ease-in" });
       } else finishClose();
@@ -1307,6 +1265,7 @@
       document.getElementById("siteCreators").textContent = `by ${STORE.creators || "Akki & Aadi"}`;
       document.getElementById("navTelegram").href = safeUrl(STORE.telegramLink);
       document.getElementById("footerTelegram").href = safeUrl(STORE.telegramLink);
+      document.getElementById("footerPurchaseChannel").href = safeUrl(STORE.purchaseTelegramLink);
       document.getElementById("footerInstagram").href = safeUrl(STORE.instagramLink);
 
       const email = document.getElementById("footerEmail");
@@ -1429,98 +1388,113 @@
     /* =========================================================
        BOOK CARDS
        ========================================================= */
-    function renderBookCard(book) {
-      const sample = bookSampleHref(book);
-      const imageUrl = safeHrefOrBlank(book.coverImage);
-      const subjects = Array.isArray(book.subjects) ? book.subjects : String(book.subjects || '').split(',').map(value => value.trim()).filter(Boolean);
-      return `
-        <article data-details="${escapeHtml(book.id)}" class="book-card group flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
-          <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
-            <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
-              ${imageUrl
-                ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" loading="lazy" class="h-full w-full object-cover" />`
-                : `<div class="${escapeHtml(book.coverClass || 'bg-slate-950 text-white')} flex h-full flex-col justify-between p-5"><div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div><div><div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || 'BOOK')}</div><div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div></div></div>`}
-            </div>
-            <span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">${escapeHtml(book.tag || (book.free ? 'Free' : 'New'))}</span>
-            <div class="book-detail-reveal"><button type="button" data-details-button="${escapeHtml(book.id)}">View details <span aria-hidden="true">↗</span></button></div>
-          </div>
-          <div class="book-card-content mt-4 flex flex-1 flex-col">
-            <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
-            ${subjects.length ? `<div class="book-subjects flex flex-wrap gap-1.5">${subjects.slice(0, 3).map(subject => `<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">${escapeHtml(subject)}</span>`).join('')}</div>` : ''}
-            <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(book.title)}</h3>
-            <div class="book-rating mt-2 flex items-center gap-2 text-sm"><span class="font-black text-amber-500">${renderStars(book.rating)}</span><span class="font-bold text-slate-500">${Number(book.rating || 0).toFixed(1)}</span></div>
-            <div class="mt-2 flex items-end gap-2">${Number(book.mrp) > Number(book.price) ? `<span class="text-xs font-bold text-slate-400 line-through">${money(book.mrp)}</span>` : ''}<span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span></div>
-            <div class="book-actions mt-3 grid grid-cols-2 gap-2">
-              ${sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">Sample</button>`}
-              <button type="button" data-add-cart="${escapeHtml(book.id)}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-2.5 text-[10px] font-extrabold text-indigo-800">+ Add to Cart</button>
-            </div>
-            <button type="button" data-buy="${escapeHtml(book.id)}" class="buy-btn mt-2 w-full rounded-xl bg-slate-950 px-3 py-2.5 text-xs font-extrabold text-white transition hover:bg-slate-800">${book.free ? 'Get Free' : 'Buy Now'}</button>
-          </div>
-        </article>`;
-    }
-
-    function setBookView(view, persist = true) {
-      bookView = view === 'grid' ? 'grid' : 'slider';
-      if (persist) { try { localStorage.setItem(BOOK_VIEW_KEY, bookView); } catch {} }
-      document.querySelectorAll('[data-book-view]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.bookView === bookView)));
-      renderBooks();
-    }
-
     function renderBooks() {
-      document.querySelectorAll('[data-book-view]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.bookView === bookView)));
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
       const filtered = STORE.books.filter(book => {
-        if (book.status === 'inactive') return false;
-        const categoryMatch = activeCategory === 'All' || book.category === activeCategory;
-        const searchText = [book.title, book.category, book.summary, ...(Array.isArray(book.subjects) ? book.subjects : [])].join(' ').toLowerCase();
+        if (book.status === "inactive") return false;
+        const categoryMatch = activeCategory === "All" || book.category === activeCategory;
+        const searchText = [
+          book.title,
+          book.category,
+          book.summary,
+          ...(Array.isArray(book.subjects) ? book.subjects : [])
+        ].join(" ").toLowerCase();
         return categoryMatch && searchText.includes(query);
       });
-      const grid = document.getElementById('bookGrid');
-      const empty = document.getElementById('emptyBooks');
-      empty.classList.toggle('hidden', filtered.length !== 0);
+
+      const grid = document.getElementById("bookGrid");
+      const empty = document.getElementById("emptyBooks");
+
+      empty.classList.toggle("hidden", filtered.length !== 0);
       if (!filtered.length) {
-        grid.replaceChildren();
-        const topics = [...new Set(STORE.books.filter(book => book.status !== 'inactive').flatMap(book => [book.category, ...(Array.isArray(book.subjects) ? book.subjects : [])]).filter(Boolean))].slice(0, 8);
-        document.getElementById('emptyBookSuggestions').innerHTML = topics.map(topic => `<button type="button" class="rounded-full border border-teal-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm" data-topic-suggestion="${escapeHtml(topic)}">${escapeHtml(topic)} <span aria-hidden="true">↗</span></button>`).join('');
-        document.querySelectorAll('[data-topic-suggestion]').forEach(button => button.addEventListener('click', () => {
+        const topics = [...new Set(STORE.books.filter(book => book.status !== "inactive").flatMap(book => [book.category, ...(Array.isArray(book.subjects) ? book.subjects : [])]).filter(Boolean))].slice(0, 8);
+        document.getElementById("emptyBookSuggestions").innerHTML = topics.map(topic => `<button type="button" class="rounded-full border border-teal-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm" data-topic-suggestion="${escapeHtml(topic)}">${escapeHtml(topic)} <span aria-hidden="true">↗</span></button>`).join("");
+        document.querySelectorAll("[data-topic-suggestion]").forEach(button => button.addEventListener("click", () => {
           const topic = button.dataset.topicSuggestion;
-          if (categories().includes(topic)) { activeCategory = topic; document.getElementById('searchInput').value = ''; renderFilters(); }
-          else document.getElementById('searchInput').value = topic;
+          if (categories().includes(topic)) { activeCategory = topic; document.getElementById("searchInput").value = ""; renderFilters(); }
+          else document.getElementById("searchInput").value = topic;
           renderBooks();
         }));
-        return;
       }
-      if (bookView === 'grid') {
-        grid.className = 'catalog-grid mt-5 sm:mt-7';
-        grid.innerHTML = filtered.map(renderBookCard).join('');
-      } else {
-        grid.className = 'catalog-slider-view mt-5 space-y-7 sm:mt-7';
-        const grouped = [...new Set(filtered.map(book => book.category || 'Other'))].map(category => [category, filtered.filter(book => (book.category || 'Other') === category)]);
-        grid.innerHTML = grouped.map(([category, books], index) => `
-          <section class="catalog-category reveal" data-category-section>
-            <div class="catalog-category-heading"><div class="min-w-0"><h3>${escapeHtml(category)}</h3><p class="text-xs text-slate-500">${books.length} ${books.length === 1 ? 'book' : 'books'} <span class="sm:hidden">· swipe to explore</span></p></div>
-              <div class="hidden shrink-0 items-center gap-2 sm:flex"><button type="button" class="category-row-arrow" data-row-scroll="-1" aria-label="Scroll ${escapeHtml(category)} books left">‹</button><button type="button" class="category-row-arrow" data-row-scroll="1" aria-label="Scroll ${escapeHtml(category)} books right">›</button></div>
+
+      grid.innerHTML = filtered.map(book => {
+        const sample = bookSampleHref(book);
+        const imageUrl = safeHrefOrBlank(book.coverImage);
+
+        return `
+          <article data-details="${book.id}" class="book-card group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
+              <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
+                ${imageUrl
+                  ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" class="h-full w-full object-cover" />`
+                  : `<div class="${escapeHtml(book.coverClass || "bg-slate-950 text-white")} flex h-full flex-col justify-between p-5">
+                       <div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div>
+                       <div>
+                         <div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || "BOOK")}</div>
+                         <div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div>
+                       </div>
+                     </div>`
+                }
+              </div>
+              <span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">
+                ${escapeHtml(book.tag || (book.free ? "Free" : "New"))}
+              </span>
+              <div class="book-detail-reveal"><button type="button" data-details-button="${book.id}">View details <span aria-hidden="true">↗</span></button></div>
             </div>
-            <div class="category-book-row" data-category-row="${index}">${books.map(renderBookCard).join('')}</div>
-            <div class="category-scroll-track" aria-hidden="true"><span></span></div>
-          </section>`).join('');
-      }
-      grid.querySelectorAll('.buy-btn').forEach(button => button.addEventListener('click', () => openBuyModal(button.dataset.buy)));
-      grid.querySelectorAll('.add-cart-btn').forEach(button => button.addEventListener('click', () => addToCart(button.dataset.addCart)));
-      grid.querySelectorAll('[data-details-button]').forEach(button => button.addEventListener('click', event => { event.stopPropagation(); openBookDetails(button.dataset.detailsButton); }));
-      grid.querySelectorAll('.book-card').forEach((card, index) => {
-        card.addEventListener('click', event => { if (!event.target.closest('button,a')) openBookDetails(card.dataset.details); });
-        if (!matchMedia('(prefers-reduced-motion: reduce)').matches && typeof card.animate === 'function') card.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 300, delay: Math.min(index * 35, 175), easing: 'cubic-bezier(.2,.8,.2,1)' });
+
+            <div class="book-card-content mt-4 flex flex-1 flex-col">
+              <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || "Digital Book")}</p>
+              <h3 class="mt-1 break-words text-lg font-black tracking-tight">${escapeHtml(book.title)}</h3>
+
+              <div class="book-rating mt-2 flex items-center gap-2 text-sm">
+                <span class="font-black text-amber-500">${renderStars(book.rating)}</span>
+                <span class="font-bold text-slate-500">${Number(book.rating || 0).toFixed(1)}</span>
+              </div>
+
+              <div class="mt-2 flex items-end gap-2">
+                ${Number(book.mrp) > Number(book.price) ? `<span class="text-xs font-bold text-slate-400 line-through">${money(book.mrp)}</span>` : ""}
+                <span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span>
+              </div>
+
+              <div class="book-actions mt-3 grid grid-cols-2 gap-2">
+                ${sample
+                  ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-3 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>`
+                  : `<button type="button" disabled class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-3 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">Sample</button>`}
+                <button type="button" data-add-cart="${book.id}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-2.5 text-[10px] font-extrabold text-indigo-800 md:hidden">+ Add to Cart</button>
+                <button type="button" data-buy="${book.id}"
+                        class="buy-btn hidden rounded-xl bg-slate-950 px-3 py-3 text-xs font-extrabold text-white transition hover:bg-slate-800 md:block">
+                  ${book.free ? "Get Free" : "Buy Now"}
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".buy-btn").forEach(button => {
+        button.addEventListener("click", () => openBuyModal(Number(button.dataset.buy)));
       });
-      grid.querySelectorAll('[data-row-scroll]').forEach(button => button.addEventListener('click', () => {
-        const row = button.closest('[data-category-section]')?.querySelector('[data-category-row]');
-        if (row) row.scrollBy({ left: Number(button.dataset.rowScroll) * Math.max(row.clientWidth * .78, 220), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+
+      document.querySelectorAll(".add-cart-btn").forEach(button => button.addEventListener("click", () => addToCart(button.dataset.addCart)));
+      document.querySelectorAll("[data-details-button]").forEach(button => button.addEventListener("click", event => { event.stopPropagation(); openBookDetails(Number(button.dataset.detailsButton)); }));
+      document.querySelectorAll(".book-card").forEach(card => card.addEventListener("click", event => {
+        if (!event.target.closest("button,a")) openBookDetails(Number(card.dataset.details));
       }));
-      grid.querySelectorAll('[data-category-row]').forEach(row => {
-        const updateProgress = () => { const track = row.parentElement.querySelector('.category-scroll-track span'); if (track) track.style.transform = `scaleX(${row.scrollWidth <= row.clientWidth ? 1 : row.scrollLeft / (row.scrollWidth - row.clientWidth)})`; };
-        row.addEventListener('scroll', updateProgress, { passive: true });
-        updateProgress();
-      });
+      if (matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.querySelectorAll(".book-card").forEach(card => {
+          card.addEventListener("pointermove", event => {
+            const bounds = card.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width - .5;
+            const y = (event.clientY - bounds.top) / bounds.height - .5;
+            card.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
+            card.style.setProperty("--tilt-y", `${(x * 4).toFixed(2)}deg`);
+            card.style.transform = `perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-3px)`;
+          });
+          card.addEventListener("pointerleave", () => { card.style.transform = ""; });
+          card.animate([{ opacity: 0, transform: "translateY(12px) scale(.985)" }, { opacity: 1, transform: "translateY(0) scale(1)" }], { duration: 320, delay: Math.min([...grid.children].indexOf(card) * 35, 210), easing: "cubic-bezier(.2,.8,.2,1)" });
+        });
+      }
+
       syncCartFeedback();
       requestAnimationFrame(() => observeReveals());
     }
@@ -1528,66 +1502,6 @@
     /* =========================================================
        BUY / SAMPLE
        ========================================================= */
-    function checkoutSubtotal() {
-      if (!selectedBook) return 0;
-      if (!checkoutCartKeys.length) return Math.round(Number(selectedBook.price || 0) * 100) / 100;
-      const subtotalCents = checkoutCartKeys.reduce((sum, key) => sum + Math.round(Number(STORE.books.find(book => String(book.id) === String(key))?.price || 0) * 100), 0);
-      return subtotalCents / 100;
-    }
-    function couponDiscountFor(subtotal, percent) {
-      const subtotalCents = Math.round(Number(subtotal) * 100);
-      const discountCents = Math.round(subtotalCents * Number(percent) / 100);
-      return Math.min(subtotalCents, Math.max(0, discountCents)) / 100;
-    }
-    function renderCheckoutCouponTotals() {
-      const original = checkoutSubtotal();
-      const discount = activeCouponCode ? couponDiscountFor(original, activeCouponPercent) : 0;
-      const payable = Math.max(0, Math.round((original - discount + Number.EPSILON) * 100) / 100);
-      document.getElementById('couponOriginalTotal').textContent = money(original);
-      document.getElementById('couponDiscountTotal').textContent = `−${money(discount)}`;
-      document.getElementById('couponDiscountRow').classList.toggle('hidden', !activeCouponCode);
-      document.getElementById('couponFinalTotal').textContent = money(payable);
-      document.getElementById('modalPrice').textContent = money(payable);
-      document.getElementById('clearCouponBtn').classList.toggle('hidden', !activeCouponCode);
-    }
-    function showCouponStatus(message, valid = false) {
-      const status = document.getElementById('couponStatus');
-      status.textContent = message;
-      status.classList.remove('hidden', 'text-emerald-700', 'text-rose-600', 'text-slate-500');
-      status.classList.add(valid ? 'text-emerald-700' : 'text-rose-600');
-    }
-    async function applyCheckoutCoupon() {
-      const button = document.getElementById('applyCouponBtn');
-      const code = document.getElementById('couponCodeInputCheckout').value.trim().toUpperCase();
-      if (!code) { showCouponStatus('Enter a coupon code.'); return; }
-      if (!supabaseReady || !supabase) { showCouponStatus('Coupon service unavailable. Please try again later.'); return; }
-      button.disabled = true; button.textContent = 'Checking…';
-      try {
-        const { data, error } = await supabase.rpc('validate_coupon', { p_code: code });
-        if (error) { showCouponStatus('Coupon service unavailable. Please try again later.'); return; }
-        const result = Array.isArray(data) ? data[0] : data;
-        if (result?.status !== 'valid') {
-          activeCouponCode = null; activeCouponPercent = 0;
-          renderCheckoutCouponTotals();
-          showCouponStatus(result?.status === 'expired' ? 'Coupon expired' : result?.status === 'unavailable' ? 'Coupon unavailable' : 'Invalid coupon');
-          return;
-        }
-        activeCouponCode = code;
-        activeCouponPercent = Number(result.discount_percent);
-        document.getElementById('couponCodeInputCheckout').value = code;
-        renderCheckoutCouponTotals();
-        showCouponStatus(`✓ Coupon applied · ${activeCouponPercent}% off`, true);
-      } catch {
-        showCouponStatus('Coupon service unavailable. Please try again later.');
-      } finally { button.disabled = false; button.textContent = 'Apply'; }
-    }
-    function clearCheckoutCoupon() {
-      activeCouponCode = null; activeCouponPercent = 0;
-      document.getElementById('couponCodeInputCheckout').value = '';
-      document.getElementById('couponStatus').classList.add('hidden');
-      renderCheckoutCouponTotals();
-    }
-
     async function createPurchase(event) {
       event.preventDefault();
       const errorBox = document.getElementById("purchaseFormError");
@@ -1607,13 +1521,9 @@
       try {
         if (!supabaseReady || !selectedBook) throw new Error("unavailable");
         const accessToken = createPurchaseAccessToken();
-        const purchaseArgs = checkoutCartKeys.length
-          ? { p_book_keys: checkoutCartKeys, p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken }
-          : { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken };
-        if (activeCouponCode) purchaseArgs.p_coupon_code = activeCouponCode;
         const result = checkoutCartKeys.length
-          ? await supabase.rpc("create_cart_purchase", purchaseArgs)
-          : await supabase.rpc("create_purchase", purchaseArgs);
+          ? await supabase.rpc("create_cart_purchase", { p_book_keys: checkoutCartKeys, p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken })
+          : await supabase.rpc("create_purchase", { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken });
         const { data, error } = result;
         if (error || !data) throw error || new Error("Order creation failed");
         const purchase = Array.isArray(data) ? data[0] : data;
@@ -1641,15 +1551,9 @@
         } catch (notifyError) { console.warn("Telegram notification could not be sent; purchase remains saved.", notifyError); }
       } catch (error) {
         console.error("Purchase creation failed", error);
-        const couponIssue = String(error?.message || '').toLowerCase();
-        if (activeCouponCode && couponIssue.includes('coupon')) {
-          const message = couponIssue.includes('expired') ? 'Coupon expired' : couponIssue.includes('unavailable') ? 'Coupon unavailable' : 'Invalid coupon';
-          activeCouponCode = null; activeCouponPercent = 0;
-          renderCheckoutCouponTotals(); showCouponStatus(message);
-        }
         errorBox.textContent = purchaseSaved
           ? `Order ${latestPurchaseId} was saved, but checkout could not finish. Please do not create it again; refresh and check the saved order status.`
-          : activeCouponCode ? "Something went wrong while creating your order. Please try again." : couponIssue.includes('coupon') ? "Your coupon is no longer available. Please review the updated total and try again." : "Something went wrong while creating your order. Please try again.";
+          : "Something went wrong while creating your order. Please try again.";
         errorBox.classList.remove("hidden");
       } finally { button.disabled = false; button.textContent = "Create order and continue"; }
     }
@@ -1802,69 +1706,11 @@
     }
     async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save review');return;} resetReviewForm();await renderAdminReviews(); STORE.reviews=((await supabase.from('reviews').select('name,comment,rating,is_visible')).data||[]).filter(r=>r.is_visible);renderReviews();showAdminToast('Review saved'); }
 
-    function resetCouponForm() {
-      document.getElementById('couponForm').reset();
-      document.getElementById('couponId').value = '';
-      document.getElementById('couponActiveInput').checked = true;
-      document.getElementById('cancelCouponEditBtn').classList.add('hidden');
-      document.getElementById('saveCouponBtn').textContent = 'Save Coupon';
-      document.getElementById('couponAdminError').classList.add('hidden');
-    }
-    async function renderAdminCoupons() {
-      const list = document.getElementById('adminCouponsList');
-      if (!supabase || !adminAuthenticated) return;
-      list.innerHTML = '<p class="text-sm text-slate-500">Loading coupons…</p>';
-      const { data, error } = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
-      if (error) { list.innerHTML = '<p class="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Could not load coupons. Run the coupon migration in Supabase first.</p>'; return; }
-      if (!data?.length) { list.innerHTML = '<p class="rounded-xl border border-dashed p-4 text-sm text-slate-500">No coupons yet.</p>'; return; }
-      list.innerHTML = data.map(coupon => `<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4"><div class="min-w-0"><strong class="font-black">${escapeHtml(coupon.code)}</strong><span class="ml-2 text-sm font-bold text-emerald-700">${Number(coupon.discount_percent)}% off</span><p class="mt-1 text-xs text-slate-500">${coupon.active ? 'Active' : 'Inactive'} · ${coupon.expires_at ? `Expires ${escapeHtml(coupon.expires_at)}` : 'No expiry'} · ${Number(coupon.used_count || 0)}${coupon.usage_limit ? ` / ${Number(coupon.usage_limit)}` : ''} used</p></div><div class="flex gap-2"><button type="button" data-coupon-edit="${escapeHtml(coupon.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button type="button" data-coupon-toggle="${escapeHtml(coupon.id)}" data-active="${coupon.active}" class="rounded-lg border px-3 py-2 text-xs font-bold">${coupon.active ? 'Deactivate' : 'Activate'}</button><button type="button" data-coupon-delete="${escapeHtml(coupon.id)}" class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('');
-      list.querySelectorAll('[data-coupon-edit]').forEach(button => button.addEventListener('click', () => {
-        const coupon = data.find(item => String(item.id) === button.dataset.couponEdit); if (!coupon) return;
-        document.getElementById('couponId').value = coupon.id;
-        document.getElementById('couponCodeInput').value = coupon.code;
-        document.getElementById('couponPercentInput').value = coupon.discount_percent;
-        document.getElementById('couponExpiryInput').value = coupon.expires_at || '';
-        document.getElementById('couponLimitInput').value = coupon.usage_limit ?? '';
-        document.getElementById('couponActiveInput').checked = coupon.active;
-        document.getElementById('cancelCouponEditBtn').classList.remove('hidden');
-        document.getElementById('saveCouponBtn').textContent = 'Update Coupon';
-        document.getElementById('couponCodeInput').focus();
-      }));
-      list.querySelectorAll('[data-coupon-toggle]').forEach(button => button.addEventListener('click', async () => {
-        const { error: updateError } = await supabase.from('coupons').update({ active: button.dataset.active !== 'true' }).eq('id', button.dataset.couponToggle);
-        if (updateError) { showAdminToast('Could not update coupon'); return; }
-        await renderAdminCoupons();
-      }));
-      list.querySelectorAll('[data-coupon-delete]').forEach(button => button.addEventListener('click', async () => {
-        if (!confirm('Delete this coupon?')) return;
-        const { error: deleteError } = await supabase.from('coupons').delete().eq('id', button.dataset.couponDelete);
-        if (deleteError) { showAdminToast('Could not delete coupon'); return; }
-        await renderAdminCoupons(); showAdminToast('Coupon deleted');
-      }));
-    }
-    async function saveCoupon(event) {
-      event.preventDefault();
-      const errorBox = document.getElementById('couponAdminError'); errorBox.classList.add('hidden');
-      if (!supabase || !adminAuthenticated) { errorBox.textContent = 'Sign in to manage coupons.'; errorBox.classList.remove('hidden'); return; }
-      const percent = Number(document.getElementById('couponPercentInput').value);
-      const usageLimit = document.getElementById('couponLimitInput').value;
-      if (!Number.isFinite(percent) || percent <= 0 || percent > 100) { errorBox.textContent = 'Enter a discount between 0.01% and 100%.'; errorBox.classList.remove('hidden'); return; }
-      const id = document.getElementById('couponId').value;
-      const coupon = { code: document.getElementById('couponCodeInput').value.trim().toUpperCase(), discount_percent: percent, active: document.getElementById('couponActiveInput').checked, expires_at: document.getElementById('couponExpiryInput').value || null, usage_limit: usageLimit ? Number(usageLimit) : null };
-      if (!/^[A-Z0-9_-]{3,32}$/.test(coupon.code) || (usageLimit && (!Number.isInteger(coupon.usage_limit) || coupon.usage_limit < 1))) { errorBox.textContent = 'Check the code and usage limit.'; errorBox.classList.remove('hidden'); return; }
-      if (id) coupon.id = id;
-      const { error } = await supabase.from('coupons').upsert(coupon, { onConflict: 'id' });
-      if (error) { errorBox.textContent = error.code === '23505' ? 'That coupon code already exists.' : 'Could not save coupon. Check the coupon table setup.'; errorBox.classList.remove('hidden'); return; }
-      resetCouponForm(); await renderAdminCoupons(); showAdminToast('Coupon saved');
-    }
-
     let latestPurchaseId = null;
     let latestPurchasePrice = null;
     let latestPurchaseAccessToken = null;
     const PURCHASE_INDEX_KEY = "crazyebook-customer-purchase-index-v1";
     let checkoutCartKeys = [];
-    let activeCouponCode = null;
-    let activeCouponPercent = 0;
     const CART_KEY = "crazyebook-cart-v1";
     let cartItems = loadCart();
     let detailsBookId = null;
@@ -1981,7 +1827,6 @@
       checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
-      activeCouponCode = null; activeCouponPercent = 0;
       const cartBooks = checkoutCartKeys.map(key => STORE.books.find(book => String(book.id) === key)).filter(Boolean);
       const cartCheckout = cartBooks.length > 0;
       document.getElementById("buyModalTitle").textContent = cartCheckout ? "Cart Checkout" : "Buy Now";
@@ -1993,11 +1838,9 @@
       document.getElementById("freeAccessLink").classList.add("hidden");
       document.getElementById("purchaseForm").reset();
       document.getElementById("purchaseFormError").classList.add("hidden");
-      document.getElementById("couponStatus").classList.add("hidden");
 
       const isFree = !!selectedBook.free || Number(selectedBook.price) === 0;
       document.getElementById("modalPrice").textContent = isFree ? "Free" : money(cartCheckout ? cartBooks.reduce((sum, book) => sum + Number(book.price || 0), 0) : selectedBook.price);
-      renderCheckoutCouponTotals();
       document.getElementById("upiIdText").textContent = STORE.upiId || "";
       document.getElementById("copyUpiBtn").disabled = isFree || !STORE.upiId;
 
@@ -2133,19 +1976,31 @@
 
     function openAdminModal() {
       const modal = document.getElementById("adminModal");
+      const wasOpen = !modal.classList.contains("hidden");
       modal.classList.remove("hidden");
       modal.classList.add("flex");
       document.body.classList.add("modal-open");
+      if (!wasOpen) { pushAdminHistory({ adminTab: activeAdminTab, adminEdit: null }); }
       refreshAdminView();
     }
 
-    function closeAdminModal() {
+    function closeAdminModal(fromPopState = false) {
       const modal = document.getElementById("adminModal");
       modal.classList.add("hidden");
       modal.classList.remove("flex");
       document.body.classList.remove("modal-open");
       if (editingBookId !== null || activeAdminEditState !== null) resetBookForm();
       activeAdminEditState = null;
+      if (!fromPopState && adminHistoryDepth > 0) {
+        const depth = adminHistoryDepth; adminHistoryDepth = 0; adminClosingHistory = true;
+        history.go(-depth);
+        setTimeout(() => { adminClosingHistory = false; }, 400);
+      } else if (fromPopState) adminHistoryDepth = 0;
+    }
+
+    function pushAdminHistory(state) {
+      history.pushState({ ...(history.state || {}), crazyEbookAdmin: true, ...state }, "", location.href);
+      adminHistoryDepth++;
     }
 
     function refreshAdminView() {
@@ -2153,7 +2008,7 @@
       document.getElementById("adminDashboardView").classList.toggle("hidden", !adminAuthenticated);
       if (adminAuthenticated) {
         renderAdminBooks();
-        loadShowcaseForm(); loadPurchases(); renderAdminReviews(); renderAdminCoupons();
+        loadShowcaseForm(); loadPurchases(); renderAdminReviews();
       } else {
         document.getElementById("adminPasswordInput").value = "";
         document.getElementById("adminLoginError").classList.add("hidden");
@@ -2219,9 +2074,10 @@
       document.getElementById("bookCoverClass").value = "bg-slate-950 text-white";
     }
 
-    function startBookEdit(id) {
+    function startBookEdit(id, trackHistory = true) {
       const book = STORE.books.find(item => Number(item.id) === id);
       if (!book) return;
+      if (trackHistory) pushAdminHistory({ adminTab: "books", adminEdit: String(id) });
       activeAdminEditState = String(id);
       editingBookId = id;
       document.getElementById("bookFormHeading").textContent = "Edit Book";
@@ -2291,12 +2147,14 @@
 
       if (!await saveStore()) return;
       const wasEditingBook = editingBookId !== null;
+      const shouldLeaveEditHistory = Boolean(history.state?.crazyEbookAdmin && history.state.adminEdit);
       setupLinks();
       renderFilters();
       renderBooks();
       renderAdminBooks();
       loadShowcaseForm();
       resetBookForm();
+      if (shouldLeaveEditHistory) history.back();
       showAdminToast(wasEditingBook ? "Book updated" : "Book added");
     }
 
@@ -2420,7 +2278,10 @@
       }
     }
 
-    function switchAdminTab(tab) {
+    function switchAdminTab(tab, fromPopState = false) {
+      if (!fromPopState && !document.getElementById("adminModal").classList.contains("hidden") && tab !== activeAdminTab) {
+        pushAdminHistory({ adminTab: tab, adminEdit: activeAdminEditState });
+      }
       activeAdminTab = tab;
       document.querySelectorAll(".admin-tab").forEach(button => {
         button.classList.toggle("active", button.dataset.adminTab === tab);
@@ -2429,11 +2290,9 @@
       document.getElementById("adminTabShowcase").classList.toggle("hidden", tab !== "showcase");
       document.getElementById("adminTabPurchases").classList.toggle("hidden", tab !== "purchases");
       document.getElementById("adminTabReviews").classList.toggle("hidden", tab !== "reviews");
-      document.getElementById("adminTabCoupons").classList.toggle("hidden", tab !== "coupons");
       document.getElementById("adminTabSettings").classList.toggle("hidden", tab !== "settings");
       if (tab === "settings") loadSettingsForm();
       if (tab === "purchases") loadPurchases(); if (tab === "reviews") renderAdminReviews();
-      if (tab === "coupons") renderAdminCoupons();
       document.getElementById("adminTabData").classList.toggle("hidden", tab !== "data");
     }
 
@@ -2458,13 +2317,6 @@
        EVENTS
        ========================================================= */
     document.getElementById("searchInput").addEventListener("input", renderBooks);
-    document.querySelectorAll("[data-book-view]").forEach(button => button.addEventListener("click", () => setBookView(button.dataset.bookView)));
-    document.getElementById("couponForm").addEventListener("submit", saveCoupon);
-    document.getElementById("newCouponBtn").addEventListener("click", () => { resetCouponForm(); document.getElementById("couponCodeInput").focus(); });
-    document.getElementById("cancelCouponEditBtn").addEventListener("click", resetCouponForm);
-    document.getElementById("applyCouponBtn").addEventListener("click", applyCheckoutCoupon);
-    document.getElementById("clearCouponBtn").addEventListener("click", clearCheckoutCoupon);
-    document.getElementById("couponCodeInputCheckout").addEventListener("keydown", event => { if (event.key === "Enter") { event.preventDefault(); applyCheckoutCoupon(); } });
     document.getElementById("openCartBtn").addEventListener("click", () => { renderCart(); openTransientOverlay("cart"); });
     document.getElementById("themeToggleBtn").addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true));
     document.getElementById("openLibraryBtn").addEventListener("click", openMyLibrary);
@@ -2475,14 +2327,15 @@
     document.getElementById("cartCheckout").addEventListener("click", () => {
       const keys = cartItems.map(String).filter(key => STORE.books.some(book => String(book.id) === key && book.status !== "inactive" && !book.free && Number(book.price) > 0));
       if (!keys.length) { showToast("Your cart is empty."); return; }
-      closeTransientOverlay("cart");
+      const cleanState = { ...(history.state || {}) }; delete cleanState.crazyEbookOverlay; history.replaceState(cleanState, "", location.href);
+      closeTransientOverlay("cart", true);
       const first = STORE.books.find(book => String(book.id) === keys[0]); openBuyModal(first.id, keys);
     });
     document.getElementById("cartModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("cart"); });
     document.getElementById("closeBookDetails").addEventListener("click", () => closeTransientOverlay("details"));
     document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("details"); });
     document.getElementById("detailsCart").addEventListener("click", () => addToCart(detailsBookId));
-    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; closeTransientOverlay("details"); openBuyModal(Number(id)); });
+    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; const cleanState = { ...(history.state || {}) }; delete cleanState.crazyEbookOverlay; history.replaceState(cleanState, "", location.href); closeTransientOverlay("details", true); openBuyModal(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
     document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
     document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
@@ -2571,12 +2424,15 @@
     document.getElementById("newBookBtn").addEventListener("click", () => {
       resetBookForm();
       activeAdminEditState = "new";
+      pushAdminHistory({ adminTab: "books", adminEdit: "new" });
       document.getElementById("cancelBookEditBtn").classList.remove("hidden");
       document.getElementById("bookTitle").focus();
     });
 
     document.getElementById("cancelBookEditBtn").addEventListener("click", () => {
+      const hasEditHistory = Boolean(history.state?.crazyEbookAdmin && history.state.adminEdit);
       resetBookForm();
+      if (hasEditHistory) history.back();
     });
     document.getElementById("bookForm").addEventListener("submit", saveBookFromForm);
     document.getElementById("saveShowcaseBtn").addEventListener("click", saveShowcase);
@@ -2588,11 +2444,24 @@
       if (event.target === event.currentTarget) closeAdminModal();
     });
 
-    window.addEventListener("popstate", () => {
+    window.addEventListener("popstate", event => {
+      if (adminClosingHistory) { adminClosingHistory = false; return; }
       const openOverlay = Object.entries(transientOverlayIds).find(([, id]) => !document.getElementById(id).classList.contains("hidden"));
-      if (openOverlay) closeTransientOverlay(openOverlay[0]);
+      if (openOverlay && event.state?.crazyEbookOverlay !== openOverlay[0]) closeTransientOverlay(openOverlay[0], true);
       const modalOpen = !document.getElementById("adminModal").classList.contains("hidden");
-      if (modalOpen) closeAdminModal();
+      if (event.state?.crazyEbookAdmin && modalOpen) {
+        adminHistoryDepth = Math.max(1, adminHistoryDepth - 1);
+        const targetEdit = event.state.adminEdit == null ? null : String(event.state.adminEdit);
+        if (targetEdit !== activeAdminEditState) {
+          resetBookForm();
+          if (targetEdit && targetEdit !== "new") startBookEdit(Number(targetEdit), false);
+          else if (targetEdit === "new") activeAdminEditState = "new";
+        }
+        if (event.state.adminTab && event.state.adminTab !== activeAdminTab) switchAdminTab(event.state.adminTab, true);
+      } else {
+        if (modalOpen) closeAdminModal(true);
+        else adminHistoryDepth = 0;
+      }
     });
 
     document.addEventListener("keydown", event => {
