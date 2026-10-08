@@ -469,9 +469,11 @@
     }
     #hero3dCanvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; outline: none; }
     .hero-scene-glow { position: absolute; z-index: 0; left: 50%; top: 36%; width: min(74%, 310px); aspect-ratio: 1; border-radius: 9999px; background: rgba(129,140,248,.2); filter: blur(42px); transform: translate(-50%,-50%); pointer-events: none; }
-    .hero-model-fallback { position: absolute; z-index: 1; left: 50%; top: 39%; width: 116px; height: 158px; border: 7px solid #4338ca; border-radius: 7px 12px 12px 7px; background: linear-gradient(90deg,#312e81 0 13%,#4f46e5 13% 100%); box-shadow: 18px 22px 30px rgba(30,27,75,.26); transform: translate(-50%,-50%) rotate(-9deg) rotateY(-15deg); transition: opacity .35s ease; pointer-events: none; }
+    .hero-model-fallback { position: absolute; z-index: 2; left: 50%; top: 39%; width: 116px; height: 158px; border: 7px solid #4338ca; border-radius: 7px 12px 12px 7px; background: linear-gradient(90deg,#312e81 0 13%,#4f46e5 13% 100%); box-shadow: 18px 22px 30px rgba(30,27,75,.26); transform: translate(-50%,-50%) rotate(-9deg) rotateY(-15deg); transition: opacity .35s ease; pointer-events: none; }
     .hero-model-fallback::before { content: "CRAZY\A E-BOOK"; white-space: pre; position: absolute; inset: 27px 10px; display: grid; place-content: center; border-block: 2px solid rgba(251,191,36,.8); color: #fff; text-align: center; font-size: 13px; font-weight: 900; line-height: 1.5; letter-spacing: .12em; }
-    .hero-scene.is-loaded .hero-model-fallback { opacity: 0; }
+    /* Keep the cover fallback visible over the transparent WebGL canvas. Some desktop browsers
+       report a successful GLB load but fail to paint its canvas; the featured cover must remain visible. */
+    .hero-scene.is-loaded .hero-model-fallback { opacity: 1; }
     .hero-scene-card { position: absolute; z-index: 2; right: 12px; bottom: 12px; left: 12px; display: grid; grid-template-columns: 68px minmax(0,1fr); gap: 12px; align-items: center; padding: 12px; border: 1px solid rgba(255,255,255,.8); border-radius: 1.25rem; background: rgba(255,255,255,.88); box-shadow: 0 14px 38px rgba(15,23,42,.14); backdrop-filter: blur(14px); }
     .hero-scene-cover { width: 68px; height: 90px; overflow: hidden; border-radius: .65rem; background: #0f172a; box-shadow: 0 8px 16px rgba(15,23,42,.18); }
     .hero-scene-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -789,7 +791,7 @@
 
           <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <div class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white">3</div>
-            <h3 class="mt-5 text-lg font-black">After Approval</h3>
+            <h3 class="mt-5 text-lg font-black">You will get your pdf</h3>
             <p class="mt-2 text-sm leading-6 text-slate-600">After manual confirmation, the private Google Drive link will appear on website directly</p>
           </div>
         </div>
@@ -1455,7 +1457,6 @@
     function renderBookCard(book) {
       const sample = bookSampleHref(book);
       const imageUrl = safeHrefOrBlank(book.coverImage);
-      const subjects = Array.isArray(book.subjects) ? book.subjects : String(book.subjects || '').split(',').map(value => value.trim()).filter(Boolean);
       return `
         <article data-details="${escapeHtml(book.id)}" class="book-card group flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
           <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
@@ -1469,7 +1470,6 @@
           </div>
           <div class="book-card-content mt-4 flex flex-1 flex-col">
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
-            ${subjects.length ? `<div class="book-subjects flex flex-wrap gap-1.5">${subjects.slice(0, 3).map(subject => `<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">${escapeHtml(subject)}</span>`).join('')}</div>` : ''}
             <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(book.title)}</h3>
             <div class="book-rating mt-2 flex items-center gap-2 text-sm"><span class="font-black text-amber-500">${renderStars(book.rating)}</span><span class="font-bold text-slate-500">${Number(book.rating || 0).toFixed(1)}</span></div>
             <div class="mt-2 flex items-end gap-2">${Number(book.mrp) > Number(book.price) ? `<span class="text-xs font-bold text-slate-400 line-through">${money(book.mrp)}</span>` : ''}<span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span></div>
