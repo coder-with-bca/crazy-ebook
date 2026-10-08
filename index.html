@@ -1246,14 +1246,37 @@
     }
 
     const transientOverlayIds = { details: "bookDetailsModal", cart: "cartModal", library: "libraryModal" };
+    const overlayHistoryKey = "__crazyEbookOverlay";
+    function rememberOverlay(name) {
+      try {
+        const current = history.state && typeof history.state === "object" ? history.state : {};
+        if (current[overlayHistoryKey] === name) return;
+        const next = { ...current, [overlayHistoryKey]: name };
+        if (current[overlayHistoryKey]) history.replaceState(next, "");
+        else history.pushState(next, "");
+      } catch (error) { console.warn("Could not add overlay history state", error); }
+    }
+    function popOverlayHistory(name) {
+      try {
+        if (history.state?.[overlayHistoryKey] === name) { history.back(); return true; }
+      } catch (error) { console.warn("Could not close overlay history state", error); }
+      return false;
+    }
     function openTransientOverlay(name) {
       const modal = document.getElementById(transientOverlayIds[name]);
       if (!modal || !modal.classList.contains("hidden")) return;
+      rememberOverlay(name);
       modal.classList.remove("hidden"); modal.classList.add("flex", "shop-modal");
       document.body.classList.add("modal-open");
       modal.querySelector(":scope > div")?.classList.add("shop-modal-panel");
     }
-    function closeTransientOverlay(name) {
+    function closeTransientOverlay(name, fromHistory = false) {
+      const modal = document.getElementById(transientOverlayIds[name]);
+      if (!modal || modal.classList.contains("hidden")) return;
+      if (!fromHistory && popOverlayHistory(name)) return;
+      hideTransientOverlay(name);
+    }
+    function hideTransientOverlay(name) {
       const modal = document.getElementById(transientOverlayIds[name]);
       if (!modal || modal.classList.contains("hidden")) return;
       const panel = modal.querySelector(":scope > div");
@@ -1996,6 +2019,7 @@
 
       selectedBook = STORE.books.find(book => Number(book.id) === Number(bookId));
       if (!selectedBook) return;
+      rememberOverlay("buy");
       checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
@@ -2041,11 +2065,13 @@
       document.body.classList.add("modal-open");
     }
 
-    function closeBuyModal() {
+    function closeBuyModal(fromHistory = false) {
       const modal = document.getElementById("buyModal");
+      if (modal.classList.contains("hidden")) return;
+      if (!fromHistory && popOverlayHistory("buy")) return;
       modal.classList.add("hidden");
       modal.classList.remove("flex");
-      document.body.classList.remove("modal-open");
+      if ([...Object.values(transientOverlayIds), "adminModal"].every(id => document.getElementById(id).classList.contains("hidden"))) document.body.classList.remove("modal-open");
     }
 
     /* =========================================================
@@ -2151,17 +2177,20 @@
 
     function openAdminModal() {
       const modal = document.getElementById("adminModal");
+      rememberOverlay("admin");
       modal.classList.remove("hidden");
       modal.classList.add("flex");
       document.body.classList.add("modal-open");
       refreshAdminView();
     }
 
-    function closeAdminModal() {
+    function closeAdminModal(fromHistory = false) {
       const modal = document.getElementById("adminModal");
+      if (modal.classList.contains("hidden")) return;
+      if (!fromHistory && popOverlayHistory("admin")) return;
       modal.classList.add("hidden");
       modal.classList.remove("flex");
-      document.body.classList.remove("modal-open");
+      if ([...Object.values(transientOverlayIds), "buyModal"].every(id => document.getElementById(id).classList.contains("hidden"))) document.body.classList.remove("modal-open");
       if (editingBookId !== null || activeAdminEditState !== null) resetBookForm();
       activeAdminEditState = null;
     }
@@ -2493,14 +2522,14 @@
     document.getElementById("cartCheckout").addEventListener("click", () => {
       const keys = cartItems.map(String).filter(key => STORE.books.some(book => String(book.id) === key && book.status !== "inactive" && !book.free && Number(book.price) > 0));
       if (!keys.length) { showToast("Your cart is empty."); return; }
-      closeTransientOverlay("cart");
+      hideTransientOverlay("cart");
       const first = STORE.books.find(book => String(book.id) === keys[0]); openBuyModal(first.id, keys);
     });
     document.getElementById("cartModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("cart"); });
     document.getElementById("closeBookDetails").addEventListener("click", () => closeTransientOverlay("details"));
     document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("details"); });
     document.getElementById("detailsCart").addEventListener("click", () => addToCart(detailsBookId));
-    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; closeTransientOverlay("details"); openBuyModal(Number(id)); });
+    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; hideTransientOverlay("details"); openBuyModal(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
     document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
     document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
@@ -2608,9 +2637,10 @@
 
     window.addEventListener("popstate", () => {
       const openOverlay = Object.entries(transientOverlayIds).find(([, id]) => !document.getElementById(id).classList.contains("hidden"));
-      if (openOverlay) closeTransientOverlay(openOverlay[0]);
+      if (openOverlay) closeTransientOverlay(openOverlay[0], true);
+      if (!document.getElementById("buyModal").classList.contains("hidden")) closeBuyModal(true);
       const modalOpen = !document.getElementById("adminModal").classList.contains("hidden");
-      if (modalOpen) closeAdminModal();
+      if (modalOpen) closeAdminModal(true);
     });
 
     document.addEventListener("keydown", event => {
