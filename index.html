@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem("crazyebook-theme-v1") === "dark" ? "dark" : "light"; } catch { document.documentElement.dataset.theme = "light"; }</script>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
@@ -347,6 +348,9 @@
     #cartCount.bump { animation: cart-count-bump .24s ease-out; }
     @keyframes cart-count-bump { 50% { transform: scale(1.25); } }
     html { transition: background-color .2s ease, color .2s ease; }
+    .site-logo-dark { display:none; }
+    html[data-theme="dark"] .site-logo-light { display:none; }
+    html[data-theme="dark"] .site-logo-dark { display:block; }
     :focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
     @media (hover: hover) and (pointer: fine) {
       .book-card:hover, .book-card:focus-within { transform: rotateX(3deg) rotateY(-4deg) translateZ(8px); box-shadow: 0 20px 36px rgba(15,23,42,.16); }
@@ -575,7 +579,8 @@
   <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
       <a href="#home" class="flex items-center gap-3" aria-label="Crazy E-Book home">
-        <img src="crazy-ebooks-logo.png" alt="Crazy E-Books" class="h-11 w-10 shrink-0 object-contain" width="40" height="46" fetchpriority="high" />
+        <img src="crazy-ebooks-logo.png" alt="Crazy E-Books" class="site-logo-light h-11 w-10 shrink-0 object-contain" width="40" height="46" fetchpriority="high" />
+        <img src="assets/crazy-ebook-logo-dark.jpeg" alt="" aria-hidden="true" class="site-logo-dark h-11 w-10 shrink-0 rounded-sm object-contain" width="40" height="46" fetchpriority="high" />
         <div>
           <div id="siteBrand" class="font-extrabold tracking-tight">Crazy E-Book</div>
           <div id="siteCreators" class="text-[11px] text-slate-500">by Akki & Aadi</div>
@@ -857,7 +862,7 @@
       <div class="flex justify-end"><button id="closeBookDetails" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Close">×</button></div>
         <div class="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr] sm:gap-4">
         <img id="detailsCover" class="aspect-[3/4] w-full rounded-xl object-cover" alt="Book cover">
-        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div class="mt-5 grid grid-cols-2 gap-2"><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-slate-950 px-3 py-3 text-sm font-bold text-white">Buy Now</button></div></div>
+        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div id="detailsMetadata" class="mt-4 space-y-3"></div><div class="mt-5 grid grid-cols-2 gap-2"><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-slate-950 px-3 py-3 text-sm font-bold text-white">Buy Now</button></div></div>
       </div>
     </div>
   </div>
@@ -1437,28 +1442,21 @@
               <div class="book-detail-reveal"><button type="button" data-details-button="${book.id}">View details <span aria-hidden="true">↗</span></button></div>
             </div>
 
-            <div class="book-card-content mt-6 flex flex-1 flex-col">
-              <p class="book-category mb-1 text-[10px] font-bold text-slate-500 md:hidden">${escapeHtml(book.category)}</p>
-              <div class="flex flex-wrap gap-1.5">
-                ${(Array.isArray(book.subjects) ? book.subjects : []).slice(0, 3).map(subject =>
-                  `<span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">${escapeHtml(subject)}</span>`
-                ).join("")}
-              </div>
+            <div class="book-card-content mt-4 flex flex-1 flex-col">
+              <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || "Digital Book")}</p>
+              <h3 class="mt-1 break-words text-lg font-black tracking-tight">${escapeHtml(book.title)}</h3>
 
-              <h3 class="mt-4 break-words text-lg font-black tracking-tight">${escapeHtml(book.title)}</h3>
-              <p class="book-summary line-clamp-2 mt-2 min-h-[42px] text-sm leading-5 text-slate-600">${escapeHtml(book.summary)}</p>
-
-              <div class="book-rating mt-4 flex items-center gap-2 text-sm">
+              <div class="book-rating mt-2 flex items-center gap-2 text-sm">
                 <span class="font-black text-amber-500">${renderStars(book.rating)}</span>
                 <span class="font-bold text-slate-500">${Number(book.rating || 0).toFixed(1)}</span>
               </div>
 
-              <div class="mt-4 flex items-end gap-2">
+              <div class="mt-2 flex items-end gap-2">
                 ${Number(book.mrp) > Number(book.price) ? `<span class="text-xs font-bold text-slate-400 line-through">${money(book.mrp)}</span>` : ""}
                 <span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span>
               </div>
 
-              <div class="book-actions mt-5 grid grid-cols-2 gap-2">
+              <div class="book-actions mt-3 grid grid-cols-2 gap-2">
                 ${sample
                   ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-3 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>`
                   : `<button type="button" disabled class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-3 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">Sample</button>`}
@@ -1808,6 +1806,16 @@
       document.getElementById("detailsRating").textContent = `★ ${Number(book.rating || 0).toFixed(1)} rating`;
       document.getElementById("detailsPrice").textContent = money(book.price);
       document.getElementById("detailsDescription").textContent = book.summary || "";
+      const metadata = document.getElementById("detailsMetadata");
+      const subjects = [...new Set([...(Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",")), book.topic].map(value => String(value || "").trim()).filter(Boolean))];
+      const language = String(book.programmingLanguage || book.language || "").trim();
+      const tags = [...new Set([...(Array.isArray(book.tags) ? book.tags : String(book.tags || "").split(",")), book.tag].map(value => String(value || "").trim()).filter(Boolean))];
+      const renderMetadataChips = values => values.map(value => `<span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">${escapeHtml(value)}</span>`).join(" ");
+      metadata.innerHTML = [
+        language ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Programming language</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips([language])}</div></div>` : "",
+        subjects.length ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Topics & subjects</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(subjects)}</div></div>` : "",
+        tags.length ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Tags</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(tags)}</div></div>` : ""
+      ].filter(Boolean).join("");
       document.getElementById("detailsCart").classList.toggle("hidden", !!book.free || Number(book.price) === 0);
       syncCartFeedback();
       openTransientOverlay("details");
