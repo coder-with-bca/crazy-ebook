@@ -604,6 +604,43 @@
       #heroSection { transition: none; }
       .hero-model-fallback { transition: none; }
     }
+    /* Compact mobile rhythm and consistent catalog/review carousels. */
+    .book-card-cover { width:100%; max-width:210px; padding-top:0; }
+    .book-card-cover > .cover-shadow { width:100%; }
+    .book-card-content { min-width:0; }
+    .book-card-content h3 { min-height:2.4em; }
+    .book-price-line { display:flex; min-width:0; flex-wrap:wrap; align-items:baseline; gap:.3rem .5rem; }
+    .book-mrp { color:#64748b; font-size:.75rem; font-weight:600; text-decoration:line-through; }
+    /* Flex basis gives each slide a definite width; grid min() sizing collapsed to min-content on phones. */
+    .category-book-row { display:flex; }
+    .category-book-row > .book-card { flex:0 0 min(78vw,245px); width:min(78vw,245px); max-width:calc(100vw - 2rem); }
+    .review-carousel { overflow:hidden; }
+    .review-track { display:flex; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:none; }
+    .review-track::-webkit-scrollbar { display:none; }
+    .review-slide { flex:0 0 100%; min-width:0; scroll-snap-align:start; }
+    .review-slide-card { display:flex; min-height:190px; height:100%; flex-direction:column; }
+    .review-slide-card .review-copy { flex:1; overflow-wrap:anywhere; }
+    .review-controls { display:flex; align-items:center; justify-content:center; gap:.65rem; margin-top:.85rem; }
+    .review-arrow { display:grid; width:34px; height:34px; place-items:center; border:1px solid #d5dce5; border-radius:999px; background:#fff; font-size:1.1rem; }
+    .review-dots { display:flex; align-items:center; justify-content:center; gap:.4rem; }
+    .review-dot { width:8px; height:8px; border:0; border-radius:999px; background:#cbd5e1; padding:0; }
+    .review-dot[aria-current="true"] { width:20px; background:#0d9488; }
+    html[data-theme="dark"] .review-arrow { border-color:#35445a; background:#172438; color:#e2e8f0; }
+    @media(min-width:640px) { .review-slide { flex-basis:50%; padding-inline:.4rem; } .review-track { margin-inline:-.4rem; } }
+    @media(max-width:640px) {
+      #how-to-buy > div, #faq > div, #authors { padding-top:clamp(2.75rem,9vw,3.5rem); padding-bottom:clamp(2.75rem,9vw,3.5rem); }
+      #how-to-buy .mt-12 { margin-top:1.5rem; }
+      #how-to-buy .rounded-2xl.p-5 { padding:.85rem; }
+      #howToBuySteps { gap:.65rem; }
+      #authors > div { gap:1.5rem; }
+      #authors #aboutCreators { margin-top:.85rem; }
+      #authors #aboutCreators + p { margin-top:.65rem; }
+      #faqList { margin-top:1.5rem; }
+      #faqList .faq-btn { padding:.85rem 1rem; min-height:48px; }
+      #faqList .faq-answer { padding:0 1rem 1rem; }
+      #reviewsGrid { margin-top:1rem; }
+    }
+    @media(min-width:420px) and (max-width:767px) { #howToBuySteps { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   </style>
   <script type="importmap">
     {
@@ -793,28 +830,28 @@
           </p>
         </div>
 
-        <div class="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <div class="grid h-11 w-11 place-items-center rounded-xl bg-slate-950 text-sm font-black text-white">1</div>
-            <h3 class="mt-5 text-lg font-black">Choose a book</h3>
+        <div id="howToBuySteps" class="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-950 text-sm font-black text-white">1</div>
+            <h3 class="text-base font-black">Choose a book</h3></div>
             <p class="mt-2 text-sm leading-6 text-slate-600">Choose a book and use its existing checkout to create your purchase.</p>
           </div>
 
-          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <div class="grid h-11 w-11 place-items-center rounded-xl bg-indigo-600 text-sm font-black text-white">2</div>
-            <h3 class="mt-5 text-lg font-black">Pay by UPI</h3>
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-indigo-600 text-sm font-black text-white">2</div>
+            <h3 class="text-base font-black">Pay by UPI</h3></div>
             <p class="mt-2 text-sm leading-6 text-slate-600">Pay the exact displayed amount using the UPI ID or QR shown in the checkout modal.</p>
           </div>
 
-          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <div class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white">3</div>
-            <h3 class="mt-5 text-lg font-black">Wait for confirmation</h3>
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white">3</div>
+            <h3 class="text-base font-black">Wait for confirmation</h3></div>
             <p class="mt-2 text-sm leading-6 text-slate-600">Payment is checked manually and an administrator confirms the purchase.</p>
           </div>
 
-          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <div class="grid h-11 w-11 place-items-center rounded-xl bg-teal-600 text-sm font-black text-white">4</div>
-            <h3 class="mt-5 text-lg font-black">Open My Library</h3>
+          <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-600 text-sm font-black text-white">4</div>
+            <h3 class="text-base font-black">Open My Library</h3></div>
             <p class="mt-2 text-sm leading-6 text-slate-600">After approval, open My Library to access the purchased ebook securely.</p>
           </div>
         </div>
@@ -1537,7 +1574,7 @@
           <div class="book-card-content mt-4 flex flex-1 flex-col">
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
             <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(book.title)}</h3>
-            <div class="mt-2 flex items-end gap-2"><span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span></div>
+            <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span>${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : ''}</div>
             <div class="book-actions mt-3 grid grid-cols-2 gap-2">
               ${sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
               <button type="button" data-add-cart="${escapeHtml(book.id)}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-2.5 text-[10px] font-extrabold text-indigo-800">+ Add to Cart</button>
@@ -2066,7 +2103,8 @@
       document.getElementById("detailsCategory").textContent = book.category || "Ebook";
       document.getElementById("bookDetailsTitle").textContent = book.title;
       document.getElementById("detailsRating").textContent = "";
-      document.getElementById("detailsPrice").textContent = money(book.price);
+      const detailsPrice = document.getElementById("detailsPrice");
+      detailsPrice.innerHTML = `${money(book.price)}${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? ` <del class="ml-2 text-base font-semibold text-slate-500">${money(book.mrp)}</del>` : ''}`;
       document.getElementById("detailsDescription").textContent = book.summary || "";
       const metadata = document.getElementById("detailsMetadata");
       const subjects = [...new Set([...(Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",")), book.topic].map(value => String(value || "").trim()).filter(Boolean))];
@@ -2162,13 +2200,28 @@
         return;
       }
 
-      grid.innerHTML = reviews.map(review => `
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <div class="text-sm font-black text-amber-500">${"★".repeat(Number(review.rating) || 5)}${"☆".repeat(5 - (Number(review.rating) || 5))}</div>
-          <p class="mt-3 text-sm leading-6 text-slate-600">“${escapeHtml(review.comment || review.text)}”</p>
-          <div class="mt-4 text-xs font-black text-slate-900">${escapeHtml(review.name)}</div>
-        </div>
-      `).join("");
+      grid.innerHTML = `<div class="review-carousel">
+        <div class="review-track" aria-label="Customer comments">${reviews.map((review, index) => `
+          <div class="review-slide" data-review-slide="${index}"><article class="review-slide-card rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+            <div class="text-sm font-black text-amber-500" aria-label="${Number(review.rating) || 5} out of 5 stars">${"★".repeat(Number(review.rating) || 5)}${"☆".repeat(5 - (Number(review.rating) || 5))}</div>
+            <p class="review-copy mt-3 text-sm leading-6 text-slate-600">“${escapeHtml(review.comment || review.text)}”</p>
+            <div class="mt-4 text-xs font-black text-slate-900">${escapeHtml(review.name)}</div>
+          </article></div>`).join("")}</div>
+        ${reviews.length > 1 ? `<div class="review-controls"><button type="button" class="review-arrow" data-review-step="-1" aria-label="Previous review">‹</button><div class="review-dots" role="group" aria-label="Choose a review">${reviews.map((_, index) => `<button type="button" class="review-dot" data-review-dot="${index}" aria-label="Show review ${index + 1}" aria-current="${index === 0}"></button>`).join("")}</div><button type="button" class="review-arrow" data-review-step="1" aria-label="Next review">›</button></div>` : ''}
+      </div>`;
+      const track = grid.querySelector('.review-track');
+      const slides = [...grid.querySelectorAll('[data-review-slide]')];
+      const dots = [...grid.querySelectorAll('[data-review-dot]')];
+      const updateReviewControls = () => {
+        const index = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / Math.max(1, slides[0].offsetWidth))));
+        dots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === index)));
+      };
+      grid.querySelectorAll('[data-review-step]').forEach(button => button.addEventListener('click', () => {
+        const index = Math.round(track.scrollLeft / Math.max(1, slides[0].offsetWidth));
+        slides[Math.max(0, Math.min(slides.length - 1, index + Number(button.dataset.reviewStep)))].scrollIntoView({ block:'nearest', inline:'start', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }));
+      dots.forEach((dot, index) => dot.addEventListener('click', () => slides[index].scrollIntoView({ block:'nearest', inline:'start', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })));
+      track.addEventListener('scroll', updateReviewControls, { passive:true });
     }
 
     const faqs = [
