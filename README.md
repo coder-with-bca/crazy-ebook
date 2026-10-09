@@ -7,6 +7,7 @@ Static storefront for Crazy E-Book by Akki & Aadi. It keeps the existing single-
 - `index.html` — storefront, Supabase admin portal, checkout, purchase management, and reviews.
 - `supabase-setup.sql` — full setup for a new installation; includes existing catalogue sync and purchase schema.
 - `supabase-cart-library-migration.sql` — additive update for an existing installation; adds cart orders, My Library lookup, and unresolved-history deletion without updating existing books or purchases.
+- `supabase-review-verification-migration.sql` — additive update that enables purchaser-only reviews verified against a purchase access token, approved status, and purchased book.
 - `supabase/functions/send-purchase-telegram/index.ts` — secure server-side Telegram notification function.
 - Checkout QR codes are generated from the saved Business Settings UPI ID and the exact order amount.
 
@@ -20,7 +21,7 @@ Static storefront for Crazy E-Book by Akki & Aadi. It keeps the existing single-
 - Admin-only Purchases and Telegram callback buttons update the same Supabase purchase. Admin actions are mirrored to the Telegram message, and changes from Telegram appear in Purchases polling within 15 seconds.
 - Admin Purchases has status filters, customer contact shortcuts, a purchase details view, and a copy-details action. Delivery can only be marked after payment is marked Paid.
 - Admin Purchases can delete individual Pending or Rejected records after confirmation. Paid purchases are retained so their ebook access and audit history remain intact. The additive owner-only delete policy is included in both SQL files.
-- Reviews are admin-created and can be edited, shown/hidden, or deleted. Public text identifies these as featured comments, not verified purchase reviews.
+- Reviews can be admin-managed featured comments or server-verified purchaser submissions. Existing comments remain unverified; only the secure purchase-token RPC can create a verified-purchase review.
 - Admin → Settings updates the public brand, creators, UPI ID, support email, support Telegram, purchase channel, Instagram, and bot username. Never enter the bot token there.
 - The existing Private Book Delivery URL remains in `admin_store_private`, keyed to the exact book record. Deleting a catalog entry archives its relational row and retains its private link for past purchases. A database function returns the URL only when the customer's per-purchase access token matches and the purchase is Paid and Approved. The URL is not added to the public books table. Telegram token, admin IDs, webhook secret, and service-role key are server-side only.
 
@@ -31,7 +32,9 @@ Static storefront for Crazy E-Book by Akki & Aadi. It keeps the existing single-
 3. For a brand-new installation only, open `supabase-setup.sql`, copy the whole file, paste it into the editor, and click **Run**. For this existing store, use only `supabase-cart-library-migration.sql` as described below.
 4. On a fresh installation, the setup backfills a pre-existing storefront JSON catalogue when present; otherwise, add books through Admin after setup. Existing installations should skip the full setup and run only the additive migration file.
 
-For an existing installation, run only `supabase-cart-library-migration.sql` in the Supabase SQL Editor. It creates the cart item table and RPCs, the secure library lookup, and the owner-only unresolved-history delete policy. It does not backfill, update, or migrate existing books or purchase rows. Do not rerun `supabase-setup.sql` on an existing installation as that full setup includes catalogue synchronization and compatibility changes. The migration is additive and does not change payment, Telegram, or delivery functions.
+For an existing installation, run only `supabase-cart-library-migration.sql` in the Supabase SQL Editor. It ensures the token-compatible single-book purchase RPC, creates the cart item table and combined-order RPC, adds the secure library lookup, and sets the owner-only unresolved-history delete policy. It does not backfill, update, or migrate existing books or purchase rows. Do not rerun `supabase-setup.sql` on an existing installation as that full setup includes catalogue synchronization and compatibility changes. The migration is additive: it does not change existing purchase rows or payment state, and it leaves Telegram and delivery functions unchanged. The single-book RPC retains its existing purchase behavior while saving the access-token hash required for secure library access.
+
+After the cart/library migration has been applied, run `supabase-review-verification-migration.sql` in the SQL Editor before publishing the updated storefront. This additive migration preserves existing review rows and marks them as unverified featured comments; only the new server-side RPC can create a review marked as a verified purchase. It validates the purchase token hash, paid/approved status, and exact purchased book. The public display name for new reviews is `Verified customer`, so the checkout name remains private. The browser never receives the service-role key.
 
 The owner email in the SQL must match the existing `ADMIN_EMAIL` in `index.html` (`crazyebook.official@gmail.com`). If you change the admin email, change the matching email in the SQL policies too. Do not turn on public signup for the owner account.
 
@@ -116,5 +119,6 @@ If an order creation error occurs, verify that `supabase-setup.sql` ran successf
 Delivery unlocks on the website after payment approval. The customer uses **Download Your Ebook** to open the matching book's private Drive link. **Mark Delivered** is for admin tracking. Use **Copy Purchase Details** when needed. Add only real books and real customer-approved reviews in Admin; starter/demo books are not published.
 
 By Akki & Aadi
+
 
 

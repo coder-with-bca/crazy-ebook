@@ -615,18 +615,23 @@
     .category-book-row { display:flex; }
     .category-book-row > .book-card { flex:0 0 min(78vw,245px); width:min(78vw,245px); max-width:calc(100vw - 2rem); }
     .review-carousel { overflow:hidden; }
-    .review-track { display:flex; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:none; }
-    .review-track::-webkit-scrollbar { display:none; }
-    .review-slide { flex:0 0 100%; min-width:0; scroll-snap-align:start; }
-    .review-slide-card { display:flex; min-height:190px; height:100%; flex-direction:column; }
-    .review-slide-card .review-copy { flex:1; overflow-wrap:anywhere; }
+    .review-stage { position:relative; overflow:hidden; touch-action:pan-y; }
+    .review-slide-card { display:flex; height:200px; flex-direction:column; overflow:hidden; }
+    .review-slide-card .review-copy { display:-webkit-box; overflow:hidden; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere; }
+    .review-slide-card.review-shift-up { animation:review-slide-up .22s ease both; }
+    .review-slide-card.review-shift-down { animation:review-slide-down .22s ease both; }
+    @keyframes review-slide-up { from { opacity:.35; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes review-slide-down { from { opacity:.35; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
     .review-controls { display:flex; align-items:center; justify-content:center; gap:.65rem; margin-top:.85rem; }
     .review-arrow { display:grid; width:34px; height:34px; place-items:center; border:1px solid #d5dce5; border-radius:999px; background:#fff; font-size:1.1rem; }
-    .review-dots { display:flex; align-items:center; justify-content:center; gap:.4rem; }
+    .review-dots { display:flex; max-width:180px; flex-wrap:wrap; align-items:center; justify-content:center; gap:.4rem; }
     .review-dot { width:8px; height:8px; border:0; border-radius:999px; background:#cbd5e1; padding:0; }
     .review-dot[aria-current="true"] { width:20px; background:#0d9488; }
     html[data-theme="dark"] .review-arrow { border-color:#35445a; background:#172438; color:#e2e8f0; }
-    @media(min-width:640px) { .review-slide { flex-basis:50%; padding-inline:.4rem; } .review-track { margin-inline:-.4rem; } }
+    @media(prefers-reduced-motion:reduce) { .review-slide-card.review-shift-up,.review-slide-card.review-shift-down { animation:none; } }
+    html[data-theme="dark"] .review-slide-card { background:#111c2d; border-color:#35445a; }
+    html[data-theme="dark"] .review-slide-card .text-slate-900 { color:#f8fafc !important; }
+    .review-read-more { color:#0f766e; font-size:.75rem; font-weight:800; text-decoration:underline; text-underline-offset:2px; }
     @media(max-width:640px) {
       #how-to-buy > div, #faq > div, #authors { padding-top:clamp(2.75rem,9vw,3.5rem); padding-bottom:clamp(2.75rem,9vw,3.5rem); }
       #how-to-buy .mt-12 { margin-top:1.5rem; }
@@ -890,7 +895,7 @@
                 <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Customer comments</p>
                 <h3 class="mt-1 text-xl font-black">Reviews</h3>
               </div>
-              <div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 featured comments</div>
+              <div class="flex flex-col items-end gap-2"><div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 reviews</div><button id="writeReviewBtn" type="button" class="rounded-xl bg-teal-700 px-3 py-2 text-xs font-extrabold text-white">Write a Review</button></div>
             </div>
             <div id="reviewsGrid" class="mt-6"></div>
           </div>
@@ -1033,6 +1038,14 @@
 
   <div id="customerPurchaseStatusCard" class="customer-status-toast hidden fixed bottom-4 right-4 z-[80] w-[min(24rem,calc(100vw-2rem))] rounded-xl bg-white shadow-2xl">
     <div id="customerPurchaseStatusCardContent" class="rounded-xl border border-slate-200 p-3 text-sm" aria-live="polite"></div>
+  </div>
+
+  <div id="reviewReadModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewReadTitle">
+    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div><button id="closeReviewRead" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close full review">×</button></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-teal-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
+  </div>
+
+  <div id="reviewSubmitModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewSubmitTitle">
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div><button id="closeReviewSubmit" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close review form">×</button></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-extrabold text-white">Submit Review</button></form></div>
   </div>
 
   <script>
@@ -1203,8 +1216,7 @@
       if (error) throw error;
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
       renderCart();
-      const { data: publicReviews } = await supabase.from("reviews").select("name,comment,rating,is_visible").eq("is_visible", true);
-      if (publicReviews) STORE.reviews = publicReviews.map(r => ({ name:r.name, comment:r.comment, rating:r.rating, visible:true }));
+      await loadPublicReviews();
       if (adminAuthenticated) await loadPrivateLinks();
       const savedPurchaseId = localStorage.getItem("crazyebook-latest-purchase");
       const savedAccessToken = savedPurchaseId ? localStorage.getItem(`crazyebook-purchase-token:${savedPurchaseId}`) : null;
@@ -1308,7 +1320,7 @@
       if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch {} }
     }
 
-    const transientOverlayIds = { details: "bookDetailsModal", cart: "cartModal", library: "libraryModal" };
+    const transientOverlayIds = { details: "bookDetailsModal", cart: "cartModal", library: "libraryModal", reviewRead: "reviewReadModal", reviewSubmit: "reviewSubmitModal" };
     const overlayHistoryKey = "__crazyEbookOverlay";
     const overlayElementIds = { ...transientOverlayIds, buy: "buyModal", admin: "adminModal" };
 
@@ -1942,10 +1954,10 @@
       if (!supabase || !adminAuthenticated) return;
       const { data, error } = await supabase.from('reviews').select('*').order('created_at',{ascending:false});
       const list=document.getElementById('adminReviewsList'); if(error){list.textContent='Could not load reviews.';return;}
-      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No reviews saved.</p>';
+      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-xs font-bold ${r.verified_purchase?'text-emerald-700':'text-slate-500'}">${r.verified_purchase?'Verified purchase':'Featured comment · purchase not verified'}</p><p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No reviews saved.</p>';
       (data||[]).forEach(r=>{ document.querySelector(`[data-edit-review="${r.id}"]`)?.addEventListener('click',()=>{document.getElementById('reviewId').value=r.id;document.getElementById('reviewName').value=r.name;document.getElementById('reviewComment').value=r.comment;document.getElementById('reviewRating').value=r.rating;document.getElementById('reviewVisible').checked=r.is_visible;}); document.querySelector(`[data-toggle-review="${r.id}"]`)?.addEventListener('click',async e=>{await supabase.from('reviews').update({is_visible:e.currentTarget.dataset.visible==='true',updated_at:new Date().toISOString()}).eq('id',r.id);renderAdminReviews();}); document.querySelector(`[data-delete-review="${r.id}"]`)?.addEventListener('click',async()=>{if(confirm('Delete this review?')){await supabase.from('reviews').delete().eq('id',r.id);renderAdminReviews();}}); });
     }
-    async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save review');return;} resetReviewForm();await renderAdminReviews(); STORE.reviews=((await supabase.from('reviews').select('name,comment,rating,is_visible')).data||[]).filter(r=>r.is_visible);renderReviews();showAdminToast('Review saved'); }
+    async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save review');return;} resetReviewForm();await renderAdminReviews(); await loadPublicReviews();renderReviews();showAdminToast('Review saved'); }
 
     function resetCouponForm() {
       document.getElementById('couponForm').reset();
@@ -2183,45 +2195,226 @@
     /* =========================================================
        REVIEWS / FAQ
        ========================================================= */
+    let reviewToastTimer = null;
+    let reviewablePurchases = new Map();
+    let reviewModalReturnFocus = null;
+    let verifiedReviewSchemaReady = false;
+
+    async function loadPublicReviews() {
+      if (!supabase) return false;
+      const fields = "name,comment,rating,is_visible,verified_purchase,book_key";
+      let result = await supabase.from("reviews").select(fields).eq("is_visible", true).order("created_at", { ascending: false });
+      verifiedReviewSchemaReady = !result.error;
+      if (result.error) {
+        console.warn("Verified review migration is not applied yet; showing existing featured comments.", result.error);
+        result = await supabase.from("reviews").select("name,comment,rating,is_visible").eq("is_visible", true).order("created_at", { ascending: false });
+      }
+      if (result.data) STORE.reviews = result.data.map(row => ({
+        name:row.name, comment:row.comment, rating:row.rating, visible:true,
+        verifiedPurchase:row.verified_purchase === true,
+        bookKey:row.book_key || ""
+      }));
+      return verifiedReviewSchemaReady;
+    }
+
+    function showToast(message, duration = 3000, withBooksLink = false) {
+      const toast = document.getElementById("toast");
+      toast.replaceChildren(document.createTextNode(message));
+      if (withBooksLink) {
+        const link = document.createElement("a");
+        link.href = "#books"; link.textContent = " Browse books";
+        link.className = "ml-2 underline underline-offset-2";
+        link.addEventListener("click", () => toast.classList.remove("show"));
+        toast.append(link);
+      }
+      toast.classList.add("show");
+      clearTimeout(reviewToastTimer);
+      reviewToastTimer = setTimeout(() => toast.classList.remove("show"), duration);
+    }
+
     function renderReviews() {
       const grid = document.getElementById("reviewsGrid");
       const reviews = (Array.isArray(STORE.reviews) ? STORE.reviews : []).filter(review => review.visible !== false);
-      document.getElementById("reviewCount").textContent =
-        `${reviews.length} featured comment${reviews.length === 1 ? "" : "s"}`;
+      document.getElementById("reviewCount").textContent = `${reviews.length} comment${reviews.length === 1 ? "" : "s"}`;
 
       if (!reviews.length) {
-        grid.innerHTML = `
-          <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-            <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-xl shadow-sm">☆</div>
-            <h4 class="mt-4 font-black">Featured comments</h4>
-            <p class="mt-1 text-sm text-slate-500">Admin-managed reviews will appear here when published.</p>
-          </div>
-        `;
+        grid.innerHTML = `<div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center"><p class="text-sm text-slate-600">No comments yet. Approved customers can be the first to review a book.</p></div>`;
         return;
       }
-
       grid.innerHTML = `<div class="review-carousel">
-        <div class="review-track" aria-label="Customer comments">${reviews.map((review, index) => `
-          <div class="review-slide" data-review-slide="${index}"><article class="review-slide-card rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
-            <div class="text-sm font-black text-amber-500" aria-label="${Number(review.rating) || 5} out of 5 stars">${"★".repeat(Number(review.rating) || 5)}${"☆".repeat(5 - (Number(review.rating) || 5))}</div>
-            <p class="review-copy mt-3 text-sm leading-6 text-slate-600">“${escapeHtml(review.comment || review.text)}”</p>
-            <div class="mt-4 text-xs font-black text-slate-900">${escapeHtml(review.name)}</div>
-          </article></div>`).join("")}</div>
-        ${reviews.length > 1 ? `<div class="review-controls"><button type="button" class="review-arrow" data-review-step="-1" aria-label="Previous review">‹</button><div class="review-dots" role="group" aria-label="Choose a review">${reviews.map((_, index) => `<button type="button" class="review-dot" data-review-dot="${index}" aria-label="Show review ${index + 1}" aria-current="${index === 0}"></button>`).join("")}</div><button type="button" class="review-arrow" data-review-step="1" aria-label="Next review">›</button></div>` : ''}
+        <div class="review-stage" aria-live="polite" aria-atomic="true">
+          <article class="review-slide-card rounded-2xl border border-slate-200 bg-slate-50 p-4" id="reviewCurrentCard">
+            <div class="flex items-center justify-between gap-2"><p id="reviewCurrentRating" class="text-sm font-black text-amber-500"></p><span id="reviewCurrentLabel" class="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-extrabold text-slate-500"></span></div>
+            <p id="reviewCurrentBook" class="mt-1 hidden text-xs font-bold text-teal-700"></p>
+            <p id="reviewCurrentComment" class="review-copy mt-2 text-sm leading-5 text-slate-600"></p>
+            <button id="reviewReadMore" type="button" class="review-read-more mt-1 hidden self-start">Read full review</button>
+            <div id="reviewCurrentName" class="mt-auto pt-2 text-xs font-black text-slate-900"></div>
+          </article>
+        </div>
+        ${reviews.length > 1 ? `<div class="review-controls"><button type="button" class="review-arrow" data-review-step="-1" aria-label="Previous review">↑</button><div class="review-dots" role="group" aria-label="Choose a review">${reviews.map((_, index) => `<button type="button" class="review-dot" data-review-dot="${index}" aria-label="Show review ${index + 1}" aria-current="${index === 0}"></button>`).join("")}</div><button type="button" class="review-arrow" data-review-step="1" aria-label="Next review">↓</button></div>` : ""}
       </div>`;
-      const track = grid.querySelector('.review-track');
-      const slides = [...grid.querySelectorAll('[data-review-slide]')];
-      const dots = [...grid.querySelectorAll('[data-review-dot]')];
-      const updateReviewControls = () => {
-        const index = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / Math.max(1, slides[0].offsetWidth))));
-        dots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === index)));
+
+      let activeIndex = 0;
+      const card = document.getElementById("reviewCurrentCard");
+      const dots = [...grid.querySelectorAll("[data-review-dot]")];
+      const renderActiveReview = (direction = 1, animate = false) => {
+        const review = reviews[activeIndex];
+        const stars = Math.max(1, Math.min(5, Number(review.rating) || 5));
+        const comment = String(review.comment || review.text || "");
+        const book = STORE.books.find(item => String(item.id) === String(review.bookKey));
+        document.getElementById("reviewCurrentRating").textContent = `${"★".repeat(stars)}${"☆".repeat(5 - stars)}`;
+        document.getElementById("reviewCurrentRating").setAttribute("aria-label", `${stars} out of 5 stars`);
+        document.getElementById("reviewCurrentLabel").textContent = review.verifiedPurchase ? "Verified purchase" : "Featured comment";
+        const bookLabel = document.getElementById("reviewCurrentBook");
+        bookLabel.textContent = book ? `About ${book.title}` : "";
+        bookLabel.classList.toggle("hidden", !book);
+        const preview = document.getElementById("reviewCurrentComment");
+        preview.textContent = `“${comment}”`;
+        const readMore = document.getElementById("reviewReadMore");
+        readMore.classList.toggle("hidden", comment.length <= 60);
+        readMore.setAttribute("aria-label", `Read full review by ${review.name}`);
+        document.getElementById("reviewCurrentName").textContent = review.name;
+        dots.forEach((dot, index) => dot.setAttribute("aria-current", String(index === activeIndex)));
+        if (animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          card.classList.remove("review-shift-up", "review-shift-down");
+          void card.offsetWidth;
+          card.classList.add(direction > 0 ? "review-shift-up" : "review-shift-down");
+        }
+        readMore.onclick = () => {
+          document.getElementById("reviewReadRating").textContent = `${"★".repeat(stars)}${"☆".repeat(5 - stars)} · ${stars}/5`;
+          document.getElementById("reviewReadTitle").textContent = `Review by ${review.name}`;
+          document.getElementById("reviewReadBook").textContent = book ? `Verified purchase · ${book.title}` : (review.verifiedPurchase ? "Verified purchase" : "Featured comment · purchase not verified");
+          document.getElementById("reviewReadComment").textContent = comment;
+          reviewModalReturnFocus = readMore;
+          openTransientOverlay("reviewRead");
+          document.getElementById("closeReviewRead").focus();
+        };
       };
-      grid.querySelectorAll('[data-review-step]').forEach(button => button.addEventListener('click', () => {
-        const index = Math.round(track.scrollLeft / Math.max(1, slides[0].offsetWidth));
-        slides[Math.max(0, Math.min(slides.length - 1, index + Number(button.dataset.reviewStep)))].scrollIntoView({ block:'nearest', inline:'start', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-      }));
-      dots.forEach((dot, index) => dot.addEventListener('click', () => slides[index].scrollIntoView({ block:'nearest', inline:'start', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })));
-      track.addEventListener('scroll', updateReviewControls, { passive:true });
+      const moveReview = (nextIndex, direction) => {
+        if (reviews.length < 2) return;
+        activeIndex = (nextIndex + reviews.length) % reviews.length;
+        renderActiveReview(direction, true);
+      };
+      renderActiveReview();
+      grid.querySelectorAll("[data-review-step]").forEach(button => button.addEventListener("click", () => moveReview(activeIndex + Number(button.dataset.reviewStep), Number(button.dataset.reviewStep))));
+      dots.forEach((dot, index) => dot.addEventListener("click", () => moveReview(index, index >= activeIndex ? 1 : -1)));
+      const stage = grid.querySelector(".review-stage");
+      let touchStart = null;
+      stage.addEventListener("pointerdown", event => {
+        if (event.pointerType !== "mouse" && !event.target.closest("button")) touchStart = [event.clientX, event.clientY];
+      }, { passive:true });
+      stage.addEventListener("pointerup", event => {
+        if (!touchStart) return;
+        const dx = event.clientX - touchStart[0], dy = event.clientY - touchStart[1];
+        touchStart = null;
+        if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.25) moveReview(activeIndex + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+      }, { passive:true });
+      stage.addEventListener("pointercancel", () => { touchStart = null; }, { passive:true });
+    }
+
+    async function openCustomerReviewForm() {
+      reviewModalReturnFocus = document.getElementById("writeReviewBtn");
+      const select = document.getElementById("customerReviewBook");
+      const status = document.getElementById("customerReviewStatus");
+      const submit = document.getElementById("submitCustomerReview");
+      const form = document.getElementById("customerReviewForm");
+      form.reset();
+      status.classList.add("hidden");
+      select.innerHTML = '<option value="">Checking your Library…</option>';
+      submit.disabled = true;
+      openTransientOverlay("reviewSubmit");
+      select.focus();
+      const showMessage = (message) => {
+        status.textContent = message; status.className = "text-sm font-bold text-amber-800";
+        select.innerHTML = '<option value="">No eligible book</option>';
+        submit.disabled = true;
+      };
+      if (!supabaseReady || !supabase) { showMessage("Reviews are temporarily unavailable. Please try again later."); return; }
+      const references = getStoredPurchaseReferences();
+      if (!references.length) {
+        closeTransientOverlay("reviewSubmit");
+        reviewModalReturnFocus?.focus();
+        showToast("Want to share your experience? Purchase this book and access it in your Library to unlock the review option.", 3800, true);
+        return;
+      }
+      if (!verifiedReviewSchemaReady) { showMessage("Secure purchaser review verification is not set up yet. Please contact the store administrator."); return; }
+      try {
+        const results = await Promise.all(references.map(async reference => {
+          const { data, error } = await supabase.rpc("get_customer_purchase_items", { p_purchase_id:reference.purchaseId, p_access_token:reference.accessToken });
+          return error ? [] : (data || []).map(item => ({ ...item, purchaseId:reference.purchaseId, accessToken:reference.accessToken }));
+        }));
+        const items = results.flat();
+        const eligible = new Map();
+        let pendingMatch = false;
+        let rejectedMatch = false;
+        items.forEach(item => {
+          const book = STORE.books.find(candidate => String(candidate.bookCode || "").toUpperCase() === String(item.book_id || "").toUpperCase() || String(candidate.id) === String(item.book_id));
+          const approved = item.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(item.order_status);
+          if (!approved) {
+            if (book && item.payment_status === "Pending" && ["Pending", "New"].includes(item.order_status)) pendingMatch = true;
+            if (book && (item.payment_status === "Rejected" || item.order_status === "Rejected")) rejectedMatch = true;
+            return;
+          }
+          if (!book || eligible.has(String(book.id))) return;
+          eligible.set(String(book.id), { purchaseId:item.purchaseId, accessToken:item.accessToken, bookKey:String(book.id), title:item.book_title || book.title });
+        });
+        reviewablePurchases = eligible;
+        if (!eligible.size) {
+          closeTransientOverlay("reviewSubmit");
+          reviewModalReturnFocus?.focus();
+          const message = pendingMatch ? "Your purchase is still pending. Reviews unlock after payment is confirmed and the book appears in your Library." : rejectedMatch ? "This purchase was not approved. Reviews unlock after an approved purchase appears in your Library." : "Want to share your experience? Purchase this book and access it in your Library to unlock the review option.";
+          showToast(message, 3800, true);
+          return;
+        }
+        select.innerHTML = [...eligible.entries()].map(([key, item]) => `<option value="${escapeHtml(key)}">${escapeHtml(item.title)}</option>`).join("");
+        submit.disabled = false;
+        if (pendingMatch) {
+          status.textContent = "Pending purchases are not reviewable yet. Reviews unlock after confirmation and Library access.";
+          status.className = "text-sm font-bold text-amber-800";
+        }
+        document.getElementById("customerReviewRating").focus();
+      } catch (error) {
+        console.error("Could not check Library eligibility", error);
+        showMessage("We could not check your Library. Please refresh and try again.");
+      }
+    }
+
+    async function submitCustomerReview(event) {
+      event.preventDefault();
+      const bookKey = document.getElementById("customerReviewBook").value;
+      const reference = reviewablePurchases.get(bookKey);
+      const rating = Number(document.getElementById("customerReviewRating").value);
+      const comment = document.getElementById("customerReviewComment").value.trim();
+      const status = document.getElementById("customerReviewStatus");
+      const button = document.getElementById("submitCustomerReview");
+      status.classList.remove("hidden");
+      status.className = "text-sm font-bold text-rose-700";
+      if (!reference) { status.textContent = "Choose an eligible book from your Library."; return; }
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) { status.textContent = "Choose a rating from 1 to 5 stars."; return; }
+      if (!comment) { status.textContent = "Enter a comment before submitting."; return; }
+      if (comment.length > 1000) { status.textContent = "Keep your review to 1,000 characters or fewer."; return; }
+      button.disabled = true; button.textContent = "Submitting…";
+      try {
+        const { data, error } = await supabase.rpc("submit_customer_review", {
+          p_purchase_id:reference.purchaseId, p_access_token:reference.accessToken,
+          p_book_key:reference.bookKey, p_rating:rating, p_comment:comment
+        });
+        if (error) {
+          const message = String(error.message || "");
+          status.textContent = /already been submitted/i.test(message) ? "A review has already been submitted for this purchase and book." : /approved/i.test(message) ? "This purchase is not yet approved. Reviews unlock after confirmation." : /Could not find the function|schema cache|submit_customer_review/i.test(message) ? "Secure review verification is not set up yet. Please contact the store administrator." : "We could not save your review. Please check your connection and try again.";
+          return;
+        }
+        if (!data?.length || data[0]?.verified_purchase !== true) { status.textContent = "The server could not confirm this review. Please try again."; return; }
+        await loadPublicReviews();
+        renderReviews();
+        closeTransientOverlay("reviewSubmit");
+        showToast("Thanks! Your verified review has been published.", 3200);
+      } catch (error) {
+        console.error("Review submission failed", error);
+        status.textContent = "We could not save your review. Please try again.";
+      } finally {
+        button.disabled = false; button.textContent = "Submit Review";
+      }
     }
 
     const faqs = [
@@ -2638,6 +2831,15 @@
     document.getElementById("openCartBtn").addEventListener("click", () => { renderCart(); openTransientOverlay("cart"); });
     document.getElementById("themeToggleBtn").addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true));
     document.getElementById("openLibraryBtn").addEventListener("click", openMyLibrary);
+    document.getElementById("writeReviewBtn").addEventListener("click", openCustomerReviewForm);
+    document.getElementById("customerReviewForm").addEventListener("submit", submitCustomerReview);
+    const closeReviewRead = () => { closeTransientOverlay("reviewRead"); reviewModalReturnFocus?.focus(); };
+    const closeReviewSubmit = () => { closeTransientOverlay("reviewSubmit"); reviewModalReturnFocus?.focus(); };
+    document.getElementById("closeReviewRead").addEventListener("click", closeReviewRead);
+    document.getElementById("closeReviewReadFooter").addEventListener("click", closeReviewRead);
+    document.getElementById("closeReviewSubmit").addEventListener("click", closeReviewSubmit);
+    document.getElementById("reviewReadModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeReviewRead(); });
+    document.getElementById("reviewSubmitModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeReviewSubmit(); });
     document.getElementById("closeLibrary").addEventListener("click", () => closeTransientOverlay("library"));
     document.getElementById("libraryModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("library"); });
     document.getElementById("closeCart").addEventListener("click", () => closeTransientOverlay("cart"));
@@ -2766,6 +2968,15 @@
     });
 
     document.addEventListener("keydown", event => {
+      const activeReviewModal = ["reviewReadModal", "reviewSubmitModal"].map(id => document.getElementById(id)).find(modal => !modal.classList.contains("hidden"));
+      if (event.key === "Tab" && activeReviewModal) {
+        const focusable = [...activeReviewModal.querySelectorAll('button:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href]')];
+        if (focusable.length) {
+          const first = focusable[0], last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
+      }
       if (event.key === "Escape") {
         const currentOverlay = Object.entries(transientOverlayIds).find(([, id]) => !document.getElementById(id).classList.contains("hidden"));
         if (currentOverlay) closeTransientOverlay(currentOverlay[0]);
