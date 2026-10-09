@@ -618,17 +618,17 @@
     .review-stage { position:relative; overflow:hidden; touch-action:pan-y; }
     .review-slide-card { display:flex; height:200px; flex-direction:column; overflow:hidden; }
     .review-slide-card .review-copy { display:-webkit-box; overflow:hidden; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere; }
-    .review-slide-card.review-shift-up { animation:review-slide-up .22s ease both; }
-    .review-slide-card.review-shift-down { animation:review-slide-down .22s ease both; }
-    @keyframes review-slide-up { from { opacity:.35; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes review-slide-down { from { opacity:.35; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+    .review-slide-card.review-shift-left { animation:review-slide-left .22s ease both; }
+    .review-slide-card.review-shift-right { animation:review-slide-right .22s ease both; }
+    @keyframes review-slide-left { from { opacity:.35; transform:translateX(24px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes review-slide-right { from { opacity:.35; transform:translateX(-24px); } to { opacity:1; transform:translateX(0); } }
     .review-controls { display:flex; align-items:center; justify-content:center; gap:.65rem; margin-top:.85rem; }
     .review-arrow { display:grid; width:34px; height:34px; place-items:center; border:1px solid #d5dce5; border-radius:999px; background:#fff; font-size:1.1rem; }
     .review-dots { display:flex; max-width:180px; flex-wrap:wrap; align-items:center; justify-content:center; gap:.4rem; }
     .review-dot { width:8px; height:8px; border:0; border-radius:999px; background:#cbd5e1; padding:0; }
     .review-dot[aria-current="true"] { width:20px; background:#0d9488; }
     html[data-theme="dark"] .review-arrow { border-color:#35445a; background:#172438; color:#e2e8f0; }
-    @media(prefers-reduced-motion:reduce) { .review-slide-card.review-shift-up,.review-slide-card.review-shift-down { animation:none; } }
+    @media(prefers-reduced-motion:reduce) { .review-slide-card.review-shift-left,.review-slide-card.review-shift-right { animation:none; } }
     html[data-theme="dark"] .review-slide-card { background:#111c2d; border-color:#35445a; }
     html[data-theme="dark"] .review-slide-card .text-slate-900 { color:#f8fafc !important; }
     .review-read-more { color:#0f766e; font-size:.75rem; font-weight:800; text-decoration:underline; text-underline-offset:2px; }
@@ -2251,7 +2251,7 @@
             <div id="reviewCurrentName" class="mt-auto pt-2 text-xs font-black text-slate-900"></div>
           </article>
         </div>
-        ${reviews.length > 1 ? `<div class="review-controls"><button type="button" class="review-arrow" data-review-step="-1" aria-label="Previous review">↑</button><div class="review-dots" role="group" aria-label="Choose a review">${reviews.map((_, index) => `<button type="button" class="review-dot" data-review-dot="${index}" aria-label="Show review ${index + 1}" aria-current="${index === 0}"></button>`).join("")}</div><button type="button" class="review-arrow" data-review-step="1" aria-label="Next review">↓</button></div>` : ""}
+        ${reviews.length > 1 ? `<div class="review-controls"><button type="button" class="review-arrow" data-review-step="-1" aria-label="Previous review">←</button><div class="review-dots" role="group" aria-label="Choose a review">${reviews.map((_, index) => `<button type="button" class="review-dot" data-review-dot="${index}" aria-label="Show review ${index + 1}" aria-current="${index === 0}"></button>`).join("")}</div><button type="button" class="review-arrow" data-review-step="1" aria-label="Next review">→</button></div>` : ""}
       </div>`;
 
       let activeIndex = 0;
@@ -2276,9 +2276,9 @@
         document.getElementById("reviewCurrentName").textContent = review.name;
         dots.forEach((dot, index) => dot.setAttribute("aria-current", String(index === activeIndex)));
         if (animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          card.classList.remove("review-shift-up", "review-shift-down");
+          card.classList.remove("review-shift-left", "review-shift-right");
           void card.offsetWidth;
-          card.classList.add(direction > 0 ? "review-shift-up" : "review-shift-down");
+          card.classList.add(direction > 0 ? "review-shift-left" : "review-shift-right");
         }
         readMore.onclick = () => {
           document.getElementById("reviewReadRating").textContent = `${"★".repeat(stars)}${"☆".repeat(5 - stars)} · ${stars}/5`;
