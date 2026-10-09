@@ -1273,32 +1273,62 @@
 
     const transientOverlayIds = { details: "bookDetailsModal", cart: "cartModal", library: "libraryModal" };
     const overlayHistoryKey = "__crazyEbookOverlay";
-    let pendingOverlayClose = null;
+    const overlayElementIds = { ...transientOverlayIds, buy: "buyModal", admin: "adminModal" };
+
+    function overlayIsVisible(name) {
+      const modal = document.getElementById(overlayElementIds[name]);
+      return Boolean(modal && !modal.classList.contains("hidden"));
+    }
+
+    // The site uses one active dialog at a time. When switching dialogs, hide the old one
+    // because its history entry is replaced and Back should not leave a hidden dialog behind.
+    function hideOtherOverlays(activeName) {
+      Object.entries(overlayElementIds).forEach(([name, id]) => {
+        if (name === activeName) return;
+        const modal = document.getElementById(id);
+        if (!modal || modal.classList.contains("hidden")) return;
+        modal.classList.add("hidden");
+        modal.classList.remove("flex", "shop-modal");
+        modal.querySelector(":scope > div")?.classList.remove("shop-modal-panel");
+      });
+      if (!Object.keys(overlayElementIds).some(overlayIsVisible)) {
+        document.body.classList.remove("modal-open");
+      }
+    }
+
     function rememberOverlay(name) {
       try {
         const current = history.state && typeof history.state === "object" ? history.state : {};
-        if (current[overlayHistoryKey] === name) return;
+        const currentName = current[overlayHistoryKey];
+        if (currentName === name && overlayIsVisible(name)) return;
+
         const next = { ...current, [overlayHistoryKey]: name };
-        // Replace an existing overlay entry when switching from one modal to another.
-        // Otherwise add one same-URL history entry so mobile Back dismisses the modal.
-        if (current[overlayHistoryKey]) history.replaceState(next, "", location.href);
-        else history.pushState(next, "", location.href);
+        if (currentName && currentName !== name) {
+          hideOtherOverlays(name);
+          history.replaceState(next, "", location.href);
+        } else if (currentName === name) {
+          history.pushState(next, "", location.href);
+        } else {
+          history.pushState(next, "", location.href);
+        }
       } catch (error) { console.warn("Could not add overlay history state", error); }
     }
+
     function popOverlayHistory(name) {
       try {
         if (history.state?.[overlayHistoryKey] === name) {
-          pendingOverlayClose = name;
           history.back();
           return true;
         }
       } catch (error) { console.warn("Could not close overlay history state", error); }
       return false;
     }
+
     function openTransientOverlay(name) {
       const modal = document.getElementById(transientOverlayIds[name]);
       if (!modal || !modal.classList.contains("hidden")) return;
       rememberOverlay(name);
+      hideOtherOverlays(name);
       modal.classList.remove("hidden"); modal.classList.add("flex", "shop-modal");
       document.body.classList.add("modal-open");
       modal.querySelector(":scope > div")?.classList.add("shop-modal-panel");
@@ -2057,6 +2087,7 @@
       selectedBook = STORE.books.find(book => Number(book.id) === Number(bookId));
       if (!selectedBook) return;
       rememberOverlay("buy");
+      hideOtherOverlays("buy");
       checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
@@ -2215,6 +2246,7 @@
     function openAdminModal() {
       const modal = document.getElementById("adminModal");
       rememberOverlay("admin");
+      hideOtherOverlays("admin");
       modal.classList.remove("hidden");
       modal.classList.add("flex");
       document.body.classList.add("modal-open");
@@ -2674,14 +2706,10 @@
     });
 
     window.addEventListener("popstate", () => {
-      const overlay = pendingOverlayClose ||
-        (!document.getElementById("adminModal").classList.contains("hidden") ? "admin" :
-        !document.getElementById("buyModal").classList.contains("hidden") ? "buy" :
-        Object.entries(transientOverlayIds).find(([, id]) => !document.getElementById(id).classList.contains("hidden"))?.[0]);
-      pendingOverlayClose = null;
-      if (overlay === "admin") closeAdminModal(true);
-      else if (overlay === "buy") closeBuyModal(true);
-      else if (overlay) closeTransientOverlay(overlay, true);
+      const visibleOverlay = Object.keys(overlayElementIds).find(overlayIsVisible);
+      if (visibleOverlay === "admin") closeAdminModal(true);
+      else if (visibleOverlay === "buy") closeBuyModal(true);
+      else if (visibleOverlay) closeTransientOverlay(visibleOverlay, true);
     });
 
     document.addEventListener("keydown", event => {
