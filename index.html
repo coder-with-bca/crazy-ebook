@@ -26,244 +26,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-  <!-- =========================================================
-       ADMIN PORTAL
-       Static-site admin: browser-persistent data, export/import
-       ========================================================= -->
-  <div id="adminModal"
-       class="admin-modal fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/70 p-3 backdrop-blur-sm"
-       role="dialog"
-       aria-modal="true"
-       aria-labelledby="adminModalTitle">
-    <div class="admin-panel w-full max-w-6xl rounded-3xl bg-white shadow-2xl">
-      <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur sm:p-6">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Owner only</p>
-            <h2 id="adminModalTitle" class="mt-1 text-2xl font-black">Crazy E-Book Admin Portal</h2>
-            <p class="mt-1 text-sm text-slate-500">Manage books, pricing, ratings, free samples and the homepage showcase.</p>
-          </div>
-          <button id="closeAdminModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div id="adminLoginView" class="p-6 sm:p-10">
-        <div class="mx-auto max-w-md rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
-          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-950 text-sm font-black text-white">CE</div>
-          <h3 class="mt-5 text-xl font-black">Admin Login</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-500">Sign in with the owner account authorized for this store.</p>
-          <label for="adminEmailInput" class="mt-6 block text-xs font-black uppercase tracking-widest text-slate-500">Owner email</label>
-          <input id="adminEmailInput" type="email" autocomplete="username"
-                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
-                 placeholder="you@example.com" />
-          <label for="adminPasswordInput" class="mt-4 block text-xs font-black uppercase tracking-widest text-slate-500">Password</label>
-          <input id="adminPasswordInput" type="password" autocomplete="current-password"
-                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
-                 placeholder="Supabase Auth password" />
-          <button id="adminLoginBtn" type="button" class="mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">Sign in</button>
-          <p id="adminLoginError" class="mt-3 hidden text-center text-xs font-bold text-rose-600"></p>
-          <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900">
-            <strong>Setup required:</strong> configure the Supabase project URL and public anon key in the site settings. Never put a service-role key here.
-          </div>
-        </div>
-      </div>
-
-      <div id="adminDashboardView" class="hidden p-5 sm:p-6">
-        <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4">
-          <button class="admin-tab active rounded-xl border px-4 py-2.5 text-xs font-black" data-admin-tab="books">Books</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="purchases">Purchases</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="coupons">Coupons</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="settings">Settings</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
-          <button id="adminLogoutBtn" type="button" class="ml-auto rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600 hover:bg-slate-50">Log out</button>
-        </div>
-
-        <section id="adminTabBooks" class="admin-tab-panel pt-6">
-          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Library manager</p>
-              <h3 class="mt-1 text-2xl font-black">Add or edit books</h3>
-              <p class="mt-2 text-sm text-slate-500">Update title, cover, category, pricing, rating, sample and private delivery link.</p>
-            </div>
-            <button id="newBookBtn" type="button" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white hover:bg-indigo-500">+ New Book</button>
-          </div>
-
-          <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
-            <div class="admin-table-wrap rounded-2xl border border-slate-200 bg-white">
-              <table class="min-w-full text-left text-sm">
-                <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
-                  <tr>
-                    <th class="px-4 py-3">Book</th>
-                    <th class="px-4 py-3">Price</th>
-                    <th class="px-4 py-3">Rating</th>
-                    <th class="px-4 py-3">Showcase</th>
-                    <th class="px-4 py-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="adminBooksTable"></tbody>
-              </table>
-            </div>
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <div class="flex items-center justify-between">
-                <h4 id="bookFormHeading" class="font-black">New Book</h4>
-                <button id="cancelBookEditBtn" type="button" class="hidden text-xs font-black text-slate-500 hover:text-slate-900">Cancel</button>
-              </div>
-
-              <form id="bookForm" class="mt-5 space-y-3">
-                <input type="hidden" id="bookId" />
-                <div>
-                  <label class="text-xs font-black text-slate-500">Unique Book ID</label><input id="bookCode" required pattern="[A-Za-z0-9_-]{3,40}" placeholder="PYTHON001" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm uppercase" /></div><div><label class="text-xs font-black text-slate-500">Title</label>
-                  <input id="bookTitle" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="text-xs font-black text-slate-500">Category</label>
-                    <input id="bookCategory" required placeholder="Python & Tech" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                  <div>
-                    <label class="text-xs font-black text-slate-500">Tag</label>
-                    <input id="bookTag" placeholder="New / Best Seller / Free" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                </div>
-                <div>
-                  <label class="text-xs font-black text-slate-500">Subjects (comma separated)</label>
-                  <input id="bookSubjects" placeholder="Python, Programming, Coding" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                </div>
-                <div>
-                  <label class="text-xs font-black text-slate-500">Summary</label>
-                  <textarea id="bookSummary" rows="3" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs font-black text-slate-500">MRP (Rs)</label>
-                    <input id="bookMrp" type="number" min="0" step="1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                  <div>
-                    <label class="text-xs font-black text-slate-500">Price (Rs)</label>
-                    <input id="bookPrice" type="number" min="0" step="1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                  <div>
-                    <label class="text-xs font-black text-slate-500">Rating</label>
-                    <input id="bookRating" type="number" min="0" max="5" step="0.1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                </div>
-
-                <div>
-                  <label class="text-xs font-black text-slate-500">Cover image URL</label>
-                  <input id="bookCoverImage" type="url" placeholder="https://..." class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  <div class="field-note mt-1">Use a publicly reachable image URL. A data URL also works, but large images are not recommended.</div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="text-xs font-black text-slate-500">Cover background</label>
-                    <input id="bookCoverClass" value="bg-slate-950 text-white" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                  <div>
-                    <label class="text-xs font-black text-slate-500">Cover label</label>
-                    <input id="bookCoverLabel" placeholder="PYTHON" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  </div>
-                </div>
-
-                <div>
-                  <label class="text-xs font-black text-slate-500">Sample URL</label>
-                  <input id="bookSampleLink" type="url" placeholder="https://.../sample.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                </div>
-                <div>
-                  <label class="text-xs font-black text-slate-500">Private book delivery URL</label>
-                  <input id="bookFileLink" type="url" placeholder="https://private-link.example/ebook.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
-                  <div class="field-note mt-1">Stored in Supabase's private delivery data. Customers can retrieve it only for their own Paid and Approved purchase.</div>
-                </div>
-
-                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3"><input id="bookActive" type="checkbox" checked class="h-4 w-4 rounded" /><span class="text-sm font-bold">Available for purchase</span></label>
-                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3">
-                  <input id="bookFree" type="checkbox" class="h-4 w-4 rounded" />
-                  <span class="text-sm font-bold">This is a free book</span>
-                </label>
-
-                <button type="submit" class="w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white hover:bg-slate-800">Save Book</button>
-              </form>
-            </div>
-          </div>
-        </section>
-
-        <section id="adminTabPurchases" class="admin-tab-panel hidden pt-6"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Order management</p><h3 class="mt-1 text-2xl font-black">Purchases</h3><p class="mt-2 text-sm text-slate-500">Mark Paid only after checking payment. Mark Delivered after sending the ebook.</p></div><button id="refreshPurchasesBtn" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">Refresh</button></div><div class="mt-4 flex flex-wrap gap-2" id="purchaseFilters"><button class="purchase-filter rounded-full bg-slate-950 px-3 py-2 text-xs font-bold text-white" data-filter="All">All</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Pending">Pending</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Paid">Paid</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Delivered">Delivered</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Rejected">Rejected</button></div><div id="purchasesList" class="mt-5 grid gap-4"></div></section>
-        <section id="adminTabReviews" class="admin-tab-panel hidden pt-6"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Admin-created featured comments</p><h3 class="mt-1 text-2xl font-black">Reviews</h3><p class="mt-2 text-sm text-slate-500">These are admin-managed comments, not verified purchase reviews.</p></div><form id="reviewForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="reviewId" type="hidden"><label class="text-xs font-bold">Name<input id="reviewName" required maxlength="100" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Rating<select id="reviewRating" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label><label class="text-xs font-bold sm:col-span-2">Comment<textarea id="reviewComment" required maxlength="1000" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea></label><label class="flex items-center gap-2 text-sm font-bold"><input id="reviewVisible" type="checkbox" checked> Visible publicly</label><div class="flex gap-2"><button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white" type="submit">Save review</button><button class="rounded-xl border px-4 py-2.5 text-sm font-bold" id="cancelReviewEdit" type="button">Clear</button></div></form><div id="adminReviewsList" class="mt-5 grid gap-3"></div></section>
-
-        <section id="adminTabSettings" class="admin-tab-panel hidden pt-6"><h3 class="text-2xl font-black">Business Settings</h3><p class="mt-2 text-sm text-slate-500">Update the public contact and payment details stored with your Supabase storefront.</p><form id="settingsForm" class="mt-5 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><label class="text-xs font-bold">Brand<input id="settingBrand" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Creators<input id="settingCreators" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">UPI ID<input id="settingUpi" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support email<input id="settingEmail" type="email" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support Telegram URL<input id="settingTelegram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Purchase channel URL<input id="settingPurchaseChannel" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Instagram URL<input id="settingInstagram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Telegram bot username<input id="settingBot" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><button class="rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white sm:col-span-2" type="submit">Save Settings</button><p class="text-xs text-amber-800 sm:col-span-2">The bot token and notification channel ID are secrets configured in Supabase and are never saved here.</p></form></section>
-
-        <section id="adminTabShowcase" class="admin-tab-panel hidden pt-6">
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Homepage controls</p>
-            <h3 class="mt-1 text-2xl font-black">Change the front-page showcase</h3>
-            <p class="mt-2 text-sm text-slate-500">Choose the featured book and change the hero copy shown above the library.</p>
-          </div>
-
-          <div class="mt-6 grid gap-5 lg:grid-cols-2">
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <label class="text-xs font-black text-slate-500">Hero title</label>
-              <textarea id="heroTitleInput" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
-
-              <label class="mt-4 block text-xs font-black text-slate-500">Hero description</label>
-              <textarea id="heroTextInput" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
-
-              <label class="mt-4 block text-xs font-black text-slate-500">Featured book</label>
-              <select id="featuredBookSelect" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></select>
-
-              <button id="saveShowcaseBtn" type="button" class="mt-5 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-extrabold text-white hover:bg-indigo-500">Save Homepage</button>
-            </div>
-
-            <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6">
-              <div class="text-xs font-black uppercase tracking-widest text-indigo-600">Live preview</div>
-              <div class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
-                <p id="showcasePreviewCategory" class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600"></p>
-                <h4 id="showcasePreviewTitle" class="mt-2 text-2xl font-black"></h4>
-                <p id="showcasePreviewText" class="mt-3 text-sm leading-6 text-slate-600"></p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="adminTabCoupons" class="admin-tab-panel hidden pt-6">
-          <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Discounts</p><h3 class="mt-1 text-2xl font-black">Coupons</h3><p class="mt-2 text-sm text-slate-500">Create percentage coupons and manage availability.</p></div><button id="newCouponBtn" type="button" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">+ New Coupon</button></div>
-          <form id="couponForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="couponId" type="hidden"><label class="text-xs font-bold">Coupon code<input id="couponCodeInput" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" autocomplete="off" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="WELCOME10"></label><label class="text-xs font-bold">Discount (%)<input id="couponPercentInput" required type="number" min="0.01" max="100" step="0.01" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="10"></label><label class="text-xs font-bold">Expiry date (optional)<input id="couponExpiryInput" type="date" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Usage limit (optional)<input id="couponLimitInput" type="number" min="1" step="1" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="Unlimited"></label><label class="flex items-center gap-2 text-sm font-bold"><input id="couponActiveInput" type="checkbox" checked> Active</label><div class="flex gap-2 sm:col-span-2"><button id="saveCouponBtn" type="submit" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">Save Coupon</button><button id="cancelCouponEditBtn" type="button" class="hidden rounded-xl border px-4 py-2.5 text-sm font-bold">Cancel</button></div><p id="couponAdminError" class="hidden text-sm font-bold text-rose-600 sm:col-span-2" role="alert"></p></form>
-          <div id="adminCouponsList" class="mt-5 grid gap-3"></div>
-        </section>
-
-        <section id="adminTabData" class="admin-tab-panel hidden pt-6">
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Store data</p>
-            <h3 class="mt-1 text-2xl font-black">Backup & restore</h3>
-            <p class="mt-2 text-sm text-slate-500">Export your store data before moving the site to another browser/device. Import it there to restore the catalogue.</p>
-          </div>
-
-          <div class="mt-6 grid gap-5 md:grid-cols-2">
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h4 class="font-black">Export</h4>
-              <p class="mt-2 text-sm leading-6 text-slate-600">Download a JSON backup of books, showcase settings and contact settings. The admin login and private downloads are excluded.</p>
-              <button id="exportDataBtn" type="button" class="mt-4 rounded-xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white hover:bg-slate-800">Export Store Data</button>
-            </div>
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h4 class="font-black">Import</h4>
-              <p class="mt-2 text-sm leading-6 text-slate-600">Choose a previously exported JSON file. Importing replaces the current browser-stored store data.</p>
-              <input id="importDataInput" type="file" accept="application/json,.json" class="mt-4 block w-full text-sm" />
-              <button id="importDataBtn" type="button" class="mt-4 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Import Store Data</button>
-            </div>
-          </div>
-
-          <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
-            <strong>Catalog, purchases, private delivery links, and reviews sync through the configured Supabase project. Keep the project URL and publishable key aligned with your Supabase project.
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <div id="toast" class="toast rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white shadow-xl" role="status" aria-live="polite"></div>
 
   <script>
     tailwind.config = {
@@ -655,6 +417,16 @@
       }
     }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Crazy E-Book",
+    "alternateName": "Crazy E-Books",
+    "url": "https://coder-with-bca.github.io/crazy-ebook/",
+    "description": "Digital ebooks, notes, and free samples for students and learners by Akki & Aadi."
+  }
+  </script>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -1023,7 +795,7 @@
         </div>
       </div>
 
-      <button id="payNowBtn" type="button" class="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-extrabold text-white">Pay Now</button><p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Please use the QR code below.</p><div id="pendingPaymentInfo" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Payment starts as Pending. We verify it manually.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
+      <button id="payNowBtn" type="button" class="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-extrabold text-white">Pay Now</button><p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Please use the QR code below.</p><div id="pendingPaymentInfo" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Payment starts as Pending. We verify it manually (usually within 5–15 minutes). Your order access token is saved in this browser.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
 
       <a id="verifyTelegram"
          href="#"
@@ -1047,6 +819,245 @@
   <div id="reviewSubmitModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewSubmitTitle">
     <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div><button id="closeReviewSubmit" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close review form">×</button></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-extrabold text-white">Submit Review</button></form></div>
   </div>
+
+  <!-- =========================================================
+       ADMIN PORTAL
+       Static-site admin: browser-persistent data, export/import
+       ========================================================= -->
+  <div id="adminModal"
+       class="admin-modal fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/70 p-3 backdrop-blur-sm"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="adminModalTitle">
+    <div class="admin-panel w-full max-w-6xl rounded-3xl bg-white shadow-2xl">
+      <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur sm:p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Owner only</p>
+            <h2 id="adminModalTitle" class="mt-1 text-2xl font-black">Crazy E-Book Admin Portal</h2>
+            <p class="mt-1 text-sm text-slate-500">Manage books, pricing, ratings, free samples and the homepage showcase.</p>
+          </div>
+          <button id="closeAdminModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div id="adminLoginView" class="p-6 sm:p-10">
+        <div class="mx-auto max-w-md rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
+          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-950 text-sm font-black text-white">CE</div>
+          <h3 class="mt-5 text-xl font-black">Admin Login</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Sign in with the owner account authorized for this store.</p>
+          <label for="adminEmailInput" class="mt-6 block text-xs font-black uppercase tracking-widest text-slate-500">Owner email</label>
+          <input id="adminEmailInput" type="email" autocomplete="username"
+                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                 placeholder="you@example.com" />
+          <label for="adminPasswordInput" class="mt-4 block text-xs font-black uppercase tracking-widest text-slate-500">Password</label>
+          <input id="adminPasswordInput" type="password" autocomplete="current-password"
+                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                 placeholder="Supabase Auth password" />
+          <button id="adminLoginBtn" type="button" class="mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">Sign in</button>
+          <p id="adminLoginError" class="mt-3 hidden text-center text-xs font-bold text-rose-600"></p>
+          <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900">
+            <strong>Setup required:</strong> configure the Supabase project URL and public anon key in the site settings. Never put a service-role key here.
+          </div>
+        </div>
+      </div>
+
+      <div id="adminDashboardView" class="hidden p-5 sm:p-6">
+        <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4">
+          <button class="admin-tab active rounded-xl border px-4 py-2.5 text-xs font-black" data-admin-tab="books">Books</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="purchases">Purchases</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="coupons">Coupons</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="settings">Settings</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
+          <button id="adminLogoutBtn" type="button" class="ml-auto rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600 hover:bg-slate-50">Log out</button>
+        </div>
+
+        <section id="adminTabBooks" class="admin-tab-panel pt-6">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Library manager</p>
+              <h3 class="mt-1 text-2xl font-black">Add or edit books</h3>
+              <p class="mt-2 text-sm text-slate-500">Update title, cover, category, pricing, rating, sample and private delivery link.</p>
+            </div>
+            <button id="newBookBtn" type="button" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white hover:bg-indigo-500">+ New Book</button>
+          </div>
+
+          <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
+            <div class="admin-table-wrap rounded-2xl border border-slate-200 bg-white">
+              <table class="min-w-full text-left text-sm">
+                <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                  <tr>
+                    <th class="px-4 py-3">Book</th>
+                    <th class="px-4 py-3">Price</th>
+                    <th class="px-4 py-3">Rating</th>
+                    <th class="px-4 py-3">Showcase</th>
+                    <th class="px-4 py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminBooksTable"></tbody>
+              </table>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="flex items-center justify-between">
+                <h4 id="bookFormHeading" class="font-black">New Book</h4>
+                <button id="cancelBookEditBtn" type="button" class="hidden text-xs font-black text-slate-500 hover:text-slate-900">Cancel</button>
+              </div>
+
+              <form id="bookForm" class="mt-5 space-y-3">
+                <input type="hidden" id="bookId" />
+                <div>
+                  <label class="text-xs font-black text-slate-500">Unique Book ID</label><input id="bookCode" required pattern="[A-Za-z0-9_-]{3,40}" placeholder="PYTHON001" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm uppercase" /></div><div><label class="text-xs font-black text-slate-500">Title</label>
+                  <input id="bookTitle" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Category</label>
+                    <input id="bookCategory" required placeholder="Python & Tech" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Tag</label>
+                    <input id="bookTag" placeholder="New / Best Seller / Free" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Subjects (comma separated)</label>
+                  <input id="bookSubjects" placeholder="Python, Programming, Coding" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Summary</label>
+                  <textarea id="bookSummary" rows="3" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">MRP (Rs)</label>
+                    <input id="bookMrp" type="number" min="0" step="1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Price (Rs)</label>
+                    <input id="bookPrice" type="number" min="0" step="1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Rating</label>
+                    <input id="bookRating" type="number" min="0" max="5" step="0.1" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-xs font-black text-slate-500">Cover image URL</label>
+                  <input id="bookCoverImage" type="url" placeholder="https://..." class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  <div class="field-note mt-1">Use a publicly reachable image URL. A data URL also works, but large images are not recommended.</div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Cover background</label>
+                    <input id="bookCoverClass" value="bg-slate-950 text-white" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Cover label</label>
+                    <input id="bookCoverLabel" placeholder="PYTHON" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-xs font-black text-slate-500">Sample URL</label>
+                  <input id="bookSampleLink" type="url" placeholder="https://.../sample.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                </div>
+                <div>
+                  <label class="text-xs font-black text-slate-500">Private book delivery URL</label>
+                  <input id="bookFileLink" type="url" placeholder="https://private-link.example/ebook.pdf" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  <div class="field-note mt-1">Stored in Supabase's private delivery data. Customers can retrieve it only for their own Paid and Approved purchase.</div>
+                </div>
+
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3"><input id="bookActive" type="checkbox" checked class="h-4 w-4 rounded" /><span class="text-sm font-bold">Available for purchase</span></label>
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3">
+                  <input id="bookFree" type="checkbox" class="h-4 w-4 rounded" />
+                  <span class="text-sm font-bold">This is a free book</span>
+                </label>
+
+                <button type="submit" class="w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white hover:bg-slate-800">Save Book</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="adminTabPurchases" class="admin-tab-panel hidden pt-6"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Order management</p><h3 class="mt-1 text-2xl font-black">Purchases</h3><p class="mt-2 text-sm text-slate-500">Mark Paid only after checking payment. Mark Delivered after sending the ebook.</p></div><button id="refreshPurchasesBtn" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">Refresh</button></div><div class="mt-4 flex flex-wrap gap-2" id="purchaseFilters"><button class="purchase-filter rounded-full bg-slate-950 px-3 py-2 text-xs font-bold text-white" data-filter="All">All</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Pending">Pending</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Paid">Paid</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Delivered">Delivered</button><button class="purchase-filter rounded-full border px-3 py-2 text-xs font-bold" data-filter="Rejected">Rejected</button></div><div id="purchasesList" class="mt-5 grid gap-4"></div></section>
+        <section id="adminTabReviews" class="admin-tab-panel hidden pt-6"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Admin-created featured comments</p><h3 class="mt-1 text-2xl font-black">Reviews</h3><p class="mt-2 text-sm text-slate-500">These are admin-managed comments, not verified purchase reviews.</p></div><form id="reviewForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="reviewId" type="hidden"><label class="text-xs font-bold">Name<input id="reviewName" required maxlength="100" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Rating<select id="reviewRating" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label><label class="text-xs font-bold sm:col-span-2">Comment<textarea id="reviewComment" required maxlength="1000" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></textarea></label><label class="flex items-center gap-2 text-sm font-bold"><input id="reviewVisible" type="checkbox" checked> Visible publicly</label><div class="flex gap-2"><button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white" type="submit">Save review</button><button class="rounded-xl border px-4 py-2.5 text-sm font-bold" id="cancelReviewEdit" type="button">Clear</button></div></form><div id="adminReviewsList" class="mt-5 grid gap-3"></div></section>
+
+        <section id="adminTabSettings" class="admin-tab-panel hidden pt-6"><h3 class="text-2xl font-black">Business Settings</h3><p class="mt-2 text-sm text-slate-500">Update the public contact and payment details stored with your Supabase storefront.</p><form id="settingsForm" class="mt-5 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><label class="text-xs font-bold">Brand<input id="settingBrand" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Creators<input id="settingCreators" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">UPI ID<input id="settingUpi" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support email<input id="settingEmail" type="email" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Support Telegram URL<input id="settingTelegram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Purchase channel URL<input id="settingPurchaseChannel" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Instagram URL<input id="settingInstagram" type="url" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Telegram bot username<input id="settingBot" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><button class="rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white sm:col-span-2" type="submit">Save Settings</button><p class="text-xs text-amber-800 sm:col-span-2">The bot token and notification channel ID are secrets configured in Supabase and are never saved here.</p></form></section>
+
+        <section id="adminTabShowcase" class="admin-tab-panel hidden pt-6">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Homepage controls</p>
+            <h3 class="mt-1 text-2xl font-black">Change the front-page showcase</h3>
+            <p class="mt-2 text-sm text-slate-500">Choose the featured book and change the hero copy shown above the library.</p>
+          </div>
+
+          <div class="mt-6 grid gap-5 lg:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <label class="text-xs font-black text-slate-500">Hero title</label>
+              <textarea id="heroTitleInput" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
+
+              <label class="mt-4 block text-xs font-black text-slate-500">Hero description</label>
+              <textarea id="heroTextInput" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
+
+              <label class="mt-4 block text-xs font-black text-slate-500">Featured book</label>
+              <select id="featuredBookSelect" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></select>
+
+              <button id="saveShowcaseBtn" type="button" class="mt-5 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-extrabold text-white hover:bg-indigo-500">Save Homepage</button>
+            </div>
+
+            <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6">
+              <div class="text-xs font-black uppercase tracking-widest text-indigo-600">Live preview</div>
+              <div class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
+                <p id="showcasePreviewCategory" class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600"></p>
+                <h4 id="showcasePreviewTitle" class="mt-2 text-2xl font-black"></h4>
+                <p id="showcasePreviewText" class="mt-3 text-sm leading-6 text-slate-600"></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="adminTabCoupons" class="admin-tab-panel hidden pt-6">
+          <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Discounts</p><h3 class="mt-1 text-2xl font-black">Coupons</h3><p class="mt-2 text-sm text-slate-500">Create percentage coupons and manage availability.</p></div><button id="newCouponBtn" type="button" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">+ New Coupon</button></div>
+          <form id="couponForm" class="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"><input id="couponId" type="hidden"><label class="text-xs font-bold">Coupon code<input id="couponCodeInput" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" autocomplete="off" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="WELCOME10"></label><label class="text-xs font-bold">Discount (%)<input id="couponPercentInput" required type="number" min="0.01" max="100" step="0.01" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="10"></label><label class="text-xs font-bold">Expiry date (optional)<input id="couponExpiryInput" type="date" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></label><label class="text-xs font-bold">Usage limit (optional)<input id="couponLimitInput" type="number" min="1" step="1" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="Unlimited"></label><label class="flex items-center gap-2 text-sm font-bold"><input id="couponActiveInput" type="checkbox" checked> Active</label><div class="flex gap-2 sm:col-span-2"><button id="saveCouponBtn" type="submit" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">Save Coupon</button><button id="cancelCouponEditBtn" type="button" class="hidden rounded-xl border px-4 py-2.5 text-sm font-bold">Cancel</button></div><p id="couponAdminError" class="hidden text-sm font-bold text-rose-600 sm:col-span-2" role="alert"></p></form>
+          <div id="adminCouponsList" class="mt-5 grid gap-3"></div>
+        </section>
+
+        <section id="adminTabData" class="admin-tab-panel hidden pt-6">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Store data</p>
+            <h3 class="mt-1 text-2xl font-black">Backup & restore</h3>
+            <p class="mt-2 text-sm text-slate-500">Export your store data before moving the site to another browser/device. Import it there to restore the catalogue.</p>
+          </div>
+
+          <div class="mt-6 grid gap-5 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h4 class="font-black">Export</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Download a JSON backup of books, showcase settings and contact settings. The admin login and private downloads are excluded.</p>
+              <button id="exportDataBtn" type="button" class="mt-4 rounded-xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white hover:bg-slate-800">Export Store Data</button>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h4 class="font-black">Import</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Choose a previously exported JSON file. Importing replaces the current browser-stored store data.</p>
+              <input id="importDataInput" type="file" accept="application/json,.json" class="mt-4 block w-full text-sm" />
+              <button id="importDataBtn" type="button" class="mt-4 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Import Store Data</button>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
+            <strong>Catalog, purchases, private delivery links, and reviews sync through the configured Supabase project. Keep the project URL and publishable key aligned with your Supabase project.</strong>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white shadow-xl" role="status" aria-live="polite"></div>
 
   <script>
     /* =========================================================
@@ -1167,7 +1178,7 @@
         return {
           ...clone(DEFAULT_STORE),
           ...saved,
-          books: saved.books.map(book => ({
+          books: (Array.isArray(saved.books) ? saved.books : []).map(book => ({
             ...clone(DEFAULT_STORE.books[0] || {}),
             ...book,
             bookCode: book.bookCode || makeBookCode(book.title, book.id),
@@ -1180,7 +1191,6 @@
     }
 
     let STORE = loadStore();
-    STORE.upiId = "";
     STORE.reviews = [];
     let activeCategory = "All";
     let bookSort = "featured";
@@ -1227,7 +1237,7 @@
     }
 
     function mergeStore(saved) {
-      return { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: saved.books.map(book => ({ ...clone(DEFAULT_STORE.books[0] || {}), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
+      return { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: (Array.isArray(saved.books) ? saved.books : []).map(book => ({ ...clone(DEFAULT_STORE.books[0] || {}), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
     }
 
     async function loadPrivateLinks() {
@@ -1420,8 +1430,10 @@
       return /^best\s*seller$/i.test(tag) ? "" : tag;
     }
 
-    function telegramPaymentLink(book) {
-      const message = `Hi, I paid Rs ${book.price} for ${book.title}. Screenshot attached.`;
+    function telegramPaymentLink(book, purchaseId = "") {
+      const amount = money(latestPurchasePrice ?? book.price);
+      const purchaseRef = purchaseId ? ` (Order ${purchaseId})` : "";
+      const message = `Hi, I paid ${amount} for ${book.title}${purchaseRef}. Screenshot attached.`;
       const base = safeUrl(STORE.telegramLink);
       if (base === "#") return "#";
       return `${base}${STORE.telegramLink.includes("?") ? "&" : "?"}text=${encodeURIComponent(message)}`;
@@ -1434,8 +1446,7 @@
 
     /* =========================================================
        PUBLIC NAV / HERO / FOOTER
-       ========================================================= */
-    function setupLinks() {
+       ========================================================= */    function setupLinks() {
       document.getElementById("siteBrand").textContent = STORE.brandName || "Crazy E-Book";
       document.getElementById("footerBrand").textContent = STORE.brandName || "Crazy E-Book";
       document.getElementById("policyBrand").textContent = STORE.brandName || "Crazy E-Book";
@@ -1788,6 +1799,11 @@
         document.getElementById("purchaseForm").classList.add("hidden");
         document.getElementById("purchasePayment").classList.remove("hidden");
         document.getElementById("payNowBtn").classList.remove("hidden");
+        const verify = document.getElementById("verifyTelegram");
+        if (verify && selectedBook) {
+          verify.href = telegramPaymentLink(selectedBook, latestPurchaseId);
+          verify.classList.remove("hidden");
+        }
         startCustomerPurchaseStatus(latestPurchaseId, latestPurchaseAccessToken);
         try {
           const { error: notifyError } = await supabase.functions.invoke("send-purchase-telegram", { body: { purchase_id: latestPurchaseId } });
