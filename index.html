@@ -372,8 +372,7 @@
     #emptyBookSuggestions button:hover { transform:translateY(-3px); box-shadow:0 12px 22px rgba(255,179,0,.2); }
     @media(max-width:640px) {
       #heroSection { background:linear-gradient(160deg,#fffdf7,#fdf3d8); }
-      .book-card .book-detail-reveal { position:static; transform:none; opacity:1; margin-top:8px; }
-      .book-card .book-detail-reveal button { min-height:34px; font-size:10px; }
+      .book-card .book-detail-reveal { display:none; }
       #cartModal { justify-content:center; padding:0; }
       #cartModal > div { width:100%; height:min(90dvh,760px); border-radius:24px 24px 0 0; animation:cart-sheet-in .3s cubic-bezier(.2,.8,.2,1) both; }
       @keyframes cart-sheet-in { from { transform:translateY(30px); opacity:.7; } to { transform:translateY(0); opacity:1; } }
