@@ -13,7 +13,7 @@
   "use strict";
 
   var DIWALI_ENABLED = true; // <-- the single on/off switch
-  var DIWALI_VERSION = "4-night-gold";
+  var DIWALI_VERSION = "4-night-gold-2";
 
   if (!DIWALI_ENABLED) {
     document.documentElement.classList.remove("diwali-night");
@@ -163,8 +163,8 @@
   /* ------------------- rangoli (hero corner accent) ------------------- */
   html.diwali-night .diwali-rangoli {
     position: absolute; z-index: 0; pointer-events: none;
-    top: clamp(6px, 2vw, 22px); right: clamp(6px, 2vw, 26px);
-    width: clamp(110px, 20vw, 190px); height: auto; opacity: 0.42;
+    top: clamp(6px, 1.2vw, 10px); right: clamp(6px, 1.2vw, 18px);
+    width: clamp(88px, 7.5vw, 98px); height: auto; opacity: 0.5;
   }
   @media (max-width: 640px) { html.diwali-night .diwali-rangoli { opacity: 0.3; width: 104px; } }
 
