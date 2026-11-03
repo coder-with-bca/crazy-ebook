@@ -1,19 +1,22 @@
 /* ============================ DIWALI THEME START ============================
    Crazy E-Book - "Diwali Night" festive theme (self-contained)
    -------------------------------------------------------------------------
-   TO TURN THE THEME OFF: set DIWALI_ENABLED to false below and deploy.
-   Everything (banner, toran, diyas, rangoli, fireworks, colors) disappears
-   with that one change. Nothing else in the site depends on this file.
-   Every festive style is scoped under the html.diwali-night class, which
-   this file adds only when the switch above is true.
+   SITE OWNER SWITCH: set DIWALI_ENABLED to false below and deploy to retire
+   the whole theme. Everything (banner, toran, diyas, rangoli, fireworks,
+   colors) disappears with that one change. Nothing else depends on this file.
+   VISITOR SWITCH: the floating "Diwali ON/OFF" button saves the visitor's
+   choice in localStorage (key crazyebook-diwali-v1) and reloads once to
+   apply it. Every festive style is scoped under the html.diwali-night
+   class, which this file adds only when both switches are on.
    Palette: midnight indigo night, marigold #FF8A00, diya gold #FFB300,
    flame yellow #FFD54F, rani pink #E0407B.
    ========================================================================= */
 (function () {
   "use strict";
 
-  var DIWALI_ENABLED = true; // <-- the single on/off switch
-  var DIWALI_VERSION = "4-night-gold-2";
+  var DIWALI_ENABLED = true; // <-- the site owner's master on/off switch
+  var DIWALI_VERSION = "5-toggle-1";
+  var PREF_KEY = "crazyebook-diwali-v1"; // visitor's own ON/OFF choice
 
   if (!DIWALI_ENABLED) {
     document.documentElement.classList.remove("diwali-night");
@@ -22,6 +25,36 @@
   if (document.getElementById("diwali-night-root")) return;
 
   var REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function readPref() { try { return localStorage.getItem(PREF_KEY); } catch (e) { return null; } }
+  function writePref(v) { try { localStorage.setItem(PREF_KEY, v); } catch (e) {} }
+  var THEME_ON = readPref() !== "off"; // default ON; the visitor's saved choice wins
+
+  // The floating visitor toggle keeps its own tiny stylesheet, NOT scoped
+  // under html.diwali-night, so it still looks right when the theme is off.
+  var TOGGLE_CSS = `
+  .diwali-theme-toggle {
+    position: fixed; left: 14px; bottom: 14px; z-index: 70;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 13px; border-radius: 9999px;
+    border: 1.5px solid rgba(255, 179, 0, 0.65);
+    background: rgba(11, 16, 38, 0.92); color: #FFE9B8;
+    font: 700 12.5px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 18px rgba(4, 7, 26, 0.45), 0 0 14px rgba(255, 179, 0, 0.25);
+    cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .diwali-theme-toggle:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(4, 7, 26, 0.5), 0 0 20px rgba(255, 179, 0, 0.4); }
+  .diwali-theme-toggle:active { transform: scale(0.97); }
+  .diwali-theme-toggle[aria-pressed="false"] {
+    opacity: 0.85; border-color: rgba(148, 163, 184, 0.55); color: #CBD5E1;
+    box-shadow: 0 6px 18px rgba(4, 7, 26, 0.4);
+  }
+  @media (max-width: 640px) {
+    .diwali-theme-toggle { left: 10px; bottom: 10px; padding: 8px 11px; font-size: 11.5px; }
+  }
+  `;
 
   var CSS = `
   /* ------------------------------ banner ------------------------------ */
@@ -271,7 +304,74 @@
       animation: diwali-banner-shine 5.5s ease-in-out infinite;
       pointer-events: none;
     }
+    @keyframes diwali-heading-shimmer {
+      0% { background-position: 130% 0; }
+      100% { background-position: -130% 0; }
+    }
+    html.diwali-night #heroSection .reveal h1 { animation: diwali-heading-shimmer 7s linear infinite; }
+    html.diwali-night .buy-btn:hover::after,
+    html.diwali-night #heroBuyBtn:hover::after,
+    html.diwali-night #detailsBuy:hover::after,
+    html.diwali-night #heroSection a[href="#books"]:hover::after {
+      transform: translateX(280%) skewX(-18deg);
+      transition: transform 0.65s ease;
+    }
   }
+
+  /* ------------------- festive display typography ------------------- */
+  html.diwali-night h1,
+  html.diwali-night h2,
+  html.diwali-night .diwali-greeting {
+    font-family: "Playfair Display", "Cinzel", Georgia, "Times New Roman", serif;
+  }
+  html.diwali-night #heroSection .reveal h1 {
+    background: linear-gradient(92deg, #FFF7E0 0%, #FFD54F 38%, #FFF7E0 55%, #FFB300 80%, #FFF7E0 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent !important;
+    text-shadow: none !important;
+    filter: drop-shadow(0 2px 14px rgba(255, 179, 0, 0.3));
+  }
+
+  /* ------------- reusable tokens: diya glow + rangoli bg ------------ */
+  html.diwali-night .glow-diya-sm { box-shadow: 0 0 12px rgba(255, 179, 0, 0.35); }
+  html.diwali-night .glow-diya { box-shadow: 0 0 22px rgba(255, 179, 0, 0.45), 0 0 44px rgba(255, 138, 0, 0.25); }
+  html.diwali-night .glow-diya-lg { box-shadow: 0 0 32px rgba(255, 213, 79, 0.5), 0 0 72px rgba(255, 138, 0, 0.3); }
+  html.diwali-night .bg-rangoli {
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba(255, 179, 0, 0.14) 0 2px, transparent 2.6px),
+      radial-gradient(circle at 75% 75%, rgba(224, 64, 123, 0.12) 0 2px, transparent 2.6px),
+      repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 138, 0, 0.05) 0deg 12deg, transparent 12deg 30deg);
+    background-size: 44px 44px, 44px 44px, 88px 88px;
+  }
+
+  /* -------------- button shine sweep (hover light burst) ------------ */
+  html.diwali-night .buy-btn,
+  html.diwali-night #heroBuyBtn,
+  html.diwali-night #detailsBuy,
+  html.diwali-night #heroSection a[href="#books"] { position: relative; overflow: hidden; }
+  html.diwali-night .buy-btn::after,
+  html.diwali-night #heroBuyBtn::after,
+  html.diwali-night #detailsBuy::after,
+  html.diwali-night #heroSection a[href="#books"]::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 45%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: translateX(-170%) skewX(-18deg);
+    pointer-events: none;
+  }
+
+  /* ------------------------- footer wish line ----------------------- */
+  html.diwali-night .diwali-footer-wish {
+    margin: 0; padding: 18px 16px 22px; text-align: center;
+    font-weight: 800; font-size: clamp(13px, 2.6vw, 15.5px); letter-spacing: 0.01em;
+    font-family: "Playfair Display", Georgia, serif;
+    background: linear-gradient(92deg, #FF8A00 0%, #FFD54F 45%, #FFB300 65%, #E0407B 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    border-top: 1px solid rgba(255, 179, 0, 0.25);
+  }
+
+  /* ------------------ click burst canvas (CTA taps) ----------------- */
+  html.diwali-night .diwali-click-burst { position: fixed; inset: 0; z-index: 90; pointer-events: none; }
   `;
 
   /* ------------------------- SVG builders ----------------------------- */
@@ -459,7 +559,22 @@
       if (sec) addStarField(sec, 9);
     });
     var footerEl = document.querySelector("body > footer");
-    if (footerEl) addStarField(footerEl, 8);
+    if (footerEl) {
+      addStarField(footerEl, 8);
+      var wish = document.createElement("p");
+      wish.className = "diwali-footer-wish";
+      wish.textContent = "Wishing you a bright and joyful Diwali \u2014 Team Crazy E-Book \uD83E\uDE94";
+      footerEl.appendChild(wish);
+    }
+
+    // Small golden burst when a visitor taps a buying CTA. Additive listener
+    // in capture phase; no existing click handler is touched.
+    if (!REDUCED) {
+      document.addEventListener("click", function (e) {
+        var t = e.target && e.target.closest ? e.target.closest(".buy-btn, #detailsBuy, #heroBuyBtn, #detailsCart, #heroSection a[href='#books']") : null;
+        if (t) clickBurst(e.clientX, e.clientY);
+      }, true);
+    }
   }
 
   function addStarField(el, n) {
@@ -479,6 +594,67 @@
       field.appendChild(star);
     }
     el.insertBefore(field, el.firstChild);
+  }
+
+  /* -------------- small golden burst on CTA taps -------------------- */
+
+  var burstCanvas = null, burstCtx = null, burstRaf = null, burstParts = [], burstLast = 0;
+  var BURST_LIFE = 850; // ms
+
+  function ensureBurstCanvas() {
+    if (burstCanvas) return true;
+    burstCanvas = document.createElement("canvas");
+    burstCanvas.className = "diwali-click-burst";
+    burstCanvas.setAttribute("aria-hidden", "true");
+    document.body.appendChild(burstCanvas);
+    burstCtx = burstCanvas.getContext("2d");
+    if (!burstCtx) { burstCanvas.remove(); burstCanvas = null; return false; }
+    return true;
+  }
+
+  function clickBurst(x, y) {
+    if (!ensureBurstCanvas()) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    burstCanvas.width = Math.max(1, window.innerWidth * dpr);
+    burstCanvas.height = Math.max(1, window.innerHeight * dpr);
+    burstCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var colors = ["#FF8A00", "#FFB300", "#FFD54F", "#E0407B"];
+    var i, ang;
+    for (i = 0; i < 18; i++) {
+      ang = (Math.PI * 2 * i) / 18 + Math.random() * 0.3;
+      burstParts.push({
+        x: x, y: y,
+        vx: Math.cos(ang) * (0.09 + Math.random() * 0.16),
+        vy: Math.sin(ang) * (0.09 + Math.random() * 0.16) - 0.05,
+        r: 1.4 + Math.random() * 1.8,
+        c: colors[i % colors.length],
+        born: performance.now()
+      });
+    }
+    if (!burstRaf) { burstLast = performance.now(); burstRaf = requestAnimationFrame(burstFrame); }
+  }
+
+  function burstFrame(now) {
+    burstRaf = null;
+    var dt = Math.min(50, now - burstLast);
+    burstLast = now;
+    burstCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    burstCtx.globalCompositeOperation = document.documentElement.dataset.theme !== "light" ? "lighter" : "source-over";
+    for (var i = burstParts.length - 1; i >= 0; i--) {
+      var p = burstParts[i];
+      var age = now - p.born;
+      if (age > BURST_LIFE) { burstParts.splice(i, 1); continue; }
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += 0.00009 * dt * dt;
+      burstCtx.globalAlpha = Math.max(0, 1 - age / BURST_LIFE);
+      burstCtx.fillStyle = p.c;
+      burstCtx.beginPath();
+      burstCtx.arc(p.x, p.y, p.r, 0, 7);
+      burstCtx.fill();
+    }
+    burstCtx.globalAlpha = 1;
+    if (burstParts.length) burstRaf = requestAnimationFrame(burstFrame);
   }
 
   /* --------------------- one-shot fireworks --------------------------- */
@@ -595,7 +771,45 @@
     raf = requestAnimationFrame(frame);
   }
 
-  if (document.readyState === "loading") {
+  /* ------------------- floating visitor ON/OFF toggle --------------- */
+
+  function buildToggle() {
+    if (document.getElementById("diwali-theme-toggle")) return;
+    var tstyle = document.createElement("style");
+    tstyle.id = "diwali-toggle-style";
+    tstyle.textContent = TOGGLE_CSS;
+    document.head.appendChild(tstyle);
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "diwali-theme-toggle";
+    btn.className = "diwali-theme-toggle";
+
+    function paint() {
+      var on = readPref() !== "off";
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.setAttribute("aria-label", on ? "Diwali theme is on. Switch the festive theme off." : "Diwali theme is off. Switch the festive theme on.");
+      btn.innerHTML = '<span aria-hidden="true">\uD83E\uDE94</span><span>Diwali ' + (on ? "ON" : "OFF") + "</span>";
+    }
+    paint();
+
+    // One reload applies the choice cleanly: decorations, fireworks and
+    // listeners only ever get built when the theme is on.
+    btn.addEventListener("click", function () {
+      var on = readPref() !== "off";
+      writePref(on ? "off" : "on");
+      paint();
+      window.location.reload();
+    });
+
+    document.body.appendChild(btn);
+  }
+
+  buildToggle(); // visitor switch: shown whenever the theme is live on the site
+
+  if (!THEME_ON) {
+    document.documentElement.classList.remove("diwali-night");
+  } else if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", build);
   } else {
     build();

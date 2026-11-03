@@ -19,6 +19,12 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+
+  <!-- DIWALI THEME START: festive display font for headings (remove with the theme) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+  <!-- DIWALI THEME END -->
   <title>Crazy E-Book — by Akki & Aadi</title>
 
   <!-- Tailwind CSS CDN -->
@@ -31,11 +37,33 @@
     tailwind.config = {
       theme: {
         extend: {
+          colors: {
+            // DIWALI THEME tokens: night-sky base + celebratory accents
+            diwali: {
+              night: "#0F172A",    // midnight blue
+              indigo: "#0B1026",   // site night base
+              plum: "#2E1065",     // rich plum
+              maroon: "#7A0C2E",   // deep maroon
+              saffron: "#FF7A00",  // saffron orange
+              marigold: "#F59E0B", // radiant marigold yellow
+              amber: "#D97706",    // warm amber
+              gold: "#FBBF24",     // bright gold
+              diyagold: "#FFB300", // diya gold (site accent)
+              flame: "#FFD54F",    // flame yellow
+              rani: "#E0407B",     // rani pink / magenta
+              cream: "#FFF8EA"     // warm cream text
+            }
+          },
           fontFamily: {
-            sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]
+            sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+            display: ['"Playfair Display"', "Cinzel", "Georgia", "serif"] // DIWALI festive headings
           },
           boxShadow: {
-            soft: "0 18px 50px rgba(15, 23, 42, 0.08)"
+            soft: "0 18px 50px rgba(15, 23, 42, 0.08)",
+            // DIWALI THEME tokens: warm diya glow (amber/yellow blurs)
+            "diya-sm": "0 0 12px rgba(255, 179, 0, 0.35)",
+            diya: "0 0 22px rgba(255, 179, 0, 0.45), 0 0 44px rgba(255, 138, 0, 0.25)",
+            "diya-lg": "0 0 32px rgba(255, 213, 79, 0.5), 0 0 72px rgba(255, 138, 0, 0.3)"
           },
           keyframes: {
             float: {
@@ -3045,7 +3073,7 @@
   <script type="module" src="hero-3d.js"></script>
   <!-- DIWALI THEME START: festive theme include. To remove the theme, delete this line and diwali.js,
        or simply set DIWALI_ENABLED = false at the top of diwali.js. -->
-  <script src="diwali.js?v=7" defer></script>
+  <script src="diwali.js?v=8" defer></script>
   <!-- DIWALI THEME END -->
 </body>
 </html>
