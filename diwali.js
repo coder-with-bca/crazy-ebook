@@ -466,60 +466,85 @@
 
     var COLORS = ["#FF8A00", "#FFB300", "#FFD54F", "#E0407B"];
     var additive = document.documentElement.dataset.theme !== "light";
-    var rockets = [], parts = [];
-    var raf = null, finished = false, launchesLeft = 5, nextLaunch = 500;
+    var RISE = 0.42;   // rocket speed, px per ms
+    var GRAV = 0.00012; // particle gravity, px per ms^2
+    var LIFE = 1600;    // particle life, ms
 
-    function launch() {
-      rockets.push({
-        x: W * (0.18 + Math.random() * 0.64),
-        y: H + 8,
-        vy: -(H * 0.011 + Math.random() * H * 0.003),
-        ty: H * (0.16 + Math.random() * 0.3),
-        c: COLORS[(Math.random() * COLORS.length) | 0]
-      });
-    }
-    function burst(x, y, c) {
-      var n = 24;
+    // Wall-clock timeline: every frame paints the exact state at time t,
+    // so the show looks identical on any frame rate.
+    var t0 = performance.now();
+    var events = [500, 1400, 2300, 3200, 4100].map(function (d, i) {
+      var x = W * (0.18 + Math.random() * 0.64);
+      var ty = H * (0.16 + Math.random() * 0.3);
+      return { x: x, y0: H + 8, ty: ty, tLaunch: d, tBoom: d + (H + 8 - ty) / RISE, c: COLORS[i % COLORS.length], burst: null };
+    });
+    var bursts = [];
+    var finished = false, raf = null;
+
+    // Pause the show while the tab is hidden: shift the timeline by the
+    // hidden duration instead of letting it skip ahead.
+    var hiddenAt = 0;
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) { hiddenAt = performance.now(); }
+      else if (hiddenAt) { t0 += performance.now() - hiddenAt; hiddenAt = 0; }
+    });
+
+    function makeBurst(ev) {
+      var parts = [], n = 24;
       for (var i = 0; i < n; i++) {
-        var ang = (Math.PI * 2 * i) / n + Math.random() * 0.25;
-        var sp = 1.5 + Math.random() * 2.6;
-        parts.push({ x: x, y: y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 1, c: c, r: 1.3 + Math.random() * 1.5 });
+        parts.push({
+          ang: (Math.PI * 2 * i) / n + Math.random() * 0.25,
+          sp: 0.06 + Math.random() * 0.09,
+          r: 1.3 + Math.random() * 1.5
+        });
       }
+      return { x: ev.x, y: ev.ty, c: ev.c, tBoom: ev.tBoom, parts: parts };
     }
-    var lastT = 0;
-    function tick(t) {
+
+    function frame(now) {
       if (finished) return;
-      raf = requestAnimationFrame(tick);
-      var dt = Math.min(50, t - lastT || 16) / 16.7;
-      lastT = t;
-      nextLaunch -= t && dt * 16.7;
-      if (launchesLeft > 0 && nextLaunch <= 0) {
-        if (!document.hidden) { launch(); launchesLeft--; nextLaunch = 850 + Math.random() * 350; }
-        else { nextLaunch = 300; }
-      }
+      var t = now - t0;
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = additive ? "lighter" : "source-over";
-      for (var i = rockets.length - 1; i >= 0; i--) {
-        var r = rockets[i];
-        r.y += r.vy * dt;
-        ctx.globalAlpha = 0.95;
-        ctx.fillStyle = r.c;
-        ctx.beginPath(); ctx.arc(r.x, r.y, 2.2, 0, 7); ctx.fill();
-        if (r.y <= r.ty) { rockets.splice(i, 1); burst(r.x, r.y, r.c); }
+      var alive = false;
+
+      for (var i = 0; i < events.length; i++) {
+        var ev = events[i];
+        if (t < ev.tLaunch) { alive = true; continue; }
+        if (t < ev.tBoom) {
+          alive = true;
+          var ry = ev.y0 - RISE * (t - ev.tLaunch);
+          ctx.globalAlpha = 0.95;
+          ctx.fillStyle = ev.c;
+          ctx.beginPath(); ctx.arc(ev.x, ry, 2.2, 0, 7); ctx.fill();
+        } else if (!ev.burst) {
+          ev.burst = makeBurst(ev);
+          bursts.push(ev.burst);
+          alive = true;
+        }
       }
-      for (var j = parts.length - 1; j >= 0; j--) {
-        var p = parts[j];
-        p.x += p.vx * dt; p.y += p.vy * dt;
-        p.vy += 0.03 * dt; p.vx *= 0.985; p.vy *= 0.99;
-        p.life -= 0.011 * dt;
-        if (p.life <= 0) { parts.splice(j, 1); continue; }
-        ctx.globalAlpha = Math.max(0, p.life) * (additive ? 1 : 0.9);
-        ctx.fillStyle = p.c;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+
+      for (var j = bursts.length - 1; j >= 0; j--) {
+        var b = bursts[j];
+        var e = t - b.tBoom;
+        if (e < 0) { alive = true; continue; }
+        if (e > LIFE) { bursts.splice(j, 1); continue; }
+        alive = true;
+        ctx.globalAlpha = Math.max(0, 1 - e / LIFE) * (additive ? 1 : 0.9);
+        ctx.fillStyle = b.c;
+        for (var k = 0; k < b.parts.length; k++) {
+          var p = b.parts[k];
+          var px = b.x + Math.cos(p.ang) * p.sp * e;
+          var py = b.y + Math.sin(p.ang) * p.sp * e + 0.5 * GRAV * e * e;
+          ctx.beginPath(); ctx.arc(px, py, p.r, 0, 7); ctx.fill();
+        }
       }
       ctx.globalAlpha = 1;
-      if (launchesLeft === 0 && rockets.length === 0 && parts.length === 0) finish();
+
+      if (!alive) { finish(); return; }
+      raf = requestAnimationFrame(frame);
     }
+
     function finish() {
       if (finished) return;
       finished = true;
@@ -528,8 +553,8 @@
       canvas.style.opacity = "0";
       setTimeout(function () { window.removeEventListener("resize", resize); canvas.remove(); }, 1000);
     }
-    setTimeout(finish, 15000); // hard stop safety
-    raf = requestAnimationFrame(tick);
+    setTimeout(finish, 20000); // hard stop safety
+    raf = requestAnimationFrame(frame);
   }
 
   if (document.readyState === "loading") {
