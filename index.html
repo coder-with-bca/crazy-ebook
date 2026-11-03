@@ -892,7 +892,7 @@
         </button>
       </div>
 
-      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><section class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Original price</span><span id="couponOriginalTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
+      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><p id="checkoutStepLabel" class="text-xs font-black uppercase tracking-widest text-indigo-600">Step 1 of 3 · Your details</p><div id="checkoutStepDetails" class="space-y-3"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p id="detailsError" class="hidden text-sm font-bold text-rose-600"></p><button id="checkoutNextBtn" type="button" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Next</button></div><div id="checkoutStepReview" class="hidden space-y-3"><div id="reviewItems" class="space-y-2"></div><div id="reviewOffer" class="space-y-2"></div><section class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Normal price</span><span id="couponOriginalTotal"></span></div><div id="comboSavingRow" class="hidden flex justify-between" style="color:#34d399"><span>Combo saving</span><span id="comboSavingTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><div class="flex gap-2"><button id="checkoutBackBtn" type="button" class="rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">Back</button><button id="createPurchaseBtn" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Create order and continue</button></div></div></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
         <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
         <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
@@ -1361,6 +1361,7 @@
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
       renderCart();
       await loadPublicReviews();
+      await loadBookPairs();
       if (adminAuthenticated) await loadPrivateLinks();
       const savedPurchaseId = localStorage.getItem("crazyebook-latest-purchase");
       const savedAccessToken = savedPurchaseId ? localStorage.getItem(`crazyebook-purchase-token:${savedPurchaseId}`) : null;
@@ -1819,10 +1820,36 @@
     /* =========================================================
        BUY / SAMPLE
        ========================================================= */
+    async function loadBookPairs() {
+      try {
+        const { data, error } = await supabase.from("book_pairs").select("main_book_key,bolt_book_key,pair_discount").eq("active", true);
+        if (error || !Array.isArray(data)) { bookPairs = []; return; }
+        bookPairs = data.map(p => ({ main: String(p.main_book_key), bolt: String(p.bolt_book_key), discount: Number(p.pair_discount) })).filter(p => p.discount > 0);
+      } catch { bookPairs = []; }
+    }
+    function bookById(key) { return STORE.books.find(b => String(b.id) === String(key)); }
+    function pairSavingFor(keys) {
+      const set = new Set(keys.map(String)); const seen = new Set(); let cents = 0;
+      bookPairs.forEach(p => {
+        if (!set.has(p.main) || !set.has(p.bolt) || seen.has(p.bolt)) return;
+        const bolt = bookById(p.bolt); if (!bolt || bolt.status === "inactive") return;
+        seen.add(p.bolt); cents += Math.round(Math.min(p.discount, Number(bolt.price || 0)) * 100);
+      });
+      return cents / 100;
+    }
+    function pairOffersFor(keys) {
+      const set = new Set(keys.map(String)); const out = [];
+      bookPairs.forEach(p => {
+        if (!set.has(p.main) || (set.has(p.bolt) && !addedBolts.has(p.bolt))) return;
+        const bolt = bookById(p.bolt); if (!bolt || bolt.status === "inactive" || Number(bolt.price) <= 0) return;
+        out.push({ bolt, save: Math.min(p.discount, Number(bolt.price)) });
+      });
+      return out;
+    }
     function checkoutSubtotal() {
       if (!selectedBook) return 0;
-      if (!checkoutCartKeys.length) return Math.round(Number(selectedBook.price || 0) * 100) / 100;
-      const subtotalCents = checkoutCartKeys.reduce((sum, key) => sum + Math.round(Number(STORE.books.find(book => String(book.id) === String(key))?.price || 0) * 100), 0);
+      if (!reviewKeys.length) return Math.round(Number(selectedBook.price || 0) * 100) / 100;
+      const subtotalCents = reviewKeys.reduce((sum, key) => sum + Math.round(Number(STORE.books.find(book => String(book.id) === String(key))?.price || 0) * 100), 0);
       return subtotalCents / 100;
     }
     function couponDiscountFor(subtotal, percent) {
@@ -1832,8 +1859,12 @@
     }
     function renderCheckoutCouponTotals() {
       const original = checkoutSubtotal();
-      const discount = activeCouponCode ? couponDiscountFor(original, activeCouponPercent) : 0;
-      const payable = Math.max(0, Math.round((original - discount + Number.EPSILON) * 100) / 100);
+      const comboSave = pairSavingFor(reviewKeys);
+      const afterCombo = Math.round((original - comboSave) * 100) / 100;
+      const discount = activeCouponCode ? couponDiscountFor(afterCombo, activeCouponPercent) : 0;
+      const payable = Math.max(0, Math.round((afterCombo - discount + Number.EPSILON) * 100) / 100);
+      document.getElementById('comboSavingTotal').textContent = `−${money(comboSave)}`;
+      document.getElementById('comboSavingRow').classList.toggle('hidden', !(comboSave > 0));
       document.getElementById('couponOriginalTotal').textContent = money(original);
       document.getElementById('couponDiscountTotal').textContent = `−${money(discount)}`;
       document.getElementById('couponDiscountRow').classList.toggle('hidden', !activeCouponCode);
@@ -1851,6 +1882,7 @@
       const button = document.getElementById('applyCouponBtn');
       const code = document.getElementById('couponCodeInputCheckout').value.trim().toUpperCase();
       if (!code) { showCouponStatus('Enter a coupon code.'); return; }
+      if (!COMBO_COUPON_STACK && pairSavingFor(reviewKeys) > 0) { showCouponStatus('Coupon cannot be used with the combo offer.'); return; }
       if (!supabaseReady || !supabase) { showCouponStatus('Coupon service unavailable. Please try again later.'); return; }
       button.disabled = true; button.textContent = 'Checking…';
       try {
@@ -1879,8 +1911,71 @@
       renderCheckoutCouponTotals();
     }
 
+    function showCheckoutStep(step) {
+      checkoutStep = step;
+      document.getElementById("checkoutStepDetails").classList.toggle("hidden", step !== 1);
+      document.getElementById("checkoutStepReview").classList.toggle("hidden", step !== 2);
+      document.getElementById("checkoutStepLabel").textContent = step === 1 ? "Step 1 of 3 · Your details" : "Step 2 of 3 · Review";
+      if (step === 2) renderCheckoutReview();
+    }
+    function goCheckoutReview() {
+      const err = document.getElementById("detailsError"); err.classList.add("hidden");
+      const name = document.getElementById("customerName").value.trim();
+      const wa = document.getElementById("customerWhatsapp").value.trim();
+      const tg = document.getElementById("customerTelegram").value.trim();
+      if (!name) { err.textContent = "Please enter your name."; err.classList.remove("hidden"); return; }
+      if (!wa && !tg) { err.textContent = "Please provide either your WhatsApp number or Telegram username."; err.classList.remove("hidden"); return; }
+      showCheckoutStep(2);
+    }
+    function renderCheckoutReview() {
+      const headLine = document.getElementById("buyModalBook");
+      if (headLine) {
+        const hb = bookById(reviewKeys[0]);
+        headLine.textContent = reviewKeys.length > 1 ? `${reviewKeys.length} books · one order and one payment` : (hb ? `${hb.title} · ${hb.bookCode || makeBookCode(hb.title, hb.id)}` : headLine.textContent);
+      }
+      const rows = []; const doneGroups = new Set();
+      reviewKeys.forEach(key => {
+        if (addedBolts.has(String(key))) return;
+        const book = bookById(key); if (!book) return;
+        const sibs = editionSiblings(book);
+        if (sibs.length) {
+          if (doneGroups.has(book.editionGroup)) return; doneGroups.add(book.editionGroup);
+          const chosen = reviewKeys.filter(k => sibs.some(x => String(x.id) === String(k)));
+          const value = chosen.length > 1 ? "both" : String(chosen[0]);
+          const total = chosen.reduce((sum, k) => sum + Number(bookById(k)?.price || 0), 0);
+          const options = sibs.map(b => `<option value="${escapeHtml(b.id)}" ${value === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)}</option>`).join("") + `<option value="both" ${value === "both" ? "selected" : ""}>Both</option>`;
+          rows.push(`<div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 text-sm"><div class="min-w-0"><div class="truncate font-bold">${escapeHtml(book.editionTitle || book.title)}</div><label class="mt-1 flex items-center gap-2 text-xs text-slate-500">Language <select data-review-lang="${escapeHtml(book.editionGroup)}" class="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-bold text-slate-900">${options}</select></label></div><div class="shrink-0 font-black">${money(total)}</div></div>`);
+        } else {
+          rows.push(`<div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 text-sm"><div class="min-w-0 truncate font-bold">${escapeHtml(book.title)}</div><div class="shrink-0 font-black">${money(book.price)}</div></div>`);
+        }
+      });
+      document.getElementById("reviewItems").innerHTML = rows.join("");
+      document.getElementById("reviewOffer").innerHTML = pairOffersFor(reviewKeys).map(o => `<label class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm" style="background:rgba(16,185,129,.14);border-color:rgba(52,211,153,.65);color:#f1f5f9"><input type="checkbox" data-review-offer="${escapeHtml(o.bolt.id)}" ${addedBolts.has(String(o.bolt.id)) ? "checked" : ""} class="mt-1 h-4 w-4"><span><span class="font-black">Add ${escapeHtml(o.bolt.title)}</span><br><span class="text-xs" style="color:#cbd5e1">Normal ${money(o.bolt.price)} · Save ${money(o.save)} · You pay only ${money(Number(o.bolt.price) - o.save)} more</span></span></label>`).join("");
+      renderCheckoutCouponTotals();
+    }
+    function onReviewChange(event) {
+      const t = event.target;
+      if (t.dataset.reviewLang) {
+        const group = t.dataset.reviewLang;
+        const sibs = STORE.books.filter(b => b.editionGroup === group && editionSiblings(b).length);
+        const sibIds = new Set(sibs.map(b => String(b.id)));
+        const pos = reviewKeys.findIndex(k => sibIds.has(String(k)));
+        const rest = reviewKeys.filter(k => !sibIds.has(String(k)));
+        const add = t.value === "both" ? sibs.map(b => String(b.id)) : [String(t.value)];
+        rest.splice(Math.max(0, pos), 0, ...add);
+        reviewKeys = rest;
+        renderCheckoutReview();
+      } else if (t.dataset.reviewOffer) {
+        const bk = String(t.dataset.reviewOffer);
+        if (t.checked) { addedBolts.add(bk); reviewKeys = [...reviewKeys.filter(k => String(k) !== bk), bk]; }
+        else { addedBolts.delete(bk); reviewKeys = reviewKeys.filter(k => String(k) !== bk); }
+        if (!COMBO_COUPON_STACK && activeCouponCode && pairSavingFor(reviewKeys) > 0) { clearCheckoutCoupon(); showCouponStatus('Coupon removed: it cannot be used with the combo offer.'); }
+        renderCheckoutReview();
+      }
+    }
     async function createPurchase(event) {
       event.preventDefault();
+      if (checkoutStep === 1) { goCheckoutReview(); return; }
       const errorBox = document.getElementById("purchaseFormError");
       errorBox.classList.add("hidden");
       const name = document.getElementById("customerName").value.trim();
@@ -1896,15 +1991,20 @@
       const button = document.getElementById("createPurchaseBtn"); button.disabled = true; button.textContent = "Creating order…";
       let purchaseSaved = false;
       let couponPriceMismatch = false;
+      let pairSaveAtSubmit = 0;
       try {
         if (!supabaseReady || !selectedBook) throw new Error("unavailable");
         const accessToken = createPurchaseAccessToken();
+        const finalKeys = reviewKeys.map(String);
+        pairSaveAtSubmit = pairSavingFor(finalKeys);
+        if (finalKeys.length > 1 || checkoutCartKeys.length) checkoutCartKeys = finalKeys;
+        else if (finalKeys.length === 1 && String(selectedBook.id) !== finalKeys[0]) selectedBook = bookById(finalKeys[0]) || selectedBook;
         const purchaseArgs = checkoutCartKeys.length
           ? { p_book_keys: checkoutCartKeys, p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken }
           : { p_book_key: String(selectedBook.id), p_customer_name: name, p_whatsapp: whatsapp || null, p_telegram: telegram || null, p_access_token: accessToken };
         if (activeCouponCode) purchaseArgs.p_coupon_code = activeCouponCode;
         const purchaseRpc = checkoutCartKeys.length
-          ? (activeCouponCode ? "create_cart_purchase_with_coupon" : "create_cart_purchase")
+          ? (pairSaveAtSubmit > 0 ? "create_cart_purchase_with_pairs" : activeCouponCode ? "create_cart_purchase_with_coupon" : "create_cart_purchase")
           : (activeCouponCode ? "create_purchase_with_coupon" : "create_purchase");
         const result = await supabase.rpc(purchaseRpc, purchaseArgs);
         const { data, error } = result;
@@ -1914,14 +2014,15 @@
         purchaseSaved = true;
         latestPurchaseId = purchase.purchase_id; latestPurchasePrice = Number(purchase.price); latestPurchaseAccessToken = accessToken;
         const expectedOriginal = checkoutSubtotal();
-        const expectedDiscount = activeCouponCode ? couponDiscountFor(expectedOriginal, activeCouponPercent) : 0;
-        const expectedFinal = Math.max(0, Math.round((expectedOriginal - expectedDiscount + Number.EPSILON) * 100) / 100);
-        if (activeCouponCode && Math.round(latestPurchasePrice * 100) !== Math.round(expectedFinal * 100)) {
+        const expectedAfterCombo = Math.round((expectedOriginal - pairSaveAtSubmit) * 100) / 100;
+        const expectedDiscount = activeCouponCode ? couponDiscountFor(expectedAfterCombo, activeCouponPercent) : 0;
+        const expectedFinal = Math.max(0, Math.round((expectedAfterCombo - expectedDiscount + Number.EPSILON) * 100) / 100);
+        if ((activeCouponCode || pairSaveAtSubmit > 0) && Math.round(latestPurchasePrice * 100) !== Math.round(expectedFinal * 100)) {
           couponPriceMismatch = true;
           rememberPurchaseReference(latestPurchaseId, accessToken);
           try { localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId); } catch {}
           button.disabled = true; button.textContent = "Order saved · contact support";
-          errorBox.textContent = `Order ${latestPurchaseId} was saved, but Supabase returned ${money(latestPurchasePrice)} instead of the coupon total ${money(expectedFinal)}. Do not pay this order. Reapply the latest supabase-coupons-migration.sql in Supabase, then create a new order.`;
+          errorBox.textContent = `Order ${latestPurchaseId} was saved, but Supabase returned ${money(latestPurchasePrice)} instead of the expected total ${money(expectedFinal)}. Do not pay this order. Reapply the latest supabase-coupons-migration.sql in Supabase, then create a new order.`;
           errorBox.classList.remove("hidden");
           try { await supabase.functions.invoke("send-purchase-telegram", { body: { purchase_id: latestPurchaseId } }); } catch (notifyError) { console.warn("Telegram notification could not be sent; purchase remains saved.", notifyError); }
           return;
@@ -1961,7 +2062,8 @@
           activeCouponCode = null; activeCouponPercent = 0;
           renderCheckoutCouponTotals(); showCouponStatus(message);
         }
-        errorBox.textContent = purchaseSaved
+        const pairRpcUnavailable = pairSaveAtSubmit > 0 && !purchaseSaved && (['PGRST202', 'PGRST203'].includes(couponErrorCode) || couponIssue.includes('could not find the function') || couponIssue.includes('schema cache'));
+        errorBox.textContent = pairRpcUnavailable ? "Combo offer is unavailable right now. Remove the combo book and try again." : purchaseSaved
           ? `Order ${latestPurchaseId} was saved, but checkout could not finish. Please do not create it again; refresh and check the saved order status.`
           : couponRpcUnavailable ? "Supabase cannot find the coupon checkout function. Run the latest supabase-coupons-migration.sql in the SQL Editor, then refresh this page and try again." : activeCouponCode ? `Coupon order creation failed${couponErrorCode ? ` (${couponErrorCode})` : ''}. Please try again; if it keeps failing, share this code with support.` : couponIssue.includes('coupon') ? "Your coupon is no longer available. Please review the updated total and try again." : "Something went wrong while creating your order. Please try again.";
         errorBox.classList.remove("hidden");
@@ -2177,6 +2279,12 @@
     let latestPurchaseAccessToken = null;
     const PURCHASE_INDEX_KEY = "crazyebook-customer-purchase-index-v1";
     let checkoutCartKeys = [];
+    let reviewKeys = [];
+    let checkoutStep = 1;
+    let bookPairs = [];
+    let addedBolts = new Set();
+    // Owner decision pending: may a coupon be used together with the combo saving? Keep false until decided.
+    const COMBO_COUPON_STACK = false;
     let activeCouponCode = null;
     let activeCouponPercent = 0;
     const CART_KEY = "crazyebook-cart-v1";
@@ -2390,6 +2498,9 @@
       rememberOverlay("buy");
       hideOtherOverlays("buy");
       checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
+      reviewKeys = checkoutCartKeys.length ? checkoutCartKeys.slice() : [String(selectedBook.id)];
+      addedBolts = new Set();
+      showCheckoutStep(1);
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
       activeCouponCode = null; activeCouponPercent = 0;
@@ -3114,6 +3225,9 @@
     document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; hideTransientOverlay("details"); buyNow(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
     document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
+    document.getElementById("checkoutNextBtn").addEventListener("click", goCheckoutReview);
+    document.getElementById("checkoutBackBtn").addEventListener("click", () => showCheckoutStep(1));
+    document.getElementById("checkoutStepReview").addEventListener("change", onReviewChange);
     document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
     document.getElementById("refreshPurchasesBtn").addEventListener("click", loadPurchases);
     document.querySelectorAll(".purchase-filter").forEach(button => button.addEventListener("click", () => {
