@@ -1944,7 +1944,7 @@
       const headLine = document.getElementById("buyModalBook");
       if (headLine) {
         const hb = bookById(reviewKeys[0]);
-        headLine.textContent = reviewKeys.length > 1 ? `${reviewKeys.length} books · one order and one payment` : (hb ? `${hb.title} · ${hb.bookCode || makeBookCode(hb.title, hb.id)}` : headLine.textContent);
+        headLine.textContent = reviewKeys.length > 1 ? `${reviewKeys.length} books · one order and one payment` : (hb ? hb.title : headLine.textContent);
       }
       const rows = []; const doneGroups = new Set();
       reviewKeys.forEach(key => {
@@ -2531,7 +2531,7 @@
       const cartBooks = checkoutCartKeys.map(key => STORE.books.find(book => String(book.id) === key)).filter(Boolean);
       const cartCheckout = cartBooks.length > 0;
       document.getElementById("buyModalTitle").textContent = cartCheckout ? "Cart Checkout" : "Buy Now";
-      document.getElementById("buyModalBook").textContent = cartCheckout ? `${cartBooks.length} books · one order and one payment` : `${selectedBook.title} · ${selectedBook.bookCode || makeBookCode(selectedBook.title, selectedBook.id)}`;
+      document.getElementById("buyModalBook").textContent = cartCheckout ? `${cartBooks.length} books · one order and one payment` : selectedBook.title;
       document.getElementById("purchaseForm").classList.toggle("hidden", !!selectedBook.free || Number(selectedBook.price) === 0);
       document.getElementById("purchasePayment").classList.add("hidden");
       document.getElementById("pendingPaymentInfo").classList.remove("hidden");
