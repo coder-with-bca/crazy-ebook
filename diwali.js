@@ -13,7 +13,7 @@
   "use strict";
 
   var DIWALI_ENABLED = true; // <-- the single on/off switch
-  var DIWALI_VERSION = "3-night";
+  var DIWALI_VERSION = "4-night-gold";
 
   if (!DIWALI_ENABLED) {
     document.documentElement.classList.remove("diwali-night");
@@ -83,23 +83,23 @@
 
   /* --------------------- midnight-indigo surfaces --------------------- */
   html.diwali-night[data-theme="dark"] body {
-    background: linear-gradient(180deg, #070a1c 0%, #0b1130 55%, #0e1434 100%) !important;
-    color: #eae5d6 !important;
+    background: linear-gradient(180deg, #070c20 0%, #0B1026 55%, #12183c 100%) !important;
+    color: #FFF8EA !important;
   }
   html.diwali-night[data-theme="dark"] header {
     background-color: rgba(11, 15, 38, 0.94) !important;
     border-color: #2a3560 !important;
   }
-  html.diwali-night[data-theme="dark"] .mobile-section-nav { border-color: #2a3560; color: #eae5d6; background: #131a3e; }
+  html.diwali-night[data-theme="dark"] .mobile-section-nav { border-color: #2a3560; color: #FFF8EA; background: #171F46; }
   html.diwali-night[data-theme="dark"] [class~="bg-white"],
   html.diwali-night[data-theme="dark"] [class~="bg-white/90"],
-  html.diwali-night[data-theme="dark"] [class~="bg-white/95"] { background-color: #131a3e !important; }
-  html.diwali-night[data-theme="dark"] [class~="bg-slate-50"] { background-color: #161d44 !important; }
-  html.diwali-night[data-theme="dark"] [class~="bg-slate-100"] { background-color: #1f2952 !important; }
-  html.diwali-night[data-theme="dark"] [class~="bg-slate-200"] { background-color: #29346a !important; }
-  html.diwali-night[data-theme="dark"] [class~="bg-indigo-50"] { background-color: #1b2456 !important; }
-  html.diwali-night[data-theme="dark"] [class~="bg-indigo-100"] { background-color: #232e66 !important; }
-  html.diwali-night footer { background: linear-gradient(180deg, #0a0e28 0%, #151b40 100%) !important; }
+  html.diwali-night[data-theme="dark"] [class~="bg-white/95"] { background-color: #171F46 !important; }
+  html.diwali-night[data-theme="dark"] [class~="bg-slate-50"] { background-color: #1b2249 !important; }
+  html.diwali-night[data-theme="dark"] [class~="bg-slate-100"] { background-color: #242d59 !important; }
+  html.diwali-night[data-theme="dark"] [class~="bg-slate-200"] { background-color: #303b70 !important; }
+  html.diwali-night[data-theme="dark"] [class~="bg-indigo-50"] { background-color: #1e2756 !important; }
+  html.diwali-night[data-theme="dark"] [class~="bg-indigo-100"] { background-color: #283373 !important; }
+  html.diwali-night footer { background: linear-gradient(180deg, #0B1026 0%, #171F46 100%) !important; }
 
   /* ------------------------- night-sky hero --------------------------- */
   html.diwali-night #heroSection {
@@ -110,7 +110,7 @@
   html.diwali-night[data-theme="dark"] #heroSection {
     background: radial-gradient(ellipse at 85% 8%, rgba(224, 64, 123, 0.13), transparent 46%),
                 radial-gradient(ellipse at 12% 88%, rgba(255, 138, 0, 0.12), transparent 44%),
-                linear-gradient(163deg, #05081a 0%, #0e1538 52%, #1c1240 100%) !important;
+                linear-gradient(163deg, #070b1f 0%, #0B1026 52%, #1a1240 100%) !important;
   }
   html.diwali-night #heroSection [class~="bg-indigo-100"] { background-color: rgba(255, 138, 0, 0.14) !important; }
   html.diwali-night #heroSection [class~="bg-cyan-100"] { background-color: rgba(224, 64, 123, 0.13) !important; }
@@ -168,11 +168,20 @@
   }
   @media (max-width: 640px) { html.diwali-night .diwali-rangoli { opacity: 0.3; width: 104px; } }
 
-  /* ------------------- golden sparkle layer (hero) -------------------- */
+  /* ------------- non-stop golden sparkles (hero + sections) --------- */
   html.diwali-night .diwali-star {
     position: absolute; z-index: 0; pointer-events: none;
     border-radius: 50%;
     background: radial-gradient(circle, #fff8dc 0%, #FFD54F 55%, transparent 78%);
+  }
+  html.diwali-night #books,
+  html.diwali-night #how-to-buy,
+  html.diwali-night #authors,
+  html.diwali-night #faq,
+  html.diwali-night body > footer { position: relative; }
+  html.diwali-night .diwali-star-field {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+    border-radius: inherit;
   }
 
   /* ----------------------- fireworks (one-shot) ----------------------- */
@@ -413,8 +422,8 @@
       dWrap.innerHTML = diyaSVG("diya-left") + diyaSVG("diya-right");
       while (dWrap.firstChild) frag.appendChild(dWrap.firstChild);
 
-      // Restrained golden sparkle layer behind hero content
-      for (var s = 0; s < 12; s++) {
+      // Non-stop golden sparkle layer behind hero content
+      for (var s = 0; s < 24; s++) {
         var star = document.createElement("span");
         star.className = "diwali-star";
         var sz = 3 + Math.random() * 3.5;
@@ -441,6 +450,35 @@
       // One short fireworks show on first load, behind the hero content
       if (!REDUCED) runFireworks(hero);
     }
+
+    // Non-stop sparkle fields across the rest of the page. The twinkle
+    // animation loops forever; it is disabled under prefers-reduced-motion
+    // by the media query in the CSS above.
+    ["books", "how-to-buy", "authors", "faq"].forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (sec) addStarField(sec, 9);
+    });
+    var footerEl = document.querySelector("body > footer");
+    if (footerEl) addStarField(footerEl, 8);
+  }
+
+  function addStarField(el, n) {
+    var field = document.createElement("div");
+    field.className = "diwali-star-field";
+    field.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < n; i++) {
+      var star = document.createElement("span");
+      star.className = "diwali-star";
+      var sz = 2.5 + Math.random() * 3;
+      star.style.width = sz + "px";
+      star.style.height = sz + "px";
+      star.style.left = (2 + Math.random() * 96) + "%";
+      star.style.top = (3 + Math.random() * 94) + "%";
+      star.style.animationDuration = (2.4 + Math.random() * 2.8) + "s";
+      star.style.animationDelay = (Math.random() * 3.5) + "s";
+      field.appendChild(star);
+    }
+    el.insertBefore(field, el.firstChild);
   }
 
   /* --------------------- one-shot fireworks --------------------------- */

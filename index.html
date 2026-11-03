@@ -14,7 +14,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
-  <script>try { document.documentElement.dataset.theme = localStorage.getItem("crazyebook-theme-v1") === "dark" ? "dark" : "light"; } catch { document.documentElement.dataset.theme = "light"; }</script>
+  <script>try { localStorage.setItem("crazyebook-theme-v1", "dark"); } catch (e) {} document.documentElement.dataset.theme = "dark";</script>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
@@ -161,28 +161,29 @@
     }
 
     html[data-theme="dark"] { color-scheme: dark; }
-    html[data-theme="dark"] body { background-color: #0b1220 !important; color: #e2e8f0 !important; }
-    html[data-theme="dark"] header { background-color: rgba(15,23,42,.94) !important; border-color: #263449 !important; }
-    html[data-theme="dark"] .mobile-section-nav { border-color:#263449; color:#e2e8f0; background:#0f172a; }
+    html[data-theme="dark"] body { background-color: #0B1026 !important; color: #FFF8EA !important; }
+    html[data-theme="dark"] header { background-color: rgba(11,16,38,.94) !important; border-color: #2a3560 !important; }
+    html[data-theme="dark"] .mobile-section-nav { border-color:#2a3560; color:#FFF8EA; background:#131a3e; }
     html[data-theme="dark"] [class~="bg-white"],
     html[data-theme="dark"] [class~="bg-white/90"],
-    html[data-theme="dark"] [class~="bg-white/95"] { background-color: #111c2d !important; }
-    html[data-theme="dark"] [class~="bg-slate-50"] { background-color: #111c2d !important; }
-    html[data-theme="dark"] [class~="bg-slate-100"] { background-color: #1e2b3e !important; }
-    html[data-theme="dark"] [class~="bg-slate-200"] { background-color: #29384d !important; }
+    html[data-theme="dark"] [class~="bg-white/95"] { background-color: #171F46 !important; }
+    html[data-theme="dark"] [class~="bg-slate-50"] { background-color: #171F46 !important; }
+    html[data-theme="dark"] [class~="bg-slate-100"] { background-color: #232c55 !important; }
+    html[data-theme="dark"] [class~="bg-slate-200"] { background-color: #2e3966 !important; }
     html[data-theme="dark"] [class~="bg-indigo-50"] { background-color: #1b2750 !important; }
     html[data-theme="dark"] [class~="bg-indigo-100"] { background-color: #253363 !important; }
     html[data-theme="dark"] [class~="bg-cyan-100"] { background-color: #153247 !important; }
-    html[data-theme="dark"] [class~="bg-emerald-50"] { background-color: #12352f !important; }
-    html[data-theme="dark"] [class~="bg-amber-50"] { background-color: #3b2b16 !important; }
+    html[data-theme="dark"] [class~="bg-amber-50"],
+    html[data-theme="dark"] [class~="bg-amber-50"] { background-color: #3d2f10 !important; }
+    html[data-theme="dark"] [class~="bg-amber-50"] { background-color: #3d2f10 !important; }
     html[data-theme="dark"] [class~="bg-rose-50"] { background-color: #3e1f2b !important; }
     html[data-theme="dark"] [class~="bg-rose-100"] { background-color: #542637 !important; }
     html[data-theme="dark"] [class~="text-slate-950"],
-    html[data-theme="dark"] [class~="text-slate-900"] { color: #f8fafc !important; }
+    html[data-theme="dark"] [class~="text-slate-900"] { color: #FFF8EA !important; }
     html[data-theme="dark"] [class~="text-slate-800"],
-    html[data-theme="dark"] [class~="text-slate-700"] { color: #e2e8f0 !important; }
+    html[data-theme="dark"] [class~="text-slate-700"] { color: #f2ead2 !important; }
     html[data-theme="dark"] [class~="text-slate-600"],
-    html[data-theme="dark"] [class~="text-slate-500"] { color: #bdc9d8 !important; }
+    html[data-theme="dark"] [class~="text-slate-500"] { color: #d9d2b8 !important; }
     html[data-theme="dark"] [class~="text-slate-400"] { color: #94a3b8 !important; }
     html[data-theme="dark"] [class~="text-indigo-600"],
     html[data-theme="dark"] [class~="text-indigo-700"],
@@ -190,8 +191,8 @@
     html[data-theme="dark"] [class~="text-amber-600"] { color: #fbbf24 !important; }
     html[data-theme="dark"] [class~="text-amber-900"],
     html[data-theme="dark"] [class~="text-amber-800"] { color: #fcd34d !important; }
-    html[data-theme="dark"] [class~="text-emerald-800"],
-    html[data-theme="dark"] [class~="text-emerald-700"] { color: #6ee7b7 !important; }
+    html[data-theme="dark"] [class~="text-amber-800"],
+    html[data-theme="dark"] [class~="text-amber-700"] { color: #ffd54f !important; }
     html[data-theme="dark"] [class~="text-rose-800"],
     html[data-theme="dark"] [class~="text-rose-700"],
     html[data-theme="dark"] [class~="text-rose-600"] { color: #fda4af !important; }
@@ -199,25 +200,27 @@
     html[data-theme="dark"] [class~="border-slate-100"],
     html[data-theme="dark"] [class~="border-slate-200"],
     html[data-theme="dark"] [class~="border-slate-300"],
-    html[data-theme="dark"] [class~="border-slate-400"] { border-color: #35445a !important; }
+    html[data-theme="dark"] [class~="border-slate-400"] { border-color: #3a4670 !important; }
     html[data-theme="dark"] [class~="border-indigo-100"],
     html[data-theme="dark"] [class~="border-indigo-200"] { border-color: #3c4b7a !important; }
     html[data-theme="dark"] [class~="border-amber-200"] { border-color: #745522 !important; }
     html[data-theme="dark"] [class~="border-rose-200"] { border-color: #713444 !important; }
-    html[data-theme="dark"] [class~="border-emerald-200"] { border-color: #226353 !important; }
+    html[data-theme="dark"] [class~="border-amber-200"] { border-color: #8a6d1f !important; }
+    html[data-theme="dark"] [class~="text-amber-700"] { color: #fcd34d !important; }
+    html[data-theme="dark"] [class~="bg-amber-400"] { background-color: #FFB300 !important; }
     html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
     html[data-theme="dark"] textarea,
-    html[data-theme="dark"] select { background-color: #111c2d !important; border-color: #35445a !important; color: #f8fafc !important; }
+    html[data-theme="dark"] select { background-color: #141b3d !important; border-color: #3a4670 !important; color: #FFF8EA !important; }
     html[data-theme="dark"] input::placeholder,
     html[data-theme="dark"] textarea::placeholder { color: #94a3b8 !important; }
     html[data-theme="dark"] [class~="hover:bg-slate-50"]:hover,
-    html[data-theme="dark"] [class~="hover:bg-slate-100"]:hover { background-color: #223149 !important; }
+    html[data-theme="dark"] [class~="hover:bg-slate-100"]:hover { background-color: #2a3560 !important; }
     html[data-theme="dark"] [class~="hover:text-slate-950"]:hover { color: #fff !important; }
     html[data-theme="dark"] .field-note { color: #94a3b8 !important; }
-    .add-cart-btn.cart-added, #detailsCart.cart-added { background-color: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+    .add-cart-btn.cart-added, #detailsCart.cart-added { background-color: #fff3d6; border-color: #ffd873; color: #8a5300; }
     html[data-theme="dark"] .add-cart-btn.cart-added,
-    html[data-theme="dark"] #detailsCart.cart-added { background-color: #12352f; border-color: #226353; color: #6ee7b7; }
-    html[data-theme="dark"] .theme-toggle { border-color: #475569; background-color: #1e2b3e; color: #f8fafc; }
+    html[data-theme="dark"] #detailsCart.cart-added { background-color: #3d2f10; border-color: #8a6d1f; color: #ffd54f; }
+    html[data-theme="dark"] .theme-toggle { border-color: #3a4670; background-color: #232c55; color: #FFF8EA; }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -257,16 +260,16 @@
     .hero-scene-hint { display: none; position: absolute; z-index: 2; top: 14px; right: 16px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.75); border-radius: 9999px; background: rgba(255,255,255,.66); color: #475569; font-size: 10px; font-weight: 700; backdrop-filter: blur(10px); pointer-events: none; }
     .hero-scene.is-loaded .hero-scene-hint { display: block; }
     /* Crazy E-Book storefront polish */
-    :root { --store-ink:#101b2d; --store-paper:#fffdf7; --store-teal:#0d9488; --store-yellow:#facc15; }
+    :root { --store-ink:#101b2d; --store-paper:#fffdf7; --store-teal:#FFB300; --store-yellow:#facc15; --dw-navy:#0B1026; --dw-indigo:#171F46; --dw-gold:#FFB300; --dw-marigold:#FF8A00; --dw-rani:#E0407B; --dw-cream:#FFF8EA; }
     body { background:var(--store-paper); }
-    #heroSection { background:linear-gradient(135deg,#fffdf7 0%,#f1f7f5 58%,#e2f4f0 100%); }
+    #heroSection { background:linear-gradient(135deg,#fffdf7 0%,#fdf6e3 58%,#fcefd2 100%); }
     #heroSection h1 { color:var(--store-ink); font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:-.055em; }
-    #heroSection .mt-8.flex.flex-col a { background:var(--store-teal); box-shadow:0 12px 28px #0d948833; animation:cta-breathe 3.2s ease-in-out infinite; }
-    #heroSection .mt-8.flex.flex-col a:hover { background:#0f766e; }
-    @keyframes cta-breathe { 50% { box-shadow:0 14px 34px #0d948844; } }
-    .hero-scene { border-color:#0d94882b; background:radial-gradient(ellipse at 50% 30%,#d7f5e9,transparent 58%),linear-gradient(145deg,#fdfcf7,#dcefeb); box-shadow:0 30px 80px #102b3a20; }
+    #heroSection .mt-8.flex.flex-col a { background:linear-gradient(135deg,#FF8A00 0%,#FFB300 55%,#FFD54F 115%); color:#2e1a00; box-shadow:0 12px 28px rgba(255,179,0,.32); animation:cta-breathe 3.2s ease-in-out infinite; }
+    #heroSection .mt-8.flex.flex-col a:hover { background:linear-gradient(135deg,#ff9a1f 0%,#ffc233 55%,#ffe082 115%); }
+    @keyframes cta-breathe { 50% { box-shadow:0 14px 34px rgba(255,179,0,.45); } }
+    .hero-scene { border-color:rgba(255,179,0,.3); background:radial-gradient(ellipse at 50% 30%,#fdeec3,transparent 58%),linear-gradient(145deg,#fdfcf7,#f7ecd2); box-shadow:0 30px 80px #102b3a20; }
     .hero-scene { overflow:visible; }
-    .hero-scene-glow { background:#14b8a633; }
+    .hero-scene-glow { background:rgba(255,179,0,.28); }
     .hero-model-fallback { border-color:#0f766e; background:linear-gradient(90deg,#102b3a 0 13%,#0f766e 13% 100%); }
     .hero-model-fallback { top:25%; width:108px; height:146px; animation:featured-book-float 4.8s ease-in-out infinite; }
     @keyframes featured-book-float { 0%,100% { translate:0 0; rotate:-1deg; } 50% { translate:0 -9px; rotate:1deg; } }
@@ -293,25 +296,25 @@
     .category-row-arrow { display:grid; width:36px; height:36px; place-items:center; border:1px solid #d7dce2; border-radius:999px; background:white; color:#172338; transition:transform .16s ease,background .16s ease; }
     .category-row-arrow:hover { transform:translateY(-1px); background:#f3f6f8; }
     .category-scroll-track { height:3px; overflow:hidden; border-radius:999px; background:#e8ebef; }
-    .category-scroll-track span { display:block; width:100%; height:100%; border-radius:inherit; background:#0d9488; transform:scaleX(0); transform-origin:left center; transition:transform .12s linear; }
+    .category-scroll-track span { display:block; width:100%; height:100%; border-radius:inherit; background:var(--dw-gold); transform:scaleX(0); transform-origin:left center; transition:transform .12s linear; }
     .book-view-btn { border-color:#d5dce5; color:#64748b; }
-    .book-view-btn[aria-pressed="true"] { border-color:#0d9488; background:#0d9488; color:white; }
+    .book-view-btn[aria-pressed="true"] { border-color:var(--dw-gold); background:var(--dw-gold); color:#2e1a00; }
     .catalog-category.reveal { transition-duration:.42s; }
     @media(min-width:640px) { .category-book-row { grid-auto-columns:minmax(210px,245px); gap:1rem; } }
-    html[data-theme="dark"] .book-card { border-color:#35445a; background:linear-gradient(165deg,#172438 0%,#111c2d 100%); box-shadow:0 10px 26px rgba(0,0,0,.22); }
-    html[data-theme="dark"] .category-row-arrow { border-color:#35445a; background:#172438; color:#e2e8f0; }
-    html[data-theme="dark"] .category-row-arrow:hover { background:#24334a; }
-    html[data-theme="dark"] .category-scroll-track { background:#26354a; }
-    html[data-theme="dark"] .book-view-btn { border-color:#35445a; color:#bdc9d8; }
-    html[data-theme="dark"] .book-view-btn[aria-pressed="true"] { border-color:#0d9488; background:#0d9488; color:#fff; }
+    html[data-theme="dark"] .book-card { border-color:#3a4670; background:linear-gradient(165deg,#1d254f 0%,#141b3d 100%); box-shadow:0 10px 26px rgba(0,0,0,.22); }
+    html[data-theme="dark"] .category-row-arrow { border-color:#3a4670; background:#1d254f; color:#FFF8EA; }
+    html[data-theme="dark"] .category-row-arrow:hover { background:#28325e; }
+    html[data-theme="dark"] .category-scroll-track { background:#232c55; }
+    html[data-theme="dark"] .book-view-btn { border-color:#3a4670; color:#d9d2b8; }
+    html[data-theme="dark"] .book-view-btn[aria-pressed="true"] { border-color:var(--dw-gold); background:var(--dw-gold); color:#2e1a00; }
     html[data-theme="dark"] .book-card h3,
-    html[data-theme="dark"] .book-card .book-price { color:#f8fafc !important; }
+    html[data-theme="dark"] .book-card .book-price { color:#FFF8EA !important; }
     html[data-theme="dark"] .book-card .book-summary,
-    html[data-theme="dark"] .book-card .book-rating > span:last-child { color:#bdc9d8 !important; }
-    .book-card .book-category { display:inline-flex; width:fit-content; max-width:100%; align-items:center; border-radius:999px; background:#e8f5f3; color:#0f766e; padding:.28rem .55rem; font-size:.62rem; font-weight:900; line-height:1rem; letter-spacing:.045em; }
-    html[data-theme="dark"] .book-card .book-category { background:#123b3b; color:#7de3d2 !important; }
-    html[data-theme="dark"] .book-card .sample-btn { border-color:#475569; background:#1e2b3e; color:#e2e8f0; }
-    html[data-theme="dark"] .book-card .book-actions .buy-btn { background:#0d9488; color:#fff; }
+    html[data-theme="dark"] .book-card .book-rating > span:last-child { color:#d9d2b8 !important; }
+    .book-card .book-category { display:inline-flex; width:fit-content; max-width:100%; align-items:center; border-radius:999px; background:#fff1cf; color:#8a5300; padding:.28rem .55rem; font-size:.62rem; font-weight:900; line-height:1rem; letter-spacing:.045em; }
+    html[data-theme="dark"] .book-card .book-category { background:rgba(255,179,0,.16); color:#FFD54F !important; }
+    html[data-theme="dark"] .book-card .sample-btn { border-color:rgba(255,179,0,.4); background:#232c55; color:#FFF8EA; }
+    html[data-theme="dark"] .book-card .book-actions .buy-btn { background:var(--dw-gold); color:#2e1a00; }
     .book-card .book-detail-reveal { position:absolute; z-index:4; left:12px; right:12px; bottom:12px; transform:translateY(150%); opacity:0; transition:transform .38s cubic-bezier(.2,.9,.25,1),opacity .2s ease; }
     .book-card:hover .book-detail-reveal, .book-card:focus-within .book-detail-reveal { transform:translateY(0); opacity:1; }
     .book-card .book-card-cover { transition:transform .35s cubic-bezier(.2,.8,.2,1); }
@@ -321,12 +324,12 @@
     #cartModal { justify-content:flex-end; padding:0; }
     #cartModal > div { width:min(100%,460px); height:100%; max-height:100dvh; border-radius:24px 0 0 24px; padding:24px; animation:cart-drawer-in .35s cubic-bezier(.2,.8,.2,1) both; }
     @keyframes cart-drawer-in { from { transform:translateX(36px); opacity:.7; } to { transform:translateX(0); opacity:1; } }
-    #cartCheckout { background:var(--store-teal); }
-    #emptyBooks { border-color:#b9ddd3; background:#fffdf7; }
+    #cartCheckout { background:linear-gradient(135deg,#FF8A00 0%,#FFB300 60%,#FFD54F 120%); color:#2e1a00; }
+    #emptyBooks { border-color:#f0d9a8; background:#fffdf7; }
     #emptyBookSuggestions button { transform-style:preserve-3d; transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease; }
-    #emptyBookSuggestions button:hover { transform:translateY(-3px) rotateX(7deg); box-shadow:0 12px 22px #0d948822; }
+    #emptyBookSuggestions button:hover { transform:translateY(-3px) rotateX(7deg); box-shadow:0 12px 22px rgba(255,179,0,.2); }
     @media(max-width:640px) {
-      #heroSection { background:linear-gradient(160deg,#fffdf7,#e9f5f1); }
+      #heroSection { background:linear-gradient(160deg,#fffdf7,#fdf3d8); }
       .book-card .book-detail-reveal { position:static; transform:none; opacity:1; margin-top:8px; }
       .book-card .book-detail-reveal button { min-height:34px; font-size:10px; }
       #cartModal { justify-content:center; padding:0; }
@@ -335,25 +338,25 @@
     }
     @media(prefers-reduced-motion:reduce) { #heroSection .mt-8.flex.flex-col a, .hero-model-fallback { animation:none; } .category-book-row { scroll-behavior:auto; } .book-card,.book-card * { animation:none !important; transition-duration:.01ms !important; } }
     html[data-theme="dark"] #heroSection {
-      background:radial-gradient(ellipse at 88% 12%,rgba(54,73,145,.42),transparent 42%),radial-gradient(ellipse at 8% 90%,rgba(13,148,136,.12),transparent 38%),linear-gradient(135deg,#0b1220 0%,#0d1728 62%,#101c30 100%) !important;
+      background:radial-gradient(ellipse at 88% 12%,rgba(54,73,145,.42),transparent 42%),radial-gradient(ellipse at 8% 90%,rgba(255,138,0,.12),transparent 38%),linear-gradient(135deg,#0B1026 0%,#0e1530 62%,#131a3c 100%) !important;
     }
-    html[data-theme="dark"] #heroSection h1 { color:#f8fafc !important; }
-    html[data-theme="dark"] #heroSection p { color:#cbd5e1 !important; }
-    html[data-theme="dark"] #heroSection .mb-5 { background:#172438; border-color:#34445c; color:#dbe5f1; }
-    html[data-theme="dark"] #heroSection .mt-8.flex.flex-wrap { color:#b8c5d7; }
+    html[data-theme="dark"] #heroSection h1 { color:#FFF8EA !important; }
+    html[data-theme="dark"] #heroSection p { color:#e8dfc2 !important; }
+    html[data-theme="dark"] #heroSection .mb-5 { background:rgba(255,179,0,.14); border-color:rgba(255,213,79,.45); color:#ffe3a3; }
+    html[data-theme="dark"] #heroSection .mt-8.flex.flex-wrap { color:#d9d2b8; }
     html[data-theme="dark"] #heroSection .hero-scene {
-      border-color:#334765;
-      background:radial-gradient(ellipse at 50% 30%,rgba(47,73,125,.42),transparent 59%),linear-gradient(145deg,#15243a,#0e1a2c);
+      border-color:rgba(255,179,0,.35);
+      background:radial-gradient(ellipse at 50% 30%,rgba(255,179,0,.14),transparent 59%),linear-gradient(145deg,#1a2247,#10173a);
       box-shadow:0 30px 80px rgba(0,0,0,.28);
       overflow:visible;
     }
-    html[data-theme="dark"] #heroSection .hero-scene-glow { background:rgba(20,184,166,.14); }
-    html[data-theme="dark"] #heroSection .hero-scene-card { background:rgba(17,28,45,.94); border-color:#35445a; }
+    html[data-theme="dark"] #heroSection .hero-scene-glow { background:rgba(255,179,0,.16); }
+    html[data-theme="dark"] #heroSection .hero-scene-card { background:rgba(23,31,70,.94); border-color:rgba(255,179,0,.35); }
     html[data-theme="dark"] #heroSection .hero-scene-copy h3,
-    html[data-theme="dark"] #heroSection #heroShowcasePrice { color:#f8fafc !important; }
-    html[data-theme="dark"] #heroSection .hero-scene-summary { color:#bdc9d8 !important; }
-    html[data-theme="dark"] .hero-scene-card { background: rgba(17,28,45,.9); border-color: rgba(71,85,105,.8); }
-    html[data-theme="dark"] .hero-scene-hint { background: rgba(17,28,45,.74); color: #cbd5e1; border-color: rgba(71,85,105,.8); }
+    html[data-theme="dark"] #heroSection #heroShowcasePrice { color:#FFF8EA !important; }
+    html[data-theme="dark"] #heroSection .hero-scene-summary { color:#d9d2b8 !important; }
+    html[data-theme="dark"] .hero-scene-card { background: rgba(23,31,70,.9); border-color: rgba(255,179,0,.3); }
+    html[data-theme="dark"] .hero-scene-hint { background: rgba(23,31,70,.78); color: #d9d2b8; border-color: rgba(255,179,0,.3); }
     @media (max-width: 420px) {
       .hero-scene { height: 310px; border-radius: 1.5rem; }
       .hero-scene-card { right: 8px; bottom: 8px; left: 8px; grid-template-columns: 54px minmax(0,1fr); gap: 9px; padding: 9px; }
@@ -388,12 +391,13 @@
     .review-arrow { display:grid; width:34px; height:34px; place-items:center; border:1px solid #d5dce5; border-radius:999px; background:#fff; font-size:1.1rem; }
     .review-dots { display:flex; max-width:180px; flex-wrap:wrap; align-items:center; justify-content:center; gap:.4rem; }
     .review-dot { width:8px; height:8px; border:0; border-radius:999px; background:#cbd5e1; padding:0; }
-    .review-dot[aria-current="true"] { width:20px; background:#0d9488; }
-    html[data-theme="dark"] .review-arrow { border-color:#35445a; background:#172438; color:#e2e8f0; }
+    .review-dot[aria-current="true"] { width:20px; background:var(--dw-gold); }
+    html[data-theme="dark"] .review-arrow { border-color:#3a4670; background:#1d254f; color:#FFF8EA; }
+    html[data-theme="dark"] .review-read-more { color:#FFD54F; }
     @media(prefers-reduced-motion:reduce) { .review-slide-card.review-shift-left,.review-slide-card.review-shift-right { animation:none; } }
-    html[data-theme="dark"] .review-slide-card { background:#111c2d; border-color:#35445a; }
-    html[data-theme="dark"] .review-slide-card .text-slate-900 { color:#f8fafc !important; }
-    .review-read-more { color:#0f766e; font-size:.75rem; font-weight:800; text-decoration:underline; text-underline-offset:2px; }
+    html[data-theme="dark"] .review-slide-card { background:#171F46; border-color:#3a4670; }
+    html[data-theme="dark"] .review-slide-card .text-slate-900 { color:#FFF8EA !important; }
+    .review-read-more { color:#a16207; font-size:.75rem; font-weight:800; text-decoration:underline; text-underline-offset:2px; }
     @media(max-width:640px) {
       #how-to-buy > div, #faq > div, #authors { padding-top:clamp(2.75rem,9vw,3.5rem); padding-bottom:clamp(2.75rem,9vw,3.5rem); }
       #how-to-buy .mt-12 { margin-top:1.5rem; }
@@ -408,6 +412,12 @@
       #reviewsGrid { margin-top:1rem; }
     }
     @media(min-width:420px) and (max-width:767px) { #howToBuySteps { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  </style>
+  <style>
+    /* Diwali palette: snap the swapped accent buttons to the exact brief colours. */
+    #writeReviewBtn, #payNowBtn, #submitCustomerReview { background-color:#FFB300 !important; color:#2e1a00 !important; }
+    #howToBuySteps .bg-amber-400 { background-color:#FFB300 !important; }
+    #howToBuySteps .bg-pink-600 { background-color:#E0407B !important; }
   </style>
   <script type="importmap">
     {
@@ -483,7 +493,7 @@
       <div class="relative mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 sm:py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-12 lg:px-8 lg:py-28">
         <div class="reveal self-center">
           <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-600">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="h-2 w-2 rounded-full bg-amber-400"></span>
             Made for students & learners
           </div>
 
@@ -519,7 +529,7 @@
               <div id="heroShowcaseCover" class="hero-scene-cover"></div>
               <div class="hero-scene-copy">
                 <div class="flex items-center justify-between gap-2">
-                  <span class="rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-emerald-700">Featured</span>
+                  <span class="rounded-full bg-amber-50 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-amber-700">Featured</span>
                   <span id="heroShowcaseTag" class="truncate text-[10px] font-bold text-slate-400"></span>
                 </div>
                 <div id="heroShowcaseCategory" class="mt-2 truncate text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600"></div>
@@ -621,13 +631,13 @@
           </div>
 
           <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white">3</div>
+            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-400 text-sm font-black text-slate-950">3</div>
             <h3 class="text-base font-black">Wait for confirmation</h3></div>
             <p class="mt-2 text-sm leading-6 text-slate-600">Payment is checked manually and an administrator confirms the purchase.</p>
           </div>
 
           <div class="reveal rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-600 text-sm font-black text-white">4</div>
+            <div class="flex items-center gap-3"><div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-pink-600 text-sm font-black text-white">4</div>
             <h3 class="text-base font-black">Open My Library</h3></div>
             <p class="mt-2 text-sm leading-6 text-slate-600">After approval, open My Library to access the purchased ebook securely.</p>
           </div>
@@ -667,7 +677,7 @@
                 <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Customer comments</p>
                 <h3 class="mt-1 text-xl font-black">Reviews</h3>
               </div>
-              <div class="flex flex-col items-end gap-2"><div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 reviews</div><button id="writeReviewBtn" type="button" class="rounded-xl bg-teal-700 px-3 py-2 text-xs font-extrabold text-white">Write a Review</button></div>
+              <div class="flex flex-col items-end gap-2"><div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" id="reviewCount">0 reviews</div><button id="writeReviewBtn" type="button" class="rounded-xl bg-amber-400 px-3 py-2 text-xs font-extrabold text-slate-950">Write a Review</button></div>
             </div>
             <div id="reviewsGrid" class="mt-6"></div>
           </div>
@@ -772,7 +782,7 @@
         </button>
       </div>
 
-      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><section class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Original price</span><span id="couponOriginalTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-emerald-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"></div>
+      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID</label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><section class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Original price</span><span id="couponOriginalTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><button id="createPurchaseBtn" class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">Create order and continue</button></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
         <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
         <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
@@ -795,7 +805,7 @@
         </div>
       </div>
 
-      <button id="payNowBtn" type="button" class="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-extrabold text-white">Pay Now</button><p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Please use the QR code below.</p><div id="pendingPaymentInfo" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Payment starts as Pending. We verify it manually (usually within 5–15 minutes). Your order access token is saved in this browser.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
+      <button id="payNowBtn" type="button" class="mt-5 w-full rounded-xl bg-amber-400 px-5 py-3.5 text-sm font-extrabold text-slate-950">Pay Now</button><p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Please use the QR code below.</p><div id="pendingPaymentInfo" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Payment starts as Pending. We verify it manually (usually within 5–15 minutes). Your order access token is saved in this browser.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
 
       <a id="verifyTelegram"
          href="#"
@@ -813,11 +823,11 @@
   </div>
 
   <div id="reviewReadModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewReadTitle">
-    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div><button id="closeReviewRead" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close full review">×</button></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-teal-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
+    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div><button id="closeReviewRead" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close full review">×</button></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-amber-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
   </div>
 
   <div id="reviewSubmitModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewSubmitTitle">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div><button id="closeReviewSubmit" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close review form">×</button></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-extrabold text-white">Submit Review</button></form></div>
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div><button id="closeReviewSubmit" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close review form">×</button></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Submit Review</button></form></div>
   </div>
 
   <!-- =========================================================
@@ -1326,7 +1336,7 @@
         button.setAttribute("aria-pressed", String(dark));
         button.setAttribute("aria-label", `Current theme: ${dark ? "dark" : "light"}. Switch to ${dark ? "light" : "dark"} mode.`);
       }
-      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#0b1220" : "#111827");
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#0B1026" : "#111827");
       if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch {} }
     }
 
@@ -1415,9 +1425,11 @@
     }
 
     function initializeTheme() {
-      let saved = "light";
-      try { saved = localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light"; } catch {}
-      applyTheme(saved);
+      // Diwali brief: every fresh visit and reload opens in dark mode, even when a
+      // previous session saved "light". The toggle still works after loading, and
+      // unrelated saved data (cart, library) is left untouched.
+      try { localStorage.setItem(THEME_KEY, "dark"); } catch {}
+      applyTheme("dark");
     }
 
     function bookSampleHref(book) {
@@ -1632,7 +1644,7 @@
       if (!filtered.length) {
         grid.replaceChildren();
         const topics = [...new Set(STORE.books.filter(book => book.status !== 'inactive').flatMap(book => [book.category, ...(Array.isArray(book.subjects) ? book.subjects : [])]).filter(Boolean))].slice(0, 8);
-        document.getElementById('emptyBookSuggestions').innerHTML = topics.map(topic => `<button type="button" class="rounded-full border border-teal-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm" data-topic-suggestion="${escapeHtml(topic)}">${escapeHtml(topic)} <span aria-hidden="true">↗</span></button>`).join('');
+        document.getElementById('emptyBookSuggestions').innerHTML = topics.map(topic => `<button type="button" class="rounded-full border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm" data-topic-suggestion="${escapeHtml(topic)}">${escapeHtml(topic)} <span aria-hidden="true">↗</span></button>`).join('');
         document.querySelectorAll('[data-topic-suggestion]').forEach(button => button.addEventListener('click', () => {
           const topic = button.dataset.topicSuggestion;
           if (categories().includes(topic)) { activeCategory = topic; document.getElementById('searchInput').value = ''; renderFilters(); }
@@ -1704,8 +1716,8 @@
     function showCouponStatus(message, valid = false) {
       const status = document.getElementById('couponStatus');
       status.textContent = message;
-      status.classList.remove('hidden', 'text-emerald-700', 'text-rose-600', 'text-slate-500');
-      status.classList.add(valid ? 'text-emerald-700' : 'text-rose-600');
+      status.classList.remove('hidden', 'text-amber-700', 'text-rose-600', 'text-slate-500');
+      status.classList.add(valid ? 'text-amber-700' : 'text-rose-600');
     }
     async function applyCheckoutCoupon() {
       const button = document.getElementById('applyCouponBtn');
@@ -1853,25 +1865,25 @@
       const notificationBox = document.getElementById("customerPurchaseStatusCardContent");
       notificationBox.replaceChildren();
       const note = document.createElement("p");
-      note.className = `font-bold ${approved ? "text-emerald-800" : declined ? "text-rose-800" : "text-amber-900"}`;
+      note.className = `font-bold ${approved ? "text-amber-800" : declined ? "text-rose-800" : "text-amber-900"}`;
       note.textContent = approved ? "Payment Approved ✓\nEbook is ready." : declined ? "Order Declined\nYour payment was not approved." : "Payment Pending\nWaiting for verification.";
       notificationBox.append(note);
       const minimize = document.createElement("button"); minimize.textContent = declined ? "Dismiss" : "Minimize"; minimize.className = "mt-2 rounded-lg border px-3 py-2 text-xs font-bold";
       minimize.addEventListener("click", () => { localStorage.setItem(notificationKey, "true"); notification.classList.add("hidden"); });
       if (approved && approvedItems.length) {
         if (approvedItems.length === 1) {
-          const open = document.createElement("a"); open.href = safeHrefOrBlank(approvedItems[0].delivery_url); open.target = "_blank"; open.rel = "noopener noreferrer"; open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 inline-block rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"; notificationBox.append(open);
+          const open = document.createElement("a"); open.href = safeHrefOrBlank(approvedItems[0].delivery_url); open.target = "_blank"; open.rel = "noopener noreferrer"; open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 inline-block rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950"; notificationBox.append(open);
         } else {
-          const open = document.createElement("button"); open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"; open.addEventListener("click", openMyLibrary); notificationBox.append(open);
+          const open = document.createElement("button"); open.textContent = "Open Ebook"; open.className = "mt-2 mr-2 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950"; open.addEventListener("click", openMyLibrary); notificationBox.append(open);
         }
       }
       notificationBox.append(minimize);
       const box = document.getElementById("customerOrderStatus");
       box.classList.remove("hidden"); box.replaceChildren();
       if (approved) {
-        box.className = "mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800";
+        box.className = "mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-800";
         box.append(document.createTextNode("✅ Payment approved. Your ebook is ready."));
-        approvedItems.forEach(item => { const link = document.createElement("a"); link.href = safeHrefOrBlank(item.delivery_url); link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = `📥 Open ${item.book_title}`; link.className = "mt-3 block rounded-xl bg-emerald-700 px-4 py-3 text-center font-extrabold text-white"; box.append(link); });
+        approvedItems.forEach(item => { const link = document.createElement("a"); link.href = safeHrefOrBlank(item.delivery_url); link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = `📥 Open ${item.book_title}`; link.className = "mt-3 block rounded-xl bg-amber-400 px-4 py-3 text-center font-extrabold text-slate-950"; box.append(link); });
         if (!approvedItems.length) { const pendingLink = document.createElement("p"); pendingLink.className = "mt-2 font-medium"; pendingLink.textContent = "Your payment is approved, but delivery is not available yet. Please contact support."; box.append(pendingLink); }
       } else if (declined) {
         box.className = "mt-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-800";
@@ -1915,7 +1927,7 @@
       const list = document.getElementById("purchasesList");
       const visible = adminPurchases.filter(p => purchaseFilter === "All" || (purchaseFilter === "Pending" ? p.payment_status === "Pending" : purchaseFilter === "Paid" ? p.payment_status === "Paid" && p.order_status !== "Delivered" : purchaseFilter === "Delivered" ? p.order_status === "Delivered" : p.payment_status === "Rejected" || p.order_status === "Rejected"));
       if (!visible.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-5 text-sm text-slate-500">No purchases in this view.</p>'; return; }
-      list.innerHTML = visible.map(p => `<article class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"><div class="flex flex-wrap justify-between gap-2 flex-shrink-0"><strong>${escapeHtml(p.purchase_id)}</strong><span class="text-xs text-slate-500">${new Date(p.created_at).toLocaleString()}</span></div><div class="mt-3 grid gap-1 text-sm sm:grid-cols-2"><p><b>Book:</b> ${escapeHtml(p.book_title)} (${escapeHtml(p.book_id)})</p><p><b>Price:</b> ${money(p.price)}</p><p><b>Customer:</b> ${escapeHtml(p.customer_name)}</p>${p.whatsapp ? `<p><b>WhatsApp:</b> ${escapeHtml(p.whatsapp)} · <a class="font-bold text-emerald-700 underline" target="_blank" rel="noopener" href="https://wa.me/${encodeURIComponent(p.whatsapp.replace(/\D/g,''))}">Open WhatsApp</a></p>` : ''}${p.telegram ? `<p><b>Telegram:</b> ${escapeHtml(p.telegram)} · <a class="font-bold text-indigo-700 underline" target="_blank" rel="noopener" href="https://t.me/${encodeURIComponent(p.telegram.replace(/^@/,''))}">Open Telegram</a></p>` : ''}<p><b>Payment:</b> ${escapeHtml(p.payment_status)}</p><p><b>Order:</b> ${escapeHtml(p.order_status)}</p><p><b>Telegram alert:</b> ${escapeHtml(p.telegram_notification_status)}</p></div><div class="mt-4 flex flex-wrap gap-2"><button data-view-purchase="${p.id}" class="purchase-view rounded-lg border px-3 py-2 text-xs font-bold">View</button><button data-copy-purchase="${p.id}" class="purchase-copy rounded-lg border px-3 py-2 text-xs font-bold">Copy Purchase Details</button>${p.payment_status === 'Pending' ? `<button data-purchase-action="approve" data-id="${p.id}" class="purchase-action rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white">Approve / Accept</button><button data-purchase-action="reject" data-id="${p.id}" class="purchase-action rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Reject / Decline</button>` : ''}${p.order_status !== 'Delivered' && p.payment_status === 'Paid' ? `<button data-purchase-action="deliver" data-id="${p.id}" class="purchase-action rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white">Mark Delivered</button>` : ''}${p.payment_status === 'Paid' && privateLinks[String(p.book_key)] ? `<button data-copy-delivery="${p.id}" class="copy-delivery rounded-lg border px-3 py-2 text-xs font-bold">Copy Delivery Link</button>` : ''}${['Pending','Rejected'].includes(p.payment_status) ? `<button data-delete-purchase="${p.id}" class="purchase-delete rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button>` : ''}</div></article>`).join('');
+      list.innerHTML = visible.map(p => `<article class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"><div class="flex flex-wrap justify-between gap-2 flex-shrink-0"><strong>${escapeHtml(p.purchase_id)}</strong><span class="text-xs text-slate-500">${new Date(p.created_at).toLocaleString()}</span></div><div class="mt-3 grid gap-1 text-sm sm:grid-cols-2"><p><b>Book:</b> ${escapeHtml(p.book_title)} (${escapeHtml(p.book_id)})</p><p><b>Price:</b> ${money(p.price)}</p><p><b>Customer:</b> ${escapeHtml(p.customer_name)}</p>${p.whatsapp ? `<p><b>WhatsApp:</b> ${escapeHtml(p.whatsapp)} · <a class="font-bold text-amber-700 underline" target="_blank" rel="noopener" href="https://wa.me/${encodeURIComponent(p.whatsapp.replace(/\D/g,''))}">Open WhatsApp</a></p>` : ''}${p.telegram ? `<p><b>Telegram:</b> ${escapeHtml(p.telegram)} · <a class="font-bold text-indigo-700 underline" target="_blank" rel="noopener" href="https://t.me/${encodeURIComponent(p.telegram.replace(/^@/,''))}">Open Telegram</a></p>` : ''}<p><b>Payment:</b> ${escapeHtml(p.payment_status)}</p><p><b>Order:</b> ${escapeHtml(p.order_status)}</p><p><b>Telegram alert:</b> ${escapeHtml(p.telegram_notification_status)}</p></div><div class="mt-4 flex flex-wrap gap-2"><button data-view-purchase="${p.id}" class="purchase-view rounded-lg border px-3 py-2 text-xs font-bold">View</button><button data-copy-purchase="${p.id}" class="purchase-copy rounded-lg border px-3 py-2 text-xs font-bold">Copy Purchase Details</button>${p.payment_status === 'Pending' ? `<button data-purchase-action="approve" data-id="${p.id}" class="purchase-action rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950">Approve / Accept</button><button data-purchase-action="reject" data-id="${p.id}" class="purchase-action rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Reject / Decline</button>` : ''}${p.order_status !== 'Delivered' && p.payment_status === 'Paid' ? `<button data-purchase-action="deliver" data-id="${p.id}" class="purchase-action rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white">Mark Delivered</button>` : ''}${p.payment_status === 'Paid' && privateLinks[String(p.book_key)] ? `<button data-copy-delivery="${p.id}" class="copy-delivery rounded-lg border px-3 py-2 text-xs font-bold">Copy Delivery Link</button>` : ''}${['Pending','Rejected'].includes(p.payment_status) ? `<button data-delete-purchase="${p.id}" class="purchase-delete rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button>` : ''}</div></article>`).join('');
       document.querySelectorAll('.purchase-action').forEach(btn => btn.addEventListener('click', async () => {
         const p = adminPurchases.find(row => row.id === btn.dataset.id); if (!p) return;
         const action = btn.dataset.purchaseAction;
@@ -1971,7 +1983,7 @@
       if (!supabase || !adminAuthenticated) return;
       const { data, error } = await supabase.from('reviews').select('*').order('created_at',{ascending:false});
       const list=document.getElementById('adminReviewsList'); if(error){list.textContent='Could not load reviews.';return;}
-      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-xs font-bold ${r.verified_purchase?'text-emerald-700':'text-slate-500'}">${r.verified_purchase?'Verified purchase':'Featured comment · purchase not verified'}</p><p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No reviews saved.</p>';
+      list.innerHTML=(data||[]).map(r=>`<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>${escapeHtml(r.name)}</strong> · ${r.rating}/5 · ${r.is_visible?'Visible':'Hidden'}<p class="text-xs font-bold ${r.verified_purchase?'text-amber-700':'text-slate-500'}">${r.verified_purchase?'Verified purchase':'Featured comment · purchase not verified'}</p><p class="text-sm text-slate-600">${escapeHtml(r.comment)}</p></div><div class="flex gap-2"><button data-edit-review="${r.id}" class="edit-review rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button data-toggle-review="${r.id}" data-visible="${!r.is_visible}" class="toggle-review rounded-lg border px-3 py-2 text-xs font-bold">${r.is_visible?'Hide':'Show'}</button><button data-delete-review="${r.id}" class="delete-review rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('') || '<p class="text-sm text-slate-500">No reviews saved.</p>';
       (data||[]).forEach(r=>{ document.querySelector(`[data-edit-review="${r.id}"]`)?.addEventListener('click',()=>{document.getElementById('reviewId').value=r.id;document.getElementById('reviewName').value=r.name;document.getElementById('reviewComment').value=r.comment;document.getElementById('reviewRating').value=r.rating;document.getElementById('reviewVisible').checked=r.is_visible;}); document.querySelector(`[data-toggle-review="${r.id}"]`)?.addEventListener('click',async e=>{await supabase.from('reviews').update({is_visible:e.currentTarget.dataset.visible==='true',updated_at:new Date().toISOString()}).eq('id',r.id);renderAdminReviews();}); document.querySelector(`[data-delete-review="${r.id}"]`)?.addEventListener('click',async()=>{if(confirm('Delete this review?')){await supabase.from('reviews').delete().eq('id',r.id);renderAdminReviews();}}); });
     }
     async function saveReview(event) { event.preventDefault(); const id=document.getElementById('reviewId').value; const row={name:document.getElementById('reviewName').value.trim(),comment:document.getElementById('reviewComment').value.trim(),rating:Number(document.getElementById('reviewRating').value),is_visible:document.getElementById('reviewVisible').checked,updated_at:new Date().toISOString()}; const result=id?await supabase.from('reviews').update(row).eq('id',id):await supabase.from('reviews').insert(row); if(result.error){showAdminToast('Could not save review');return;} resetReviewForm();await renderAdminReviews(); await loadPublicReviews();renderReviews();showAdminToast('Review saved'); }
@@ -1991,7 +2003,7 @@
       const { data, error } = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
       if (error) { list.innerHTML = '<p class="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Could not load coupons. Run the coupon migration in Supabase first.</p>'; return; }
       if (!data?.length) { list.innerHTML = '<p class="rounded-xl border border-dashed p-4 text-sm text-slate-500">No coupons yet.</p>'; return; }
-      list.innerHTML = data.map(coupon => `<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4"><div class="min-w-0"><strong class="font-black">${escapeHtml(coupon.code)}</strong><span class="ml-2 text-sm font-bold text-emerald-700">${Number(coupon.discount_percent)}% off</span><p class="mt-1 text-xs text-slate-500">${coupon.active ? 'Active' : 'Inactive'} · ${coupon.expires_at ? `Expires ${escapeHtml(coupon.expires_at)}` : 'No expiry'} · ${Number(coupon.used_count || 0)}${coupon.usage_limit ? ` / ${Number(coupon.usage_limit)}` : ''} used</p></div><div class="flex gap-2"><button type="button" data-coupon-edit="${escapeHtml(coupon.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button type="button" data-coupon-toggle="${escapeHtml(coupon.id)}" data-active="${coupon.active}" class="rounded-lg border px-3 py-2 text-xs font-bold">${coupon.active ? 'Deactivate' : 'Activate'}</button><button type="button" data-coupon-delete="${escapeHtml(coupon.id)}" class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('');
+      list.innerHTML = data.map(coupon => `<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4"><div class="min-w-0"><strong class="font-black">${escapeHtml(coupon.code)}</strong><span class="ml-2 text-sm font-bold text-amber-700">${Number(coupon.discount_percent)}% off</span><p class="mt-1 text-xs text-slate-500">${coupon.active ? 'Active' : 'Inactive'} · ${coupon.expires_at ? `Expires ${escapeHtml(coupon.expires_at)}` : 'No expiry'} · ${Number(coupon.used_count || 0)}${coupon.usage_limit ? ` / ${Number(coupon.usage_limit)}` : ''} used</p></div><div class="flex gap-2"><button type="button" data-coupon-edit="${escapeHtml(coupon.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Edit</button><button type="button" data-coupon-toggle="${escapeHtml(coupon.id)}" data-active="${coupon.active}" class="rounded-lg border px-3 py-2 text-xs font-bold">${coupon.active ? 'Deactivate' : 'Activate'}</button><button type="button" data-coupon-delete="${escapeHtml(coupon.id)}" class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700">Delete</button></div></article>`).join('');
       list.querySelectorAll('[data-coupon-edit]').forEach(button => button.addEventListener('click', () => {
         const coupon = data.find(item => String(item.id) === button.dataset.couponEdit); if (!coupon) return;
         document.getElementById('couponId').value = coupon.id;
@@ -2075,7 +2087,7 @@
       list.innerHTML = approved.map(item => {
         const cover = safeHrefOrBlank(item.cover_image);
         const delivery = safeHrefOrBlank(item.delivery_url);
-        return `<article class="flex items-center gap-3 rounded-xl border p-3">${cover ? `<img src="${escapeHtml(cover)}" alt="" class="h-20 w-14 shrink-0 rounded-lg object-cover">` : '<div class="h-20 w-14 shrink-0 rounded-lg bg-slate-100"></div>'}<div class="min-w-0 flex-1"><h3 class="break-words font-bold">${escapeHtml(item.book_title)}</h3><p class="mt-1 text-xs text-slate-500">Purchased ${new Date(item.created_at).toLocaleDateString()} · Approved</p></div>${delivery.startsWith("https://") ? `<a href="${escapeHtml(delivery)}" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">Open Ebook</a>` : '<span class="shrink-0 text-xs text-slate-500">Delivery pending</span>'}</article>`;
+        return `<article class="flex items-center gap-3 rounded-xl border p-3">${cover ? `<img src="${escapeHtml(cover)}" alt="" class="h-20 w-14 shrink-0 rounded-lg object-cover">` : '<div class="h-20 w-14 shrink-0 rounded-lg bg-slate-100"></div>'}<div class="min-w-0 flex-1"><h3 class="break-words font-bold">${escapeHtml(item.book_title)}</h3><p class="mt-1 text-xs text-slate-500">Purchased ${new Date(item.created_at).toLocaleDateString()} · Approved</p></div>${delivery.startsWith("https://") ? `<a href="${escapeHtml(delivery)}" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950">Open Ebook</a>` : '<span class="shrink-0 text-xs text-slate-500">Delivery pending</span>'}</article>`;
       }).join("");
     }
     function openMyLibrary() {
@@ -2270,7 +2282,7 @@
         <div class="review-stage" aria-live="polite" aria-atomic="true">
           <article class="review-slide-card rounded-2xl border border-slate-200 bg-slate-50 p-4" id="reviewCurrentCard">
             <div class="flex items-center justify-between gap-2"><p id="reviewCurrentRating" class="text-sm font-black text-amber-500"></p><span id="reviewCurrentLabel" class="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-extrabold text-slate-500"></span></div>
-            <p id="reviewCurrentBook" class="mt-1 hidden text-xs font-bold text-teal-700"></p>
+            <p id="reviewCurrentBook" class="mt-1 hidden text-xs font-bold text-amber-700"></p>
             <p id="reviewCurrentComment" class="review-copy mt-2 text-sm leading-5 text-slate-600"></p>
             <button id="reviewReadMore" type="button" class="review-read-more mt-1 hidden self-start">Read full review</button>
             <div id="reviewCurrentName" class="mt-auto pt-2 text-xs font-black text-slate-900"></div>
@@ -3032,7 +3044,7 @@
   <script type="module" src="hero-3d.js"></script>
   <!-- DIWALI THEME START: festive theme include. To remove the theme, delete this line and diwali.js,
        or simply set DIWALI_ENABLED = false at the top of diwali.js. -->
-  <script src="diwali.js?v=5" defer></script>
+  <script src="diwali.js?v=6" defer></script>
   <!-- DIWALI THEME END -->
 </body>
 </html>
