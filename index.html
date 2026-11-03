@@ -2107,6 +2107,8 @@
       const declined = p.payment_status === "Rejected";
       const noticeState = approved ? "approved" : declined ? "declined" : "pending";
       document.getElementById("pendingPaymentInfo").classList.toggle("hidden", approved || declined);
+      const savedMessage = document.getElementById("checkoutSavedMessage");
+      if (savedMessage) savedMessage.textContent = `Order ${purchaseId} saved. Payment status: ${approved ? "Approved" : declined ? "Rejected" : "Pending"}.`;
       const approvedItems = data.filter(item => safeHrefOrBlank(item.delivery_url).startsWith("https://"));
       const notificationKey = `crazyebook-notification-dismissed:${purchaseId}:${noticeState}`;
       const dismissed = localStorage.getItem(notificationKey) === "true";
