@@ -1726,7 +1726,7 @@
             <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
               ${imageUrl
                 ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" loading="lazy" class="h-full w-full object-cover" />`
-                : `<div class="${escapeHtml(book.coverClass || 'bg-slate-950 text-white')} flex h-full flex-col justify-between p-5"><div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div><div><div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || 'BOOK')}</div><div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div></div></div>`}
+                : `<div class="${escapeHtml(book.coverClass || 'bg-slate-950 text-white')} flex h-full flex-col justify-between p-5"><div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div><div><div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || 'BOOK')}</div><div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</div></div></div>`}
             </div>
             ${publicBookTag(book) ? `<span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">${escapeHtml(publicBookTag(book))}</span>` : ''}
             <div class="book-detail-reveal"><button type="button" data-details-button="${escapeHtml(book.id)}">View details <span aria-hidden="true">↗</span></button></div>
@@ -2262,7 +2262,7 @@
       if (!sibs.length) return "";
       const pick = editionPick[book.editionGroup] || String(sibs[0].id);
       const total = sibs.reduce((sum, b) => sum + Number(b.price || 0), 0);
-      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Both languages - ${money(total)}</option></select></label>`;
+      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Both - ${money(total)}</option></select></label>`;
     }
     function editionSampleInner(book, details) {
       const sel = editionSelectedBooks(book);
