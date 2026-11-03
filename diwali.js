@@ -15,7 +15,7 @@
   "use strict";
 
   var DIWALI_ENABLED = true; // <-- the site owner's master on/off switch
-  var DIWALI_VERSION = "5-toggle-1";
+  var DIWALI_VERSION = "6-whole-site";
   var PREF_KEY = "crazyebook-diwali-v1"; // visitor's own ON/OFF choice
 
   if (!DIWALI_ENABLED) {
@@ -134,17 +134,65 @@
   html.diwali-night[data-theme="dark"] [class~="bg-indigo-100"] { background-color: #283373 !important; }
   html.diwali-night footer { background: linear-gradient(180deg, #0B1026 0%, #171F46 100%) !important; }
 
-  /* ------------------------- night-sky hero --------------------------- */
-  html.diwali-night #heroSection {
-    background: radial-gradient(ellipse at 85% 8%, rgba(224, 64, 123, 0.16), transparent 46%),
-                radial-gradient(ellipse at 12% 88%, rgba(255, 138, 0, 0.14), transparent 44%),
-                linear-gradient(163deg, #0c1130 0%, #171f4d 48%, #2a1b52 78%, #38194a 100%) !important;
+  /* ---------------- continuous full-site Diwali night sky ------------- */
+  /* Reuse the existing hero gradients over the entire page. Transparent
+     section shells let the same sky flow from the greeting to the footer;
+     cards, forms and modals keep their own readable surfaces. No image. */
+  html.diwali-night {
+    --diwali-sky:
+      radial-gradient(ellipse at 85% 8%, rgba(224, 64, 123, 0.16), transparent 46%),
+      radial-gradient(ellipse at 12% 88%, rgba(255, 138, 0, 0.14), transparent 44%),
+      linear-gradient(163deg, #0c1130 0%, #171f4d 48%, #2a1b52 78%, #38194a 100%);
   }
-  html.diwali-night[data-theme="dark"] #heroSection {
-    background: radial-gradient(ellipse at 85% 8%, rgba(224, 64, 123, 0.13), transparent 46%),
-                radial-gradient(ellipse at 12% 88%, rgba(255, 138, 0, 0.12), transparent 44%),
-                linear-gradient(163deg, #070b1f 0%, #0B1026 52%, #1a1240 100%) !important;
+  html.diwali-night[data-theme="dark"] {
+    --diwali-sky:
+      radial-gradient(ellipse at 85% 8%, rgba(224, 64, 123, 0.13), transparent 46%),
+      radial-gradient(ellipse at 12% 88%, rgba(255, 138, 0, 0.12), transparent 44%),
+      linear-gradient(163deg, #070b1f 0%, #0B1026 52%, #1a1240 100%);
   }
+  html.diwali-night body,
+  html.diwali-night[data-theme="dark"] body {
+    background: var(--diwali-sky) !important;
+    color: #FFF8EA !important;
+  }
+  html.diwali-night #heroSection,
+  html.diwali-night[data-theme="dark"] #heroSection,
+  html.diwali-night #books,
+  html.diwali-night #how-to-buy,
+  html.diwali-night #authors,
+  html.diwali-night #faq,
+  html.diwali-night body > footer {
+    background: transparent !important;
+  }
+  html.diwali-night #how-to-buy,
+  html.diwali-night #faq { border-color: rgba(255, 179, 0, 0.22) !important; }
+  /* Only text sitting directly on the sky becomes cream/gold. Nested
+     cards retain dark ink in light mode and cream ink in dark mode. */
+  html.diwali-night #books > .reveal > div > p,
+  html.diwali-night #how-to-buy > div > .reveal > p,
+  html.diwali-night #authors > .grid > .reveal > p,
+  html.diwali-night #faq > div > .reveal > p { color: #E8DFC2 !important; }
+  html.diwali-night #books > .reveal > div > p:first-child,
+  html.diwali-night #how-to-buy > div > .reveal > p:first-child,
+  html.diwali-night #authors > .grid > .reveal > p:first-child,
+  html.diwali-night #faq > div > .reveal > p:first-child { color: #FFD54F !important; }
+  html.diwali-night #books > .reveal h2,
+  html.diwali-night #how-to-buy > div > .reveal h2,
+  html.diwali-night #authors > .grid > .reveal > h2,
+  html.diwali-night #faq > div > .reveal h2 { color: #FFF8EA !important; }
+  html.diwali-night #books > .mt-4 > label,
+  html.diwali-night #books > .mt-4 > span { color: #DDD0A9 !important; }
+  html.diwali-night #books .book-view-btn:not([aria-pressed="true"]) {
+    color: #FFF8EA; background-color: #171F46; border-color: rgba(255,179,0,.4);
+  }
+  html.diwali-night[data-theme="light"] .book-card,
+  html.diwali-night[data-theme="light"] #emptyBooks,
+  html.diwali-night[data-theme="light"] #howToBuySteps > div,
+  html.diwali-night[data-theme="light"] #authors .rounded-3xl,
+  html.diwali-night[data-theme="light"] #faqList > div { color: #101B2D; }
+  html.diwali-night body > footer .text-slate-400,
+  html.diwali-night body > footer .text-slate-500 { color: #D9D2B8 !important; }
+
   html.diwali-night #heroSection [class~="bg-indigo-100"] { background-color: rgba(255, 138, 0, 0.14) !important; }
   html.diwali-night #heroSection [class~="bg-cyan-100"] { background-color: rgba(224, 64, 123, 0.13) !important; }
   html.diwali-night #heroSection .reveal h1 {
@@ -261,7 +309,7 @@
     border-bottom: 3px solid transparent !important;
     border-image: linear-gradient(90deg, #FF8A00, #FFD54F, #E0407B, #FFD54F, #FF8A00) 1 !important;
   }
-  html.diwali-night .catalog-category-heading h3 { color: #b45309; }
+  html.diwali-night .catalog-category-heading h3 { color: #FFD54F; }
   html.diwali-night[data-theme="dark"] .catalog-category-heading h3 { color: #FFD54F; }
 
   /* ------------------------- keyboard focus --------------------------- */
