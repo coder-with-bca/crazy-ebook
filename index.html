@@ -1720,8 +1720,8 @@
       return `
         <article data-details="${escapeHtml(book.id)}" class="book-card group flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
           <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
-            <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl">
-              ${imageUrl
+            <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl" ${editionSiblings(book).length ? `data-edition-cover="${escapeHtml(book.id)}"` : ''}>
+              ${editionSiblings(book).length ? editionCoverInner(book) : imageUrl
                 ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" loading="lazy" class="h-full w-full object-cover" />`
                 : `<div class="${escapeHtml(book.coverClass || 'bg-slate-950 text-white')} flex h-full flex-col justify-between p-5"><div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div><div><div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || 'BOOK')}</div><div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</div></div></div>`}
             </div>
@@ -2404,6 +2404,21 @@
       };
       return sel.length > 1 ? `<div class="grid gap-1.5">${sel.map(mk).join("")}</div>` : mk(sel[0]);
     }
+    function editionCoverImg(b, cls) {
+      const u = safeHrefOrBlank(b.coverImage);
+      return u ? `<img src="${escapeHtml(u)}" alt="${escapeHtml(b.title)} cover" loading="lazy" class="${cls}" />` : `<div class="${cls} ${escapeHtml(b.coverClass || 'bg-slate-950 text-white')} flex items-center justify-center p-2 text-center text-xs font-black">${escapeHtml(b.coverLabel || 'BOOK')}</div>`;
+    }
+    function editionCoverInner(book) {
+      const sel = editionSelectedBooks(book);
+      if (sel.length > 1) return `<div class="relative h-full w-full">${editionCoverImg(sel[0], "absolute left-0 top-0 aspect-[3/4] w-[72%] rounded-lg object-cover shadow-lg ring-1 ring-white/20")}${editionCoverImg(sel[1], "absolute bottom-0 right-0 aspect-[3/4] w-[72%] rounded-lg object-cover shadow-xl ring-1 ring-white/30")}</div>`;
+      return editionCoverImg(sel[0], "h-full w-full object-cover");
+    }
+    function refreshEditionCovers() {
+      document.querySelectorAll("[data-edition-cover]").forEach(el => {
+        const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionCover));
+        if (b) el.innerHTML = editionCoverInner(b);
+      });
+    }
     function refreshEditionSamples() {
       document.querySelectorAll("[data-edition-sample]").forEach(el => {
         const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionSample));
@@ -2429,6 +2444,7 @@
           if (b) el.textContent = editionMrpText(b);
         });
         refreshEditionSamples();
+        refreshEditionCovers();
         syncCartFeedback();
       }));
     }
