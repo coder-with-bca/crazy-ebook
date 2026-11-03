@@ -153,7 +153,6 @@
   html.diwali-night body,
   html.diwali-night[data-theme="dark"] body {
     background: var(--diwali-sky) !important;
-    color: #FFF8EA !important;
   }
   html.diwali-night #heroSection,
   html.diwali-night[data-theme="dark"] #heroSection,
