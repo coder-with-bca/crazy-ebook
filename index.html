@@ -1734,7 +1734,7 @@
           <div class="book-card-content mt-4 flex flex-1 flex-col">
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
             <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</h3>
-            <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${!editionSiblings(book).length && Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : ''}</div>
+            <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${editionSiblings(book).length ? `<span class="book-mrp" data-edition-mrp="${escapeHtml(book.id)}">${editionMrpText(book)}</span>` : (Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : '')}</div>
             ${editionPickerHtml(book)}
             <div class="book-actions mt-3 grid grid-cols-2 gap-2">
               ${editionSiblings(book).length ? `<div data-edition-sample="${escapeHtml(book.id)}">${editionSampleInner(book, false)}</div>` : sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
@@ -2281,6 +2281,11 @@
         if (b) el.innerHTML = editionSampleInner(b, el.dataset.editionDetails === "1");
       });
     }
+    function editionMrpText(book) {
+      const sel = editionSelectedBooks(book);
+      if (!sel.length || !sel.every(b => Number(b.mrp) > Number(b.price))) return "";
+      return money(sel.reduce((sum, b) => sum + Number(b.mrp), 0));
+    }
     function editionPriceText(book) { return money(editionSelectedBooks(book).reduce((sum, b) => sum + Number(b.price || 0), 0)); }
     function bindEditionPickers(root) {
       root.querySelectorAll("[data-edition-select]").forEach(select => select.addEventListener("change", () => {
@@ -2289,6 +2294,10 @@
         document.querySelectorAll("[data-edition-price]").forEach(el => {
           const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionPrice));
           if (b) el.textContent = editionPriceText(b);
+        });
+        document.querySelectorAll("[data-edition-mrp]").forEach(el => {
+          const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionMrp));
+          if (b) el.textContent = editionMrpText(b);
         });
         refreshEditionSamples();
         syncCartFeedback();
@@ -2346,7 +2355,7 @@
       const detailsPrice = document.getElementById("detailsPrice");
       detailsPrice.innerHTML = `${money(book.price)}${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? ` <del class="ml-2 text-base font-semibold text-slate-500">${money(book.mrp)}</del>` : ''}`;
       if (editionSiblings(book).length) {
-        detailsPrice.innerHTML = `<span data-edition-price="${escapeHtml(book.id)}">${editionPriceText(book)}</span>`;
+        detailsPrice.innerHTML = `<span data-edition-price="${escapeHtml(book.id)}">${editionPriceText(book)}</span> <del class="ml-2 text-base font-semibold text-slate-500" data-edition-mrp="${escapeHtml(book.id)}">${editionMrpText(book)}</del>`;
         let slot = document.getElementById("detailsEditionPicker");
         if (!slot) { slot = document.createElement("div"); slot.id = "detailsEditionPicker"; detailsPrice.insertAdjacentElement("afterend", slot); }
         slot.innerHTML = editionPickerHtml(book); bindEditionPickers(slot);
