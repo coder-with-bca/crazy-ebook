@@ -1042,6 +1042,20 @@
                     <input id="bookTag" placeholder="New / Best Seller / Free" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
                   </div>
                 </div>
+                <div class="grid gap-3 sm:grid-cols-3">
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Edition group (optional)</label>
+                    <input id="bookEditionGroup" placeholder="same text on Hindi + English books" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Edition language</label>
+                    <input id="bookEditionLang" placeholder="Hindi / English" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-black text-slate-500">Shared card title</label>
+                    <input id="bookEditionTitle" placeholder="title shown on the one card" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
+                  </div>
+                </div>
                 <div>
                   <label class="text-xs font-black text-slate-500">Subjects (comma separated)</label>
                   <input id="bookSubjects" placeholder="Python, Programming, Coding" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" />
@@ -1719,8 +1733,9 @@
           </div>
           <div class="book-card-content mt-4 flex flex-1 flex-col">
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
-            <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(book.title)}</h3>
-            <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950">${money(book.price)}</span>${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : ''}</div>
+            <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</h3>
+            <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${!editionSiblings(book).length && Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : ''}</div>
+            ${editionPickerHtml(book)}
             <div class="book-actions mt-3 grid grid-cols-2 gap-2">
               ${sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
               <button type="button" data-add-cart="${escapeHtml(book.id)}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-2.5 text-[10px] font-extrabold text-indigo-800">+ Add to Cart</button>
@@ -1742,6 +1757,7 @@
       const query = document.getElementById('searchInput').value.trim().toLowerCase();
       const filtered = STORE.books.filter(book => {
         if (book.status === 'inactive') return false;
+        if (isHiddenEdition(book)) return false;
         const categoryMatch = activeCategory === 'All' || book.category === activeCategory;
         const searchText = [book.title, book.category, book.summary, book.tag, ...(Array.isArray(book.tags) ? book.tags : String(book.tags || "").split(",")), ...(Array.isArray(book.subjects) ? book.subjects : [])].join(' ').toLowerCase();
         return categoryMatch && searchText.includes(query);
@@ -1778,7 +1794,9 @@
             <div class="category-scroll-track" aria-hidden="true"><span></span></div>
           </section>`).join('');
       }
-      grid.querySelectorAll('.buy-btn').forEach(button => button.addEventListener('click', () => openBuyModal(button.dataset.buy)));
+      grid.querySelectorAll('.buy-btn').forEach(button => button.addEventListener('click', () => buyNow(button.dataset.buy)));
+      bindEditionPickers(grid);
+      grid.querySelectorAll('[data-edition-select]').forEach(el => el.addEventListener('click', event => event.stopPropagation()));
       grid.querySelectorAll('.add-cart-btn').forEach(button => button.addEventListener('click', () => addToCart(button.dataset.addCart)));
       grid.querySelectorAll('[data-details-button]').forEach(button => button.addEventListener('click', event => { event.stopPropagation(); openBookDetails(button.dataset.detailsButton); }));
       grid.querySelectorAll('.book-card').forEach((card, index) => {
@@ -2212,13 +2230,57 @@
       document.getElementById("cartCount").textContent = String(items.length);
       if (items.length !== oldCount) { const count = document.getElementById("cartCount"); count.classList.remove("bump"); void count.offsetWidth; count.classList.add("bump"); }
       document.getElementById("openCartBtn").setAttribute("aria-label", `Open cart, ${items.length} item${items.length === 1 ? "" : "s"}`);
-      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(safeHrefOrBlank(book.coverImage))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
+      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(safeHrefOrBlank(book.coverImage))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}${book.editionLang && !String(book.title).toLowerCase().includes(String(book.editionLang).toLowerCase()) ? ` (${escapeHtml(book.editionLang)})` : ""}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
       document.getElementById("cartTotal").textContent = money(items.reduce((total, book) => total + Number(book.price || 0), 0));
       document.getElementById("cartCheckout").disabled = !items.length;
       document.querySelectorAll("[data-cart-remove]").forEach(button => button.addEventListener("click", () => { cartItems = cartItems.filter(id => String(id) !== button.dataset.cartRemove); saveCart(); }));
       syncCartFeedback();
     }
-    function isBookInCart(bookId) { return cartItems.some(id => String(id) === String(bookId)); }
+    /* Language editions: books sharing editionGroup (each with an editionLang) show as ONE card with a language picker.
+       Each edition stays its own catalogue book, so cart, order, coupon and My Library work unchanged. */
+    const editionPick = {};
+    function editionSiblings(book) {
+      if (!book || !book.editionGroup || !book.editionLang) return [];
+      const list = STORE.books.filter(b => b.status !== "inactive" && !b.free && Number(b.price) > 0 && b.editionGroup === book.editionGroup && b.editionLang);
+      return list.length >= 2 ? list : [];
+    }
+    function editionPrimary(book) { const sibs = editionSiblings(book); return sibs.length ? sibs[0] : book; }
+    function isHiddenEdition(book) { const sibs = editionSiblings(book); return sibs.length > 0 && String(sibs[0].id) !== String(book.id); }
+    function editionSelectedBooks(book) {
+      const sibs = editionSiblings(book);
+      if (!sibs.length) return book ? [book] : [];
+      const pick = editionPick[book.editionGroup] || String(sibs[0].id);
+      if (pick === "both") return sibs;
+      return [sibs.find(b => String(b.id) === pick) || sibs[0]];
+    }
+    function editionSelectedIds(bookId) {
+      const book = STORE.books.find(b => String(b.id) === String(bookId));
+      return editionSelectedBooks(book).map(b => b.id);
+    }
+    function editionPickerHtml(book) {
+      const sibs = editionSiblings(book);
+      if (!sibs.length) return "";
+      const pick = editionPick[book.editionGroup] || String(sibs[0].id);
+      const total = sibs.reduce((sum, b) => sum + Number(b.price || 0), 0);
+      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Both languages (${sibs.length} books) - ${money(total)}</option></select></label>`;
+    }
+    function editionPriceText(book) { return money(editionSelectedBooks(book).reduce((sum, b) => sum + Number(b.price || 0), 0)); }
+    function bindEditionPickers(root) {
+      root.querySelectorAll("[data-edition-select]").forEach(select => select.addEventListener("change", () => {
+        editionPick[select.dataset.editionSelect] = select.value;
+        document.querySelectorAll("[data-edition-select]").forEach(other => { if (other.dataset.editionSelect === select.dataset.editionSelect) other.value = select.value; });
+        document.querySelectorAll("[data-edition-price]").forEach(el => {
+          const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionPrice));
+          if (b) el.textContent = editionPriceText(b);
+        });
+        syncCartFeedback();
+      }));
+    }
+    function buyNow(bookId) {
+      const ids = editionSelectedIds(bookId);
+      if (ids.length > 1) openBuyModal(ids[0], ids.map(String)); else openBuyModal(ids.length ? ids[0] : bookId);
+    }
+    function isBookInCart(bookId) { const ids = editionSelectedIds(bookId); const list = ids.length ? ids : [bookId]; return list.every(x => cartItems.some(id => String(id) === String(x))); }
     function syncCartFeedback() {
       document.querySelectorAll(".add-cart-btn").forEach(button => {
         const added = isBookInCart(button.dataset.addCart);
@@ -2239,7 +2301,8 @@
       const book = STORE.books.find(item => String(item.id) === String(bookId));
       if (!book || book.free || Number(book.price) === 0) return;
       if (isBookInCart(bookId)) { syncCartFeedback(); showToast("Already in your cart"); return; }
-      cartItems.push(book.id);
+      const targets = editionSelectedBooks(book).filter(b => !b.free && Number(b.price) > 0);
+      (targets.length ? targets : [book]).forEach(b => { if (!cartItems.some(id => String(id) === String(b.id))) cartItems.push(b.id); });
       saveCart();
       showToast("Added to cart ✓");
     }
@@ -2252,7 +2315,7 @@
       sampleLink.href = sampleHref || "#";
       sampleLink.classList.toggle("hidden", !sampleHref);
       document.getElementById("detailsCategory").textContent = book.category || "Ebook";
-      document.getElementById("bookDetailsTitle").textContent = book.title;
+      document.getElementById("bookDetailsTitle").textContent = (editionSiblings(book).length && book.editionTitle) ? book.editionTitle : book.title;
       const ratingEl = document.getElementById("detailsRating");
       const bookRating = Number(book.rating);
       if (Number.isFinite(bookRating) && bookRating > 0) {
@@ -2264,6 +2327,12 @@
       }
       const detailsPrice = document.getElementById("detailsPrice");
       detailsPrice.innerHTML = `${money(book.price)}${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? ` <del class="ml-2 text-base font-semibold text-slate-500">${money(book.mrp)}</del>` : ''}`;
+      if (editionSiblings(book).length) {
+        detailsPrice.innerHTML = `<span data-edition-price="${escapeHtml(book.id)}">${editionPriceText(book)}</span>`;
+        let slot = document.getElementById("detailsEditionPicker");
+        if (!slot) { slot = document.createElement("div"); slot.id = "detailsEditionPicker"; detailsPrice.insertAdjacentElement("afterend", slot); }
+        slot.innerHTML = editionPickerHtml(book); bindEditionPickers(slot);
+      } else { const slot = document.getElementById("detailsEditionPicker"); if (slot) slot.innerHTML = ""; }
       document.getElementById("detailsDescription").textContent = book.summary || "";
       const metadata = document.getElementById("detailsMetadata");
       const subjects = [...new Set([...(Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",")), book.topic].map(value => String(value || "").trim()).filter(Boolean))];
@@ -2740,6 +2809,9 @@
       document.getElementById("bookTitle").value = book.title || "";
       document.getElementById("bookCategory").value = book.category || "";
       document.getElementById("bookTag").value = book.tag || "";
+      document.getElementById("bookEditionGroup").value = book.editionGroup || "";
+      document.getElementById("bookEditionLang").value = book.editionLang || "";
+      document.getElementById("bookEditionTitle").value = book.editionTitle || "";
       document.getElementById("bookSubjects").value = (book.subjects || []).join(", ");
       document.getElementById("bookSummary").value = book.summary || "";
       document.getElementById("bookMrp").value = book.mrp ?? 0;
@@ -2768,6 +2840,9 @@
         title,
         category,
         tag: document.getElementById("bookTag").value.trim(),
+        editionGroup: document.getElementById("bookEditionGroup").value.trim(),
+        editionLang: document.getElementById("bookEditionLang").value.trim(),
+        editionTitle: document.getElementById("bookEditionTitle").value.trim(),
         subjects: document.getElementById("bookSubjects").value.split(",").map(s => s.trim()).filter(Boolean),
         summary: document.getElementById("bookSummary").value.trim(),
         mrp: Math.max(0, Number(document.getElementById("bookMrp").value) || 0),
@@ -3001,7 +3076,7 @@
     document.getElementById("closeBookDetails").addEventListener("click", () => closeTransientOverlay("details"));
     document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("details"); });
     document.getElementById("detailsCart").addEventListener("click", () => addToCart(detailsBookId));
-    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; hideTransientOverlay("details"); openBuyModal(Number(id)); });
+    document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; hideTransientOverlay("details"); buyNow(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
     document.getElementById("purchaseForm").addEventListener("submit", createPurchase);
     document.getElementById("payNowBtn").addEventListener("click", launchUpiPayment);
