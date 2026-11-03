@@ -155,7 +155,9 @@
   html.diwali-night .diwali-diya.diya-left { left: clamp(4px, 3vw, 44px); bottom: clamp(10px, 5vh, 44px); }
   html.diwali-night .diwali-diya.diya-right { right: clamp(4px, 3vw, 44px); bottom: clamp(10px, 5vh, 44px); }
   @media (max-width: 640px) {
-    html.diwali-night .diwali-diya { width: 52px; opacity: 0.92; }
+    html.diwali-night .diwali-diya { width: 44px; opacity: 0.95; }
+    html.diwali-night .diwali-diya.diya-left { top: 8px; bottom: auto; left: 6px; }
+    html.diwali-night .diwali-diya.diya-right { display: none; }
   }
 
   /* ------------------- rangoli (hero corner accent) ------------------- */
