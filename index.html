@@ -892,7 +892,7 @@
         </button>
       </div>
 
-      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><p id="checkoutStepLabel" class="text-xs font-black uppercase tracking-widest text-indigo-600">Step 1 of 3 · Your details</p><div id="checkoutStepDetails" class="space-y-3"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID <span class="font-normal opacity-70">(optional)</span></label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p class="text-xs opacity-70">Add at least one: WhatsApp number or Telegram.</p><p id="detailsError" class="hidden text-sm font-bold text-rose-600"></p><button id="checkoutNextBtn" type="button" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Next</button></div><div id="checkoutStepReview" class="hidden space-y-3"><div id="reviewItems" class="space-y-2"></div><div id="reviewOffer" class="space-y-2"></div><section class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Normal price</span><span id="couponOriginalTotal"></span></div><div id="comboSavingRow" class="hidden flex justify-between" style="color:#34d399"><span>Combo saving</span><span id="comboSavingTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><div class="flex gap-2"><button id="checkoutBackBtn" type="button" class="rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">Back</button><button id="createPurchaseBtn" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Create order and continue</button></div></div></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
+      <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><p id="checkoutStepLabel" class="text-xs font-black uppercase tracking-widest text-indigo-600">Step 1 of 3 · Your details</p><div id="checkoutStepDetails" class="space-y-3"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID <span class="font-normal opacity-70">(optional)</span></label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p class="text-xs opacity-70">Add at least one: WhatsApp number or Telegram.</p><p id="detailsError" class="hidden text-sm font-bold text-rose-600"></p><button id="checkoutNextBtn" type="button" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Next</button></div><div id="checkoutStepReview" class="hidden space-y-3"><div id="reviewItems" class="space-y-2"></div><div id="reviewOffer" class="space-y-2"></div><fieldset id="discountModeBox" class="hidden space-y-2 rounded-xl border border-slate-200 p-3"><legend class="px-1 text-xs font-black">Choose one discount</legend><label class="flex cursor-pointer items-center gap-2 text-sm font-bold"><input type="radio" name="discountMode" value="combo" class="h-4 w-4"><span id="modeComboText">Combo saving</span></label><label class="flex cursor-pointer items-center gap-2 text-sm font-bold"><input type="radio" name="discountMode" value="coupon" class="h-4 w-4"><span>Use a coupon code instead</span></label></fieldset><section id="couponSection" class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Normal price</span><span id="couponOriginalTotal"></span></div><div id="comboSavingRow" class="hidden flex justify-between" style="color:#34d399"><span>Combo saving</span><span id="comboSavingTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><div class="flex gap-2"><button id="checkoutBackBtn" type="button" class="rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">Back</button><button id="createPurchaseBtn" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Create order and continue</button></div></div></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
         <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
         <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
@@ -1828,7 +1828,8 @@
       } catch { bookPairs = []; }
     }
     function bookById(key) { return STORE.books.find(b => String(b.id) === String(key)); }
-    function pairSavingFor(keys) {
+    function pairSavingFor(keys) { return discountMode === 'coupon' ? 0 : pairSavingRaw(keys); }
+    function pairSavingRaw(keys) {
       const set = new Set(keys.map(String)); const seen = new Set(); let cents = 0;
       bookPairs.forEach(p => {
         if (!set.has(p.main) || !set.has(p.bolt) || seen.has(p.bolt)) return;
@@ -1842,7 +1843,7 @@
       bookPairs.forEach(p => {
         if (!set.has(p.main) || (set.has(p.bolt) && !addedBolts.has(p.bolt))) return;
         const bolt = bookById(p.bolt); if (!bolt || bolt.status === "inactive" || Number(bolt.price) <= 0) return;
-        out.push({ bolt, save: Math.min(p.discount, Number(bolt.price)) });
+        out.push({ bolt, save: discountMode === 'coupon' ? 0 : Math.min(p.discount, Number(bolt.price)) });
       });
       return out;
     }
@@ -1857,20 +1858,33 @@
       const discountCents = Math.round(subtotalCents * Number(percent) / 100);
       return Math.min(subtotalCents, Math.max(0, discountCents)) / 100;
     }
+    function money2(v) { const a = Math.round((Number(v) || 0) * 100) / 100; return '₹' + (Number.isInteger(a) ? String(a) : a.toFixed(2)); }
     function renderCheckoutCouponTotals() {
       const original = checkoutSubtotal();
       const comboSave = pairSavingFor(reviewKeys);
       const afterCombo = Math.round((original - comboSave) * 100) / 100;
       const discount = activeCouponCode ? couponDiscountFor(afterCombo, activeCouponPercent) : 0;
       const payable = Math.max(0, Math.round((afterCombo - discount + Number.EPSILON) * 100) / 100);
-      document.getElementById('comboSavingTotal').textContent = `−${money(comboSave)}`;
+      document.getElementById('comboSavingTotal').textContent = `−${money2(comboSave)}`;
       document.getElementById('comboSavingRow').classList.toggle('hidden', !(comboSave > 0));
-      document.getElementById('couponOriginalTotal').textContent = money(original);
-      document.getElementById('couponDiscountTotal').textContent = `−${money(discount)}`;
+      document.getElementById('couponOriginalTotal').textContent = money2(original);
+      document.getElementById('couponDiscountTotal').textContent = `−${money2(discount)}`;
       document.getElementById('couponDiscountRow').classList.toggle('hidden', !activeCouponCode);
-      document.getElementById('couponFinalTotal').textContent = money(payable);
-      document.getElementById('modalPrice').textContent = money(payable);
+      document.getElementById('couponFinalTotal').textContent = money2(payable);
+      document.getElementById('modalPrice').textContent = money2(payable);
       document.getElementById('clearCouponBtn').classList.toggle('hidden', !activeCouponCode);
+      const raw = pairSavingRaw(reviewKeys);
+      if (activeCouponCode) document.getElementById('couponCodeInputCheckout').value = activeCouponCode;
+      document.querySelector('#couponDiscountRow span').textContent = activeCouponCode ? 'Coupon ' + activeCouponCode : 'Discount';
+      const hideCoupon = raw > 0 && discountMode === 'combo';
+      const ct = document.getElementById('couponTotals');
+      ct.classList.toggle('border-t', !hideCoupon); ct.classList.toggle('pt-2', !hideCoupon); ct.classList.toggle('mt-2', !hideCoupon);
+      document.getElementById('couponSection').style.cssText = hideCoupon ? 'padding-top:.25rem;padding-bottom:.25rem' : '';
+      document.getElementById('discountModeBox').classList.toggle('hidden', !(raw > 0));
+      document.getElementById('couponSection').querySelector('div.mt-1').classList.toggle('hidden', raw > 0 && discountMode === 'combo');
+      document.querySelector('#couponSection label').classList.toggle('hidden', raw > 0 && discountMode === 'combo');
+      document.getElementById('modeComboText').textContent = 'Combo saving: save ' + money2(raw);
+      document.querySelectorAll('input[name=discountMode]').forEach(r => { r.checked = r.value === discountMode; });
     }
     function showCouponStatus(message, valid = false) {
       const status = document.getElementById('couponStatus');
@@ -1950,7 +1964,7 @@
         }
       });
       document.getElementById("reviewItems").innerHTML = rows.join("");
-      document.getElementById("reviewOffer").innerHTML = pairOffersFor(reviewKeys).map(o => `<label class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm" style="background:rgba(16,185,129,.14);border-color:rgba(52,211,153,.65);color:#f1f5f9"><input type="checkbox" data-review-offer="${escapeHtml(o.bolt.id)}" ${addedBolts.has(String(o.bolt.id)) ? "checked" : ""} class="mt-1 h-4 w-4"><span><span class="font-black">Add ${escapeHtml(o.bolt.title)}</span><br><span class="text-xs" style="color:#cbd5e1">Normal ${money(o.bolt.price)} · Save ${money(o.save)} · You pay only ${money(Number(o.bolt.price) - o.save)} more</span></span></label>`).join("");
+      document.getElementById("reviewOffer").innerHTML = pairOffersFor(reviewKeys).map(o => `<label class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm" style="background:rgba(16,185,129,.14);border-color:rgba(52,211,153,.65);color:#f1f5f9"><input type="checkbox" data-review-offer="${escapeHtml(o.bolt.id)}" ${addedBolts.has(String(o.bolt.id)) ? "checked" : ""} class="mt-1 h-4 w-4"><span><span class="font-black">Add ${escapeHtml(o.bolt.title)}</span><br><span class="text-xs" style="color:#cbd5e1">${o.save > 0 ? (Number(o.bolt.price) - o.save) <= 0 ? `Normal ${money(o.bolt.price)} · Free with this book` : `Normal ${money(o.bolt.price)} · Save ${money(o.save)} · You pay only ${money(Number(o.bolt.price) - o.save)} more` : `${money(o.bolt.price)} (combo saving is off while you use a coupon)`}</span></span></label>`).join("");
       renderCheckoutCouponTotals();
     }
     function onReviewChange(event) {
@@ -1965,11 +1979,17 @@
         rest.splice(Math.max(0, pos), 0, ...add);
         reviewKeys = rest;
         renderCheckoutReview();
+      } else if (t.name === 'discountMode') {
+        discountMode = t.value === 'coupon' ? 'coupon' : 'combo';
+        if (discountMode === 'combo' && activeCouponCode) { clearCheckoutCoupon(); showCouponStatus('Coupon removed. Combo saving applied.'); }
+        else if (discountMode === 'coupon') { document.getElementById('couponStatus').classList.add('hidden'); }
+        renderCheckoutReview();
       } else if (t.dataset.reviewOffer) {
         const bk = String(t.dataset.reviewOffer);
         if (t.checked) { addedBolts.add(bk); reviewKeys = [...reviewKeys.filter(k => String(k) !== bk), bk]; }
         else { addedBolts.delete(bk); reviewKeys = reviewKeys.filter(k => String(k) !== bk); }
-        if (!COMBO_COUPON_STACK && activeCouponCode && pairSavingFor(reviewKeys) > 0) { clearCheckoutCoupon(); showCouponStatus('Coupon removed: it cannot be used with the combo offer.'); }
+        if (t.checked && pairSavingRaw(reviewKeys) > 0) { discountMode = 'combo'; if (activeCouponCode) { clearCheckoutCoupon(); showCouponStatus('Coupon removed. Combo saving applied. You can switch to a coupon below.'); } }
+        if (!t.checked && discountMode === 'coupon' && pairSavingRaw(reviewKeys) === 0) discountMode = 'combo';
         renderCheckoutReview();
       }
     }
@@ -2283,6 +2303,7 @@
     let checkoutStep = 1;
     let bookPairs = [];
     let addedBolts = new Set();
+    let discountMode = 'combo';
     // Owner decision pending: may a coupon be used together with the combo saving? Keep false until decided.
     const COMBO_COUPON_STACK = false;
     let activeCouponCode = null;
@@ -2499,7 +2520,7 @@
       hideOtherOverlays("buy");
       checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
       reviewKeys = checkoutCartKeys.length ? checkoutCartKeys.slice() : [String(selectedBook.id)];
-      addedBolts = new Set();
+      addedBolts = new Set(); discountMode = 'combo';
       showCheckoutStep(1);
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
