@@ -477,6 +477,26 @@
     "description": "Digital ebooks, notes, and free samples for students and learners by Akki & Aadi."
   }
   </script>
+  <style id="catalog-compact-mobile">
+    @media (max-width: 639px) {
+      #books { padding-top: 1.5rem; padding-bottom: 2rem; }
+      #books h2 { margin-top: .25rem; font-size: 1.5rem; line-height: 1.9rem; }
+      #books .relative.w-full input { padding-top: .55rem; padding-bottom: .55rem; font-size: .85rem; }
+      #books .relative.w-full svg { top: .7rem; }
+      #filterPills { margin-top: .75rem; gap: .4rem; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+      #filterPills::-webkit-scrollbar { display: none; }
+      #filterPills > * { flex: 0 0 auto; padding: .4rem .75rem; font-size: .75rem; white-space: nowrap; }
+      #books .mt-4.flex.flex-wrap.items-center { margin-top: .6rem; flex-wrap: nowrap; justify-content: space-between; gap: .35rem; }
+      #books .mt-4.flex.flex-wrap.items-center > * { white-space: nowrap; }
+            #books .mt-4.flex.flex-wrap.items-center .book-view-btn { padding: .35rem .5rem; }
+      #bookGrid { margin-top: .9rem; }
+      #bookGrid .category-book-row { gap: .75rem; }
+      #bookGrid .category-book-row > .book-card { flex: 0 0 calc((100% - .75rem) / 2); width: calc((100% - .75rem) / 2); max-width: none; min-width: 0; }
+      #books .mt-4.flex.flex-wrap.items-center > label, #books .mt-4.flex.flex-wrap.items-center > span { display: none; }
+      #books .mt-4.flex.flex-wrap.items-center { justify-content: flex-start; }
+      #bookSort { flex: 1 1 auto; max-width: none; min-width: 0; }
+    }
+  </style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -583,7 +603,7 @@
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#books"
                class="rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800">
-              Explore Books
+              Explore More Books
             </a>
           </div>
 
@@ -604,9 +624,6 @@
         <div>
           <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Library</p>
           <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Pick your next read.</h2>
-          <p class="mt-3 max-w-2xl text-slate-600">
-            Browse original guides and notes. Search by title or subject, then open a sample before buying.
-          </p>
         </div>
 
         <div class="relative w-full lg:max-w-sm">
