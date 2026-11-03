@@ -1737,7 +1737,7 @@
             <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${!editionSiblings(book).length && Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : ''}</div>
             ${editionPickerHtml(book)}
             <div class="book-actions mt-3 grid grid-cols-2 gap-2">
-              ${sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
+              ${editionSiblings(book).length ? `<div data-edition-sample="${escapeHtml(book.id)}">${editionSampleInner(book, false)}</div>` : sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
               <button type="button" data-add-cart="${escapeHtml(book.id)}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-2.5 text-[10px] font-extrabold text-indigo-800">+ Add to Cart</button>
             </div>
             <button type="button" data-buy="${escapeHtml(book.id)}" class="buy-btn mt-2 w-full rounded-xl bg-slate-950 px-3 py-2.5 text-xs font-extrabold text-white transition hover:bg-slate-800">${book.free ? 'Get Free' : 'Buy Now'}</button>
@@ -2262,7 +2262,24 @@
       if (!sibs.length) return "";
       const pick = editionPick[book.editionGroup] || String(sibs[0].id);
       const total = sibs.reduce((sum, b) => sum + Number(b.price || 0), 0);
-      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Both languages (${sibs.length} books) - ${money(total)}</option></select></label>`;
+      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Both languages - ${money(total)}</option></select></label>`;
+    }
+    function editionSampleInner(book, details) {
+      const sel = editionSelectedBooks(book);
+      const cls = details ? "rounded-xl border border-slate-300 px-3 py-3 text-center text-sm font-bold" : "rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold";
+      const mk = b => {
+        const href = bookSampleHref(b); const label = `${b.editionLang} sample`;
+        return href
+          ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="sample-btn block ${cls} text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">${escapeHtml(label)}</a>`
+          : `<button type="button" disabled title="${escapeHtml(b.editionLang)} sample unavailable" class="sample-btn block w-full cursor-not-allowed ${cls} text-slate-400 opacity-60">No ${escapeHtml(b.editionLang)} sample</button>`;
+      };
+      return sel.length > 1 ? `<div class="grid gap-1.5">${sel.map(mk).join("")}</div>` : mk(sel[0]);
+    }
+    function refreshEditionSamples() {
+      document.querySelectorAll("[data-edition-sample]").forEach(el => {
+        const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionSample));
+        if (b) el.innerHTML = editionSampleInner(b, el.dataset.editionDetails === "1");
+      });
     }
     function editionPriceText(book) { return money(editionSelectedBooks(book).reduce((sum, b) => sum + Number(b.price || 0), 0)); }
     function bindEditionPickers(root) {
@@ -2273,6 +2290,7 @@
           const b = STORE.books.find(x => String(x.id) === String(el.dataset.editionPrice));
           if (b) el.textContent = editionPriceText(b);
         });
+        refreshEditionSamples();
         syncCartFeedback();
       }));
     }
@@ -2332,7 +2350,15 @@
         let slot = document.getElementById("detailsEditionPicker");
         if (!slot) { slot = document.createElement("div"); slot.id = "detailsEditionPicker"; detailsPrice.insertAdjacentElement("afterend", slot); }
         slot.innerHTML = editionPickerHtml(book); bindEditionPickers(slot);
-      } else { const slot = document.getElementById("detailsEditionPicker"); if (slot) slot.innerHTML = ""; }
+        let sslot = document.getElementById("detailsEditionSamples");
+        if (!sslot) { sslot = document.createElement("div"); sslot.id = "detailsEditionSamples"; sampleLink.insertAdjacentElement("beforebegin", sslot); }
+        sslot.dataset.editionSample = String(book.id); sslot.dataset.editionDetails = "1";
+        sslot.innerHTML = editionSampleInner(book, true);
+        sampleLink.classList.add("hidden");
+      } else {
+        const slot = document.getElementById("detailsEditionPicker"); if (slot) slot.innerHTML = "";
+        const sslot = document.getElementById("detailsEditionSamples"); if (sslot) { sslot.innerHTML = ""; delete sslot.dataset.editionSample; }
+      }
       document.getElementById("detailsDescription").textContent = book.summary || "";
       const metadata = document.getElementById("detailsMetadata");
       const subjects = [...new Set([...(Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",")), book.topic].map(value => String(value || "").trim()).filter(Boolean))];
