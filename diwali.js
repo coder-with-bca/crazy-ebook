@@ -41,7 +41,7 @@
   #diwali-theme-root .diwali-banner .sparkle-right { right: 10px; }
 
   /* ---------- String lights (hanging under the header) ---------- */
-  #diwali-theme-root .diwali-lights {
+  .diwali-lights {
     position: relative;
     z-index: 30;
     height: 30px;
@@ -49,7 +49,7 @@
     background: transparent;
     margin-top: -1px;
   }
-  #diwali-theme-root .diwali-lights .wire {
+  .diwali-lights .wire {
     position: absolute;
     left: 0;
     right: 0;
@@ -58,8 +58,8 @@
     border-bottom: 2px solid rgba(120, 53, 15, 0.55);
     border-radius: 0 0 50% 50% / 0 0 100% 100%;
   }
-  html[data-theme="dark"] #diwali-theme-root .diwali-lights .wire { border-bottom-color: rgba(253, 230, 138, 0.35); }
-  #diwali-theme-root .diwali-lights .bulb {
+  html[data-theme="dark"] .diwali-lights .wire { border-bottom-color: rgba(253, 230, 138, 0.35); }
+  .diwali-lights .bulb {
     position: absolute;
     top: 9px;
     width: 10px;
@@ -68,7 +68,7 @@
     transform: translateX(-50%);
     opacity: 0.95;
   }
-  #diwali-theme-root .diwali-lights .bulb::before {
+  .diwali-lights .bulb::before {
     content: "";
     position: absolute;
     top: -4px;
@@ -79,7 +79,7 @@
     background: #78350f;
     border-radius: 2px;
   }
-  html[data-theme="dark"] #diwali-theme-root .diwali-lights .bulb::before { background: #a8a29e; }
+  html[data-theme="dark"] .diwali-lights .bulb::before { background: #a8a29e; }
 
   /* ---------- Corner diyas ---------- */
   #diwali-theme-root .diwali-diya {
@@ -158,7 +158,7 @@
       0% { transform: translateX(-120%) skewX(-18deg); }
       100% { transform: translateX(240%) skewX(-18deg); }
     }
-    #diwali-theme-root .diwali-lights .bulb { animation: diwali-flicker 1.6s ease-in-out infinite; }
+    .diwali-lights .bulb { animation: diwali-flicker 1.6s ease-in-out infinite; }
     #diwali-theme-root .diwali-diya { animation: diwali-diya-float 3.4s ease-in-out infinite; }
     #diwali-theme-root .diwali-spark { animation: diwali-spark-rise linear infinite; }
     #diwali-theme-root .diwali-banner::after {
