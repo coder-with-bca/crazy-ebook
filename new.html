@@ -646,7 +646,7 @@
         <div class="hero-intro reveal">
           <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">👋 Welcome back</p>
           <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-3xl">Learn faster. Study smarter. Build more.</h1>
-          <p class="mt-6 max-w-2xl text-sm opacity-75">Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.</p>
+          <p class="mt-6 max-w-2xl text-sm opacity-75" hidden></p>
         </div>
 
         <div class="ce-tiles mt-5" style="grid-template-columns: repeat(3, minmax(0,1fr));" aria-label="Book categories">
@@ -1396,7 +1396,7 @@
       upiId: "",
       upiQrImage: "upi-qr.jpg",
       heroTitle: "Learn faster. Study smarter. Build more.",
-      heroText: "Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.",
+      heroText: "",
       featuredBookId: null,
       reviews: [],
       books: [] /* Real books are added by the admin; no demo products are published. */
@@ -1789,7 +1789,13 @@
 
     function renderHero() {
       document.querySelector("#home h1").textContent = STORE.heroTitle;
-      document.querySelector("#home p.mt-6").textContent = STORE.heroText;
+      (function () {
+        const heroP = document.querySelector("#home p.mt-6");
+        const t = (STORE.heroText || "").trim();
+        const removed = "Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.";
+        heroP.textContent = t === removed ? "" : t;
+        heroP.hidden = !heroP.textContent;
+      })();
 
       const book = STORE.books.find(item => Number(item.id) === Number(STORE.featuredBookId)) || STORE.books[0];
       const title = document.getElementById("heroShowcaseTitle");

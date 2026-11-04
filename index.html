@@ -1734,7 +1734,13 @@
 
     function renderHero() {
       document.querySelector("#home h1").textContent = STORE.heroTitle;
-      document.querySelector("#home p.mt-6").textContent = STORE.heroText;
+      (function () {
+        const heroP = document.querySelector("#home p.mt-6");
+        const t = (STORE.heroText || "").trim();
+        const removed = "Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.";
+        heroP.textContent = t === removed ? "" : t;
+        heroP.hidden = !heroP.textContent;
+      })();
 
       const book = STORE.books.find(item => Number(item.id) === Number(STORE.featuredBookId)) || STORE.books[0];
       const title = document.getElementById("heroShowcaseTitle");
