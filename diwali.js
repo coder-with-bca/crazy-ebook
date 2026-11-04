@@ -82,14 +82,18 @@
 
   /* ------------------- toran + fairy lights (top) --------------------- */
   html.diwali-night .diwali-toran {
-    position: relative;
-    z-index: 30;
-    height: 36px;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     overflow: hidden;
     pointer-events: none;
     background: transparent;
-    margin-top: -1px;
   }
+  /* The toran now lives inside the sticky header as its background layer
+     (the header's own position: sticky anchors the absolute overlay), so the
+     nav rows must paint above it to keep the brand, links and Cart/Library
+     buttons fully readable and clickable. */
+  html.diwali-night body > header > nav { position: relative; z-index: 1; }
   html.diwali-night .diwali-toran .toran-wire {
     position: absolute; left: 0; right: 0; top: 0; height: 12px;
     border-bottom: 2px solid rgba(255, 179, 0, 0.45);
@@ -112,6 +116,10 @@
     transform: translateX(-50%);
     background: radial-gradient(circle, #fff8dc 0%, #FFD54F 70%);
     box-shadow: 0 0 8px 2px rgba(255, 213, 79, 0.75);
+  }
+  html.diwali-night .diwali-toran .toran-bulb.deep {
+    width: 5px; height: 5px; opacity: 0.85;
+    box-shadow: 0 0 7px 1.5px rgba(255, 213, 79, 0.6);
   }
 
   /* --------------------- midnight-indigo surfaces --------------------- */
@@ -521,7 +529,7 @@
       document.body.insertBefore(root, document.body.firstChild);
     }
 
-    // Toran + fairy-light string hanging just under the header
+    // Toran + fairy lights used as the sticky header's background layer
     var toran = document.createElement("div");
     toran.className = "diwali-toran";
     toran.setAttribute("aria-hidden", "true");
@@ -531,7 +539,7 @@
     var flowerClasses = ["marigold", "gold", "marigold", "rani"];
     for (var i = 0; i < count; i++) {
       var pct = ((i + 0.5) / count) * 100;
-      var stemLen = 6 + (i % 3) * 4;
+      var stemLen = 8 + (i % 4) * 6;
       var hanger = document.createElement("span");
       hanger.className = "toran-hanger";
       hanger.style.left = pct + "%";
@@ -550,7 +558,21 @@
         toran.appendChild(bulb);
       }
     }
-    if (root.parentNode) {
+    // Extra fairy bulbs scattered deeper into the header background
+    var deepCount = Math.max(4, Math.floor(count * 0.6));
+    for (var j = 0; j < deepCount; j++) {
+      var deep = document.createElement("span");
+      deep.className = "toran-bulb deep";
+      deep.style.left = (((j + 0.8) / deepCount) * 100) + "%";
+      deep.style.top = (55 + ((j * 11) % 28)) + "%";
+      deep.style.animationDelay = ((j % 6) * 0.43 + 0.2) + "s";
+      toran.appendChild(deep);
+    }
+    // Hang the toran inside the header (background layer) instead of as a
+    // separate strip between the banner and the header
+    if (header) {
+      header.appendChild(toran);
+    } else if (root.parentNode) {
       root.parentNode.insertBefore(toran, root.nextSibling);
     }
 
