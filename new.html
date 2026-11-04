@@ -22,6 +22,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
   <script>try { var __ceTheme = localStorage.getItem("crazyebook-theme-v1"); document.documentElement.dataset.theme = (__ceTheme === "light") ? "light" : "dark"; } catch (e) { document.documentElement.dataset.theme = "dark"; }</script>
+  <script>try { var de = document.documentElement; de.dataset.uiTheme = localStorage.getItem("ce-ui-theme-v1") || "default"; de.dataset.fxParallax = localStorage.getItem("ce-fx-parallax-v1") === "1" ? "1" : "0"; de.dataset.fxHover = localStorage.getItem("ce-fx-hover-v1") === "1" ? "1" : "0"; } catch (e) {}</script>
   <script>try{if(localStorage.getItem("ce-design-v1")==="old"){location.replace("index.html"+location.search+location.hash);}}catch(e){}</script>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
@@ -741,14 +742,173 @@
     .ce-details-actions { position:sticky; bottom:-0.75rem; z-index:2; margin-left:-.25rem; margin-right:-.25rem; padding:.5rem .25rem .25rem; background:#ffffff; border-top:1px solid rgba(120,120,140,.18); }
     html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-details-actions { background:#171F46; border-top-color:#3a4670; }
     /* macOS-style traffic lights: header (desktop only) and modal top bars */
-    .ce-tl { width:12px; height:12px; border-radius:9999px; border:1px solid rgba(0,0,0,.18); display:inline-block; padding:0; box-sizing:border-box; }
-    .ce-tl-r { background:#FF5F57; } .ce-tl-y { background:#FEBC2E; } .ce-tl-g { background:#28C840; }
+    .ce-tl { width:14px; height:14px; border-radius:9999px; border:1px solid rgba(0,0,0,.18); display:inline-block; padding:0; box-sizing:border-box; background-repeat:no-repeat; background-position:center; background-size:9px 9px; }
+    .ce-tl-r { background-color:#FF5F57; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'><path d='M2 2l5 5M7 2L2 7' stroke='%237a0d0d' stroke-width='1.5' stroke-linecap='round'/></svg>"); }
+    .ce-tl-y { background-color:#FEBC2E; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'><path d='M1.8 4.5h5.4' stroke='%237a4d00' stroke-width='1.5' stroke-linecap='round'/></svg>"); }
+    .ce-tl-g { background-color:#28C840; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'><path d='M2.2 6.8L6.8 2.2M6.8 2.2H4.6M6.8 2.2V4.4M2.2 6.8H4.4M2.2 6.8V4.6' stroke='%230a5a1c' stroke-width='1.3' stroke-linecap='round'/></svg>"); }
     .ce-traffic { display:flex; align-items:center; gap:7px; }
     button.ce-tl-r { cursor:pointer; flex:none; }
     button.ce-tl-r:hover { filter:brightness(.92); }
     button.ce-tl-r:focus-visible { outline:2px solid #FF8A00; outline-offset:2px; }
     .ce-hd-traffic { margin-left:auto; gap:7px; align-items:center; }
-  </style>
+  
+    /* ===== v47 UI themes (site-wide style picker) ===== */
+    .ce-uit-opt { padding:10px 8px; border-radius:.9rem; border:1.5px solid rgba(148,163,184,.35); background:none; color:inherit; font-weight:800; font-size:12.5px; cursor:pointer; transition:transform .15s ease, border-color .15s ease, background .15s ease; }
+    .ce-uit-opt[aria-pressed="true"] { border-color:#FF8A00; background:rgba(255,138,0,.12); }
+
+    /* --- Neumorphism (soft UI) --- */
+    html[data-ui-theme="neu"] .rounded-xl { border-radius:18px; }
+    html[data-ui-theme="neu"] .rounded-2xl { border-radius:22px; }
+    html[data-ui-theme="neu"] .rounded-3xl { border-radius:26px; }
+    html[data-ui-theme="neu"][data-theme="dark"] body { background:#11183A !important; }
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .book-card,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-search,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-bottom-nav,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .hero-scene-card,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .deep-promo-card,
+    html[data-ui-theme="neu"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .promo-si-card { background:#11183A !important; border-color:transparent !important; box-shadow:10px 10px 24px rgba(3,6,20,.6), -8px -8px 20px rgba(96,110,175,.16) !important; }
+    html[data-ui-theme="neu"][data-theme="light"] body { background:#F2E9D4 !important; }
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .book-card,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-search,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-bottom-nav,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .hero-scene-card,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-card,
+    html[data-ui-theme="neu"][data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-card { background:#F2E9D4 !important; border-color:transparent !important; box-shadow:10px 10px 24px rgba(166,132,60,.22), -8px -8px 20px rgba(255,255,255,.9) !important; }
+    html[data-ui-theme="neu"] .deep-promo-card .deep-promo-kicker,
+    html[data-ui-theme="neu"][data-theme="light"] .deep-promo-card { color:#3a2c08 !important; }
+    html[data-ui-theme="neu"][data-theme="light"] .deep-promo-title { color:#2a1a00 !important; }
+    html[data-ui-theme="neu"][data-theme="light"] .deep-promo-text { color:#5b4a20 !important; }
+
+    /* --- Claymorphism (3D clay) --- */
+    html[data-ui-theme="clay"] .rounded-xl { border-radius:24px; }
+    html[data-ui-theme="clay"] .rounded-2xl { border-radius:28px; }
+    html[data-ui-theme="clay"] .rounded-3xl { border-radius:34px; }
+    html[data-ui-theme="clay"] .deep-promo-btn,
+    html[data-ui-theme="clay"] .bg-amber-400,
+    html[data-ui-theme="clay"] .bg-slate-950,
+    html[data-ui-theme="clay"] .bg-indigo-600 { border-radius:999px !important; }
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .book-card,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-search,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-bottom-nav,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .hero-scene-card,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .deep-promo-card,
+    html[data-ui-theme="clay"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .promo-si-card { background:#1D2652 !important; border-color:rgba(255,255,255,.14) !important; box-shadow:0 16px 30px rgba(3,6,20,.5), inset 0 2px 3px rgba(255,255,255,.22), inset 0 -8px 14px rgba(0,0,0,.28) !important; }
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .book-card,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-search,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-bottom-nav,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .hero-scene-card,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-card,
+    html[data-ui-theme="clay"][data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-card { background:#FFFDF6 !important; border-color:rgba(190,130,30,.25) !important; box-shadow:0 16px 30px rgba(170,110,20,.22), inset 0 2px 3px #ffffff, inset 0 -8px 14px rgba(190,130,30,.14) !important; }
+
+    /* --- Aurora gradients --- */
+    @keyframes ce-aurora { 0% { background-position:0% 0%,100% 0%,0% 100%,0 0; } 100% { background-position:100% 60%,0% 40%,60% 0%,0 0; } }
+    html[data-ui-theme="aurora"][data-theme="dark"] body { background:radial-gradient(60% 45% at 15% 10%, rgba(124,92,255,.30), transparent 60%), radial-gradient(55% 40% at 85% 25%, rgba(224,64,123,.24), transparent 60%), radial-gradient(65% 50% at 50% 95%, rgba(255,138,0,.18), transparent 60%), linear-gradient(#0B1026,#0B1026) !important; background-size:220% 220%,220% 220%,220% 220%,auto !important; animation:ce-aurora 22s ease-in-out infinite alternate; }
+    html[data-ui-theme="aurora"][data-theme="light"] body { background:radial-gradient(60% 45% at 15% 10%, rgba(255,180,120,.5), transparent 62%), radial-gradient(55% 40% at 85% 25%, rgba(255,150,220,.38), transparent 62%), radial-gradient(65% 50% at 50% 95%, rgba(160,190,255,.42), transparent 62%), linear-gradient(#FFF8EE,#FFF1E4) !important; background-size:220% 220%,220% 220%,220% 220%,auto !important; animation:ce-aurora 22s ease-in-out infinite alternate; }
+    html[data-ui-theme="aurora"] .bg-amber-400,
+    html[data-ui-theme="aurora"] .deep-promo-btn { background:linear-gradient(135deg,#FF8A00,#E0407B 55%,#7C5CFF) !important; color:#fff !important; text-shadow:0 1px 2px rgba(0,0,0,.25); }
+    html[data-ui-theme="aurora"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .book-card,
+    html[data-ui-theme="aurora"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile,
+    html[data-ui-theme="aurora"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass { background-image:linear-gradient(150deg, rgba(124,92,255,.16), rgba(255,138,0,.09)) !important; }
+    html[data-ui-theme="aurora"][data-theme="light"][data-theme="light"][data-theme="light"] .book-card,
+    html[data-ui-theme="aurora"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile,
+    html[data-ui-theme="aurora"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass { background-image:linear-gradient(150deg, rgba(255,150,220,.14), rgba(160,190,255,.12)) !important; }
+    @media (prefers-reduced-motion:reduce) { html[data-ui-theme="aurora"] body { animation:none !important; } }
+
+    /* --- Neo-Brutalism --- */
+    html[data-ui-theme="brutal"] .rounded-xl,
+    html[data-ui-theme="brutal"] .rounded-2xl,
+    html[data-ui-theme="brutal"] .rounded-3xl { border-radius:6px !important; }
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .book-card,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-search,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-bottom-nav,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .hero-scene-card,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .deep-promo-card,
+    html[data-ui-theme="brutal"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .promo-si-card { border:3px solid #FFF8EA !important; box-shadow:7px 7px 0 #FFB300 !important; }
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .book-card,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-search,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-bottom-nav,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .hero-scene-card,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-card,
+    html[data-ui-theme="brutal"][data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-card { border:3px solid #101B2D !important; box-shadow:7px 7px 0 #FF8A00 !important; }
+    html[data-ui-theme="brutal"] .bg-amber-400,
+    html[data-ui-theme="brutal"] .deep-promo-btn,
+    html[data-ui-theme="brutal"] .bg-slate-950,
+    html[data-ui-theme="brutal"] .bg-indigo-600 { border-radius:4px !important; border-width:3px !important; }
+    html[data-ui-theme="brutal"][data-theme="dark"] .bg-amber-400,
+    html[data-ui-theme="brutal"][data-theme="dark"] .deep-promo-btn,
+    html[data-ui-theme="brutal"][data-theme="dark"] .bg-slate-950,
+    html[data-ui-theme="brutal"][data-theme="dark"] .bg-indigo-600 { border:3px solid #FFF8EA; box-shadow:5px 5px 0 #FFB300; }
+    html[data-ui-theme="brutal"][data-theme="light"] .bg-amber-400,
+    html[data-ui-theme="brutal"][data-theme="light"] .deep-promo-btn,
+    html[data-ui-theme="brutal"][data-theme="light"] .bg-slate-950,
+    html[data-ui-theme="brutal"][data-theme="light"] .bg-indigo-600 { border:3px solid #101B2D; box-shadow:5px 5px 0 #FF8A00; }
+
+    /* --- Bento grid --- */
+    html[data-ui-theme="bento"] .rounded-xl { border-radius:20px; }
+    html[data-ui-theme="bento"] .rounded-2xl { border-radius:22px; }
+    html[data-ui-theme="bento"] .rounded-3xl { border-radius:24px; }
+    html[data-ui-theme="bento"][data-theme="dark"] body { background:#070C20 !important; }
+    html[data-ui-theme="bento"][data-theme="light"] body { background:#EFE4CC !important; }
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile:nth-child(1) { background:#1B2450 !important; }
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile:nth-child(2) { background:#241D4E !important; }
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile:nth-child(3) { background:#15224F !important; }
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile:nth-child(1) { background:#FFF4DA !important; }
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile:nth-child(2) { background:#FDEEDC !important; }
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile:nth-child(3) { background:#FFF9E8 !important; }
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .book-card,
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass,
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-bottom-nav,
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .deep-promo-card,
+    html[data-ui-theme="bento"][data-theme="dark"][data-theme="dark"][data-theme="dark"] .promo-si-card { box-shadow:0 10px 28px rgba(0,0,0,.5) !important; }
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .book-card,
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass,
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .ce-bottom-nav,
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-card,
+    html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-card { box-shadow:0 10px 26px rgba(140,95,20,.20) !important; }
+
+    /* --- FX: hover & micro-interactions (combinable toggle) --- */
+    @media (hover:hover) and (prefers-reduced-motion:no-preference) {
+      html[data-fx-hover="1"] .book-card,
+      html[data-fx-hover="1"] .ce-tile,
+      html[data-fx-hover="1"] .deep-promo-btn,
+      html[data-fx-hover="1"] .bg-amber-400,
+      html[data-fx-hover="1"] .category-btn,
+      html[data-fx-hover="1"] .ce-bn-item,
+      html[data-fx-hover="1"] .promo-dot { transition:transform .16s ease, box-shadow .18s ease !important; }
+      html[data-fx-hover="1"] .book-card:hover { transform:translateY(-4px); }
+      html[data-fx-hover="1"] .ce-tile:hover { transform:scale(1.05); }
+      html[data-fx-hover="1"] .deep-promo-btn:hover,
+      html[data-fx-hover="1"] .bg-amber-400:hover,
+      html[data-fx-hover="1"] .category-btn:hover,
+      html[data-fx-hover="1"] .ce-bn-item:hover { transform:translateY(-2px) scale(1.04); }
+      html[data-fx-hover="1"] .promo-dot:hover { transform:scale(1.5); }
+    }
+
+    /* v47: poster slides (3-5) spread content to fill the equal-height card */
+    .promo-poster-card { align-items:stretch; }
+    .promo-poster-card > img { align-self:center; }
+    .promo-poster-text { display:flex; flex-direction:column; justify-content:space-between; align-items:flex-start; height:100%; }
+    .promo-poster-text .deep-promo-title, .promo-poster-text .deep-promo-text, .promo-poster-text .deep-promo-row { margin-top:0; }
+    @media (max-width:767px) {
+      .promo-poster-card { grid-template-columns:minmax(0,43%) 1fr; gap:.9rem; padding:1rem; }
+      .promo-poster-card .deep-promo-kicker { font-size:.68rem; letter-spacing:.16em; }
+      .promo-poster-card .deep-promo-title { font-size:1.4rem; line-height:1.2; }
+      .promo-poster-card .deep-promo-text { font-size:.88rem; line-height:1.45; }
+      .promo-poster-card .deep-promo-btn { min-height:46px; padding:.55rem 1rem; font-size:.85rem; }
+    }
+</style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -913,9 +1073,9 @@
             </div>
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="Free samples, slide 3 of 5">
-            <div class="deep-promo-card">
+            <div class="deep-promo-card promo-poster-card">
               <img src="img/promo-sample.webp" width="1080" height="1350" loading="lazy" alt="Poster: Read the book before you buy - free sample PDF with every book">
-              <div>
+              <div class="promo-poster-text">
                 <p class="deep-promo-kicker">📖 Try before you buy</p>
                 <h2 class="deep-promo-title">Free sample of every book</h2>
                 <p class="deep-promo-text">Every book comes with a free sample PDF. Read the first pages, then decide.</p>
@@ -926,9 +1086,9 @@
             </div>
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="Hindi and English editions, slide 4 of 5">
-            <div class="deep-promo-card">
+            <div class="deep-promo-card promo-poster-card">
               <img src="img/promo-bilingual.webp" width="1080" height="1350" loading="lazy" alt="Poster: Hindi and English editions of the same book, side by side">
-              <div>
+              <div class="promo-poster-text">
                 <p class="deep-promo-kicker">🌏 Your language, your book</p>
                 <h2 class="deep-promo-title">Hindi + English editions</h2>
                 <p class="deep-promo-text">Many books come in both Hindi and English. Pick your language on the book card, or take both together.</p>
@@ -939,9 +1099,9 @@
             </div>
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="Telegram support, slide 5 of 5">
-            <div class="deep-promo-card">
+            <div class="deep-promo-card promo-poster-card">
               <img src="img/promo-telegram.webp" width="1080" height="1350" loading="lazy" alt="Poster: We reply fast on Telegram - support 7 days a week">
-              <div>
+              <div class="promo-poster-text">
                 <p class="deep-promo-kicker">💬 We reply fast</p>
                 <h2 class="deep-promo-title">Help on Telegram, 7 days a week</h2>
                 <p class="deep-promo-text">Questions about a book, a payment or a delivery? Message us on Telegram and we will sort it out.</p>
@@ -1175,7 +1335,7 @@
   <div id="ceSettingsSheet" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="ce-glass max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-3xl p-5 shadow-2xl">
       <div class="flex items-center gap-3">
-        <div class="ce-traffic"><button id="ceSettingsClose" type="button" class="ce-tl ce-tl-r" aria-label="Close settings"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div>
+        <div class="ce-traffic"><button id="ceSettingsClose" type="button" class="ce-tl ce-tl-r" aria-label="Close settings"></button></div>
         <h2 class="text-lg font-black">Settings</h2>
       </div>
 
@@ -1189,6 +1349,31 @@
       <div class="flex items-center justify-between gap-3 border-b border-slate-400/20 py-3">
         <span class="text-sm font-extrabold">Theme</span>
         <button id="themeToggleBtn" type="button" class="theme-toggle rounded-full border border-white/30 px-3 py-2 text-sm font-bold" aria-label="Current theme: dark. Switch to light mode." aria-pressed="true"><span id="themeToggleIcon" aria-hidden="true">🌙</span> <span id="themeToggleLabel">Dark</span></button>
+      </div>
+
+      <div class="border-b border-slate-400/20">
+        <button type="button" class="ce-set-row" data-ce-acc="ceUiPanel" aria-expanded="false" aria-controls="ceUiPanel">
+          <span>&#127912; UI theme</span><span class="ce-set-pill" id="ceUiState">Default</span>
+        </button>
+        <div id="ceUiPanel" class="ce-set-panel hidden">
+          <div class="grid grid-cols-2 gap-2" id="ceUiOptions">
+            <button type="button" data-uit="default" class="ce-uit-opt" aria-pressed="true">Site default</button>
+            <button type="button" data-uit="neu" class="ce-uit-opt" aria-pressed="false">Neumorphism</button>
+            <button type="button" data-uit="clay" class="ce-uit-opt" aria-pressed="false">Claymorphism</button>
+            <button type="button" data-uit="aurora" class="ce-uit-opt" aria-pressed="false">Aurora gradients</button>
+            <button type="button" data-uit="brutal" class="ce-uit-opt" aria-pressed="false">Neo-Brutalism</button>
+            <button type="button" data-uit="bento" class="ce-uit-opt" aria-pressed="false">Bento grid</button>
+          </div>
+          <p class="mt-2 text-[11px] leading-4 opacity-60">Applies across the whole site and is remembered on this browser.</p>
+          <div class="mt-2 border-t border-slate-400/20 pt-2">
+            <button type="button" id="ceFxParallaxRow" class="ce-set-row" style="padding:8px 2px;">
+              <span>&#128640; Parallax scrolling</span><span id="ceFxParallaxState" class="ce-set-pill">Off</span>
+            </button>
+            <button type="button" id="ceFxHoverRow" class="ce-set-row" style="padding:8px 2px;">
+              <span>&#10024; Hover &amp; micro-interactions</span><span id="ceFxHoverState" class="ce-set-pill">Off</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <button id="ceDiwaliRow" type="button" class="ce-set-row border-b border-slate-400/20">
@@ -1256,7 +1441,7 @@
 
   <div id="ceSitePopup" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-label="Site design choice">
     <div class="ce-glass w-full max-w-xs rounded-3xl p-5 text-center shadow-2xl">
-      <div class="ce-traffic" aria-hidden="true"><span class="ce-tl ce-tl-r"></span><span class="ce-tl ce-tl-y"></span><span class="ce-tl ce-tl-g"></span></div>
+      <div class="ce-traffic"><button id="cePopupClose" type="button" class="ce-tl ce-tl-r" aria-label="Stay on Site 1"></button></div>
       <p class="mt-2 text-2xl" aria-hidden="true">✨</p>
       <h2 class="mt-1 text-base font-black">Prefer the classic look?</h2>
       <p class="mt-2 text-xs leading-5 opacity-75">You're on <strong>Site 1</strong>, our new design. <strong>Site 2</strong>, the classic version, is still here whenever you want it - from Settings too.</p>
@@ -1272,7 +1457,7 @@
        ========================================================= -->
   <div id="bookDetailsModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="bookDetailsTitle">
     <div class="max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-3 shadow-2xl sm:max-h-[92vh] sm:p-7">
-      <div class="flex items-center px-1 pt-1"><div class="ce-traffic"><button id="closeBookDetails" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div></div>
+      <div class="flex items-center px-1 pt-1"><div class="ce-traffic"><button id="closeBookDetails" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div></div>
         <div class="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr] sm:gap-4">
         <img id="detailsCover" class="aspect-[2/3] w-full rounded-xl object-cover" alt="Book cover">
         <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div id="detailsMetadata" class="mt-4 space-y-3"></div><div id="detailsRelated" class="mt-5"></div><div class="ce-details-actions mt-5 grid grid-cols-2 gap-2"><div class="col-span-2 flex items-center justify-between rounded-xl px-1"><span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Price</span><span id="detailsBarPrice" class="text-lg font-black"></span></div><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-amber-400 px-3 py-3 text-sm font-bold text-slate-950">Buy Now</button></div></div>
@@ -1281,11 +1466,11 @@
   </div>
 
   <div id="cartModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeCart" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2></div><div id="cartItems" class="mt-4 space-y-3"></div><div id="cartReco" class="mt-4"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><div class="mt-4 grid grid-cols-2 gap-2"><button id="continueShopping" class="rounded-xl border px-4 py-3 font-bold">Continue shopping</button><button id="cartCheckout" class="rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout</button></div></div>
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeCart" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2></div><div id="cartItems" class="mt-4 space-y-3"></div><div id="cartReco" class="mt-4"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><div class="mt-4 grid grid-cols-2 gap-2"><button id="continueShopping" class="rounded-xl border px-4 py-3 font-bold">Continue shopping</button><button id="cartCheckout" class="rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout</button></div></div>
   </div>
 
   <div id="libraryModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
-    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeLibrary" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500">Loading your library…</p></div></div>
+    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeLibrary" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500">Loading your library…</p></div></div>
   </div>
 
   <div id="buyModal"
@@ -1295,7 +1480,7 @@
        aria-labelledby="buyModalTitle">
     <div class="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
       <div class="flex items-start gap-3">
-        <div class="ce-traffic" style="margin-top:.35rem"><button id="closeBuyModal" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div>
+        <div class="ce-traffic" style="margin-top:.35rem"><button id="closeBuyModal" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div>
         <div>
           <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Checkout</p>
           <h2 id="buyModalTitle" class="mt-1 text-2xl font-black">Buy Now</h2>
@@ -1346,11 +1531,11 @@
   </div>
 
   <div id="reviewReadModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewReadTitle">
-    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start gap-3"><div class="ce-traffic" style="margin-top:.35rem"><button id="closeReviewRead" type="button" class="ce-tl ce-tl-r" aria-label="Close full review"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-amber-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
+    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start gap-3"><div class="ce-traffic" style="margin-top:.35rem"><button id="closeReviewRead" type="button" class="ce-tl ce-tl-r" aria-label="Close full review"></button></div><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-amber-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
   </div>
 
   <div id="reviewSubmitModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewSubmitTitle">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start gap-3"><div class="ce-traffic" style="margin-top:.35rem"><button id="closeReviewSubmit" type="button" class="ce-tl ce-tl-r" aria-label="Close review form"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Submit Review</button></form></div>
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start gap-3"><div class="ce-traffic" style="margin-top:.35rem"><button id="closeReviewSubmit" type="button" class="ce-tl ce-tl-r" aria-label="Close review form"></button></div><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Submit Review</button></form></div>
   </div>
 
   <!-- =========================================================
@@ -1365,7 +1550,7 @@
     <div class="admin-panel w-full max-w-6xl rounded-3xl bg-white shadow-2xl">
       <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur sm:p-6">
         <div class="flex items-start gap-3">
-          <div class="ce-traffic" style="margin-top:.35rem"><button id="closeAdminModal" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div>
+          <div class="ce-traffic" style="margin-top:.35rem"><button id="closeAdminModal" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div>
           <div>
             <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Owner only</p>
             <h2 id="adminModalTitle" class="mt-1 text-2xl font-black">Crazy E-Book Admin Portal</h2>
@@ -4142,6 +4327,52 @@
         location.reload();
       });
 
+      // UI theme picker (site-wide styles) + combinable effects
+      var UIT_KEY = "ce-ui-theme-v1", FXP_KEY = "ce-fx-parallax-v1", FXH_KEY = "ce-fx-hover-v1";
+      var UIT_NAMES = { "default": "Site default", "neu": "Neumorphism", "clay": "Claymorphism", "aurora": "Aurora gradients", "brutal": "Neo-Brutalism", "bento": "Bento grid" };
+      var pxPairs = null, pxTick = false;
+      function uitGet(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
+      function paintUiTheme() {
+        var t = uitGet(UIT_KEY, "default"); if (!UIT_NAMES[t]) t = "default";
+        var p = uitGet(FXP_KEY, "0") === "1" ? "1" : "0", h = uitGet(FXH_KEY, "0") === "1" ? "1" : "0";
+        var de = document.documentElement;
+        de.dataset.uiTheme = t; de.dataset.fxParallax = p; de.dataset.fxHover = h;
+        var st = byId("ceUiState"); if (st) st.textContent = UIT_NAMES[t];
+        document.querySelectorAll("#ceUiOptions [data-uit]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-uit") === t ? "true" : "false"); });
+        var ps = byId("ceFxParallaxState"); if (ps) ps.textContent = p === "1" ? "On" : "Off";
+        var hs = byId("ceFxHoverState"); if (hs) hs.textContent = h === "1" ? "On" : "Off";
+        if (p !== "1" && pxPairs) pxPairs.forEach(function (pr) { pr[0].style.transform = ""; });
+      }
+      document.querySelectorAll("#ceUiOptions [data-uit]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          try { localStorage.setItem(UIT_KEY, b.getAttribute("data-uit")); } catch (e) {}
+          paintUiTheme();
+        });
+      });
+      byId("ceFxParallaxRow").addEventListener("click", function () {
+        try { localStorage.setItem(FXP_KEY, uitGet(FXP_KEY, "0") === "1" ? "0" : "1"); } catch (e) {}
+        paintUiTheme(); pxUpdate();
+      });
+      byId("ceFxHoverRow").addEventListener("click", function () {
+        try { localStorage.setItem(FXH_KEY, uitGet(FXH_KEY, "0") === "1" ? "0" : "1"); } catch (e) {}
+        paintUiTheme();
+      });
+      function pxCollect() {
+        pxPairs = [
+          [document.querySelector("#heroSection .hero-intro"), 0.06],
+          [document.querySelector("#featuredBook .hero-scene"), 0.03]
+        ].filter(function (pr) { return pr[0]; });
+      }
+      function pxUpdate() {
+        pxTick = false;
+        if (!pxPairs) pxCollect();
+        if (document.documentElement.dataset.fxParallax !== "1" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var y = window.scrollY || 0;
+        pxPairs.forEach(function (pr) { pr[0].style.transform = "translateY(" + (y * pr[1]).toFixed(1) + "px)"; });
+      }
+      window.addEventListener("scroll", function () { if (!pxTick) { pxTick = true; requestAnimationFrame(pxUpdate); } }, { passive: true });
+      paintUiTheme();
+
       // Bottom-nav Search: jump to the catalogue and focus the search box
       byId("ceSearchNavBtn").addEventListener("click", function () {
         scrollToCatalogue("searchInput");
@@ -4196,6 +4427,7 @@
         setTimeout(function () { popup.classList.remove("hidden"); popup.classList.add("flex"); }, 1500);
       }
       byId("cePopupStay").addEventListener("click", closePopup);
+      byId("cePopupClose").addEventListener("click", closePopup);
       byId("cePopupGoOld").addEventListener("click", function () {
         try { localStorage.setItem(POPUP_KEY, "1"); } catch (e) {}
         goToSite2();
