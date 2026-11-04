@@ -1228,7 +1228,7 @@
           <div>
             <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Build your own bundle</p>
             <h2 class="mt-1 text-lg font-black tracking-tight">Pick any 3 books</h2>
-            <p class="mt-0.5 text-xs opacity-70">Use code DEEP20 at checkout for 20% off the total.</p>
+            <p class="mt-0.5 text-xs opacity-70">Pick any 3 books and get 10% off</p>
           </div>
           <p class="text-sm font-black"><span id="bundleCount">0</span> of 3 picked · <span id="bundleTotal">₹0</span></p>
         </div>
@@ -2518,7 +2518,7 @@
       } catch { bookPairs = []; }
     }
     function bookById(key) { return STORE.books.find(b => String(b.id) === String(key)); }
-    function pairSavingFor(keys) { return discountMode === 'coupon' ? 0 : pairSavingRaw(keys); }
+    function pairSavingFor(keys) { return checkoutBundle || discountMode === 'coupon' ? 0 : pairSavingRaw(keys); }
     function pairSavingRaw(keys) {
       const set = new Set(keys.map(String)); const seen = new Set(); let cents = 0;
       bookPairs.forEach(p => {
@@ -2552,6 +2552,7 @@
     }
     function money2(v) { const a = Math.round((Number(v) || 0) * 100) / 100; return '₹' + (Number.isInteger(a) ? String(a) : a.toFixed(2)); }
     function renderCheckoutCouponTotals() {
+      if (checkoutBundle) { activeCouponCode = 'WELCOME10'; activeCouponPercent = 10; discountMode = 'coupon'; }
       const original = checkoutSubtotal();
       const comboSave = pairSavingFor(reviewKeys);
       const afterCombo = Math.round((original - comboSave) * 100) / 100;
@@ -2577,6 +2578,15 @@
       document.querySelector('#couponSection label').classList.toggle('hidden', raw > 0 && discountMode === 'combo');
       document.getElementById('modeComboText').textContent = 'Combo saving: save ' + money2(raw);
       document.querySelectorAll('input[name=discountMode]').forEach(r => { r.checked = r.value === discountMode; });
+      if (checkoutBundle) {
+        document.querySelector('#couponDiscountRow span').textContent = '3-book bundle · 10% off';
+        document.getElementById('discountModeBox').classList.add('hidden');
+        document.getElementById('couponSection').querySelector('div.mt-1').classList.add('hidden');
+        document.querySelector('#couponSection label').classList.add('hidden');
+        document.getElementById('clearCouponBtn').classList.add('hidden');
+        document.getElementById('createPurchaseBtn').disabled = !bundleValidated;
+      }
+
     }
     function showCouponStatus(message, valid = false) {
       const status = document.getElementById('couponStatus');
@@ -2585,6 +2595,7 @@
       status.classList.add(valid ? 'text-amber-700' : 'text-rose-600');
     }
     async function applyCheckoutCoupon() {
+      if (checkoutBundle) { showCouponStatus('The automatic 10% bundle discount cannot be combined with another coupon.', true); return; }
       const button = document.getElementById('applyCouponBtn');
       const code = document.getElementById('couponCodeInputCheckout').value.trim().toUpperCase();
       if (!code) { showCouponStatus('Enter a coupon code.'); return; }
@@ -2611,6 +2622,7 @@
       } finally { button.disabled = false; button.textContent = 'Apply'; }
     }
     function clearCheckoutCoupon() {
+      if (checkoutBundle) return;
       activeCouponCode = null; activeCouponPercent = 0;
       document.getElementById('couponCodeInputCheckout').value = '';
       document.getElementById('couponStatus').classList.add('hidden');
@@ -2656,8 +2668,9 @@
         }
       });
       document.getElementById("reviewItems").innerHTML = rows.join("");
-      document.getElementById("reviewOffer").innerHTML = pairOffersFor(reviewKeys).map(o => `<label class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm" style="background:rgba(16,185,129,.14);border-color:rgba(52,211,153,.65);color:#f1f5f9"><input type="checkbox" data-review-offer="${escapeHtml(o.bolt.id)}" ${addedBolts.has(String(o.bolt.id)) ? "checked" : ""} class="mt-1 h-4 w-4"><span><span class="font-black">Add ${escapeHtml(o.bolt.title)}</span><br><span class="text-xs" style="color:#cbd5e1">${o.save > 0 ? (Number(o.bolt.price) - o.save) <= 0 ? `Normal ${money(o.bolt.price)} · Free with this book` : `Normal ${money(o.bolt.price)} · Save ${money(o.save)} · You pay only ${money(Number(o.bolt.price) - o.save)} more` : `${money(o.bolt.price)} (combo saving is off while you use a coupon)`}</span></span></label>`).join("");
-      if (!activeCouponCode && pairSavingFor(reviewKeys) === 0) {
+      if (checkoutBundle) document.querySelectorAll('#reviewItems select').forEach(el => { el.disabled = true; el.title = 'Choose your three books in the bundle picker'; });
+      document.getElementById("reviewOffer").innerHTML = (checkoutBundle ? [] : pairOffersFor(reviewKeys)).map(o => `<label class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm" style="background:rgba(16,185,129,.14);border-color:rgba(52,211,153,.65);color:#f1f5f9"><input type="checkbox" data-review-offer="${escapeHtml(o.bolt.id)}" ${addedBolts.has(String(o.bolt.id)) ? "checked" : ""} class="mt-1 h-4 w-4"><span><span class="font-black">Add ${escapeHtml(o.bolt.title)}</span><br><span class="text-xs" style="color:#cbd5e1">${o.save > 0 ? (Number(o.bolt.price) - o.save) <= 0 ? `Normal ${money(o.bolt.price)} · Free with this book` : `Normal ${money(o.bolt.price)} · Save ${money(o.save)} · You pay only ${money(Number(o.bolt.price) - o.save)} more` : `${money(o.bolt.price)} (combo saving is off while you use a coupon)`}</span></span></label>`).join("");
+      if (!checkoutBundle && !activeCouponCode && pairSavingFor(reviewKeys) === 0) {
         try { if (localStorage.getItem('ce-auto-deep20') === '1') { const ci = document.getElementById('couponCodeInputCheckout'); if (ci && !ci.value.trim()) { ci.value = 'DEEP20'; applyCheckoutCoupon(); } } } catch (e) {}
       }
       renderCheckoutCouponTotals();
@@ -2710,6 +2723,10 @@
       let pairSaveAtSubmit = 0;
       try {
         if (!supabaseReady || !selectedBook) throw new Error("unavailable");
+        if (checkoutBundle) {
+          if (!isBundleSet(reviewKeys) || !await validateBundleOffer()) throw new Error('Bundle offer unavailable');
+          activeCouponCode = 'WELCOME10'; activeCouponPercent = 10;
+        }
         const accessToken = createPurchaseAccessToken();
         const finalKeys = reviewKeys.map(String);
         pairSaveAtSubmit = pairSavingFor(finalKeys);
@@ -2781,11 +2798,11 @@
           renderCheckoutCouponTotals(); showCouponStatus(message);
         }
         const pairRpcUnavailable = pairSaveAtSubmit > 0 && !purchaseSaved && (['PGRST202', 'PGRST203'].includes(couponErrorCode) || couponIssue.includes('could not find the function') || couponIssue.includes('schema cache'));
-        errorBox.textContent = pairRpcUnavailable ? "Combo offer is unavailable right now. Remove the combo book and try again." : purchaseSaved
+        errorBox.textContent = checkoutBundle && !purchaseSaved ? "The 3-book bundle offer could not be confirmed. No order was created. Please try again later." : pairRpcUnavailable ? "Combo offer is unavailable right now. Remove the combo book and try again." : purchaseSaved
           ? `Order ${latestPurchaseId} was saved, but checkout could not finish. Please do not create it again; refresh and check the saved order status.`
           : couponRpcUnavailable ? "Supabase cannot find the coupon checkout function. Run the latest supabase-coupons-migration.sql in the SQL Editor, then refresh this page and try again." : activeCouponCode ? `Coupon order creation failed${couponErrorCode ? ` (${couponErrorCode})` : ''}. Please try again; if it keeps failing, share this code with support.` : couponIssue.includes('coupon') ? "Your coupon is no longer available. Please review the updated total and try again." : "Something went wrong while creating your order. Please try again.";
         errorBox.classList.remove("hidden");
-      } finally { if (!couponPriceMismatch) { button.disabled = false; button.textContent = "Create order and continue"; } }
+      } finally { if (!couponPriceMismatch) { button.disabled = checkoutBundle && !bundleValidated; button.textContent = "Create order and continue"; } }
     }
 
     function createPurchaseAccessToken() {
@@ -3036,6 +3053,23 @@
     let latestPurchaseAccessToken = null;
     const PURCHASE_INDEX_KEY = "crazyebook-customer-purchase-index-v1";
     let checkoutCartKeys = [];
+    let checkoutBundle = false, bundleValidated = false;
+    let bundleCartKeys = [];
+    try { bundleCartKeys = JSON.parse(localStorage.getItem('ce-bundle-cart-v1') || '[]'); } catch (e) {}
+    function isBundleSet(keys) { return keys.length === 3 && bundleCartKeys.length === 3 && new Set(keys.map(String)).size === 3 && keys.every(k => bundleCartKeys.includes(String(k))); }
+    async function validateBundleOffer() {
+      bundleValidated = false;
+      try {
+        const { data, error } = await supabase.rpc('validate_coupon', { p_code:'WELCOME10' });
+        const row = Array.isArray(data) ? data[0] : data;
+        bundleValidated = !error && row?.status === 'valid' && Number(row.discount_percent) === 10;
+      } catch (e) {}
+      if (checkoutBundle) {
+        document.getElementById('createPurchaseBtn').disabled = !bundleValidated;
+        showCouponStatus(bundleValidated ? 'Automatic 3-book bundle: 10% off. Cannot combine with other offers.' : 'Bundle offer is unavailable right now. No order created. Please try again later.', bundleValidated);
+      }
+      return bundleValidated;
+    }
     let reviewKeys = [];
     let checkoutStep = 1;
     let bookPairs = [];
@@ -3119,8 +3153,9 @@
       document.getElementById("openCartBtn").setAttribute("aria-label", `Open cart, ${items.length} item${items.length === 1 ? "" : "s"}`);
       document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(coverUrl(safeHrefOrBlank(book.coverImage)))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}${book.editionLang && !String(book.title).toLowerCase().includes(String(book.editionLang).toLowerCase()) ? ` (${escapeHtml(book.editionLang)})` : ""}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
       const cartNormal = items.reduce((total,book) => total + Number(book.price || 0),0);
-      const cartSaving = pairSavingRaw(items.map(b => String(b.id)));
-      document.getElementById("cartTotal").innerHTML = (cartSaving > 0 ? `<del class="mr-2 text-xs opacity-60">${money(cartNormal)}</del>` : "") + money(cartNormal - cartSaving);
+      const cartBundle = isBundleSet(items.map(b => String(b.id)));
+      const cartSaving = cartBundle ? couponDiscountFor(cartNormal, 10) : pairSavingRaw(items.map(b => String(b.id)));
+      document.getElementById("cartTotal").innerHTML = (cartSaving > 0 ? `<del class="mr-2 text-xs opacity-60">${money(cartNormal)}</del>` : "") + money2(cartNormal - cartSaving) + (cartBundle ? '<span class="block text-xs font-bold text-amber-500">3-book bundle · 10% off</span>' : "");
       document.getElementById("cartCheckout").disabled = !items.length;
       document.querySelectorAll("[data-cart-remove]").forEach(button => button.addEventListener("click", () => { cartItems = cartItems.filter(id => String(id) !== button.dataset.cartRemove); saveCart(); }));
       renderCartReco(items);
@@ -3281,14 +3316,17 @@
       const picks = bundlePicks.map(id => STORE.books.find(b => String(b.id) === String(id))).filter(Boolean);
       const total = picks.reduce((sum, b) => sum + Number(b.price || 0), 0);
       document.getElementById("bundleCount").textContent = String(picks.length);
-      document.getElementById("bundleTotal").textContent = money2(total);
+      const discounted = picks.length === 3 ? Math.round((total - couponDiscountFor(total, 10)) * 100) / 100 : total;
+      document.getElementById("bundleTotal").textContent = money2(discounted) + (picks.length === 3 ? ' (10% off)' : '');
       const btn = document.getElementById("bundleCheckout");
       btn.disabled = picks.length !== 3;
-      btn.textContent = picks.length === 3 ? `Add 3 books and check out · ${money2(total)}` : "Add 3 books and check out";
+      btn.textContent = picks.length === 3 ? `Add 3 books and check out · ${money2(discounted)}` : "Add 3 books and check out";
     }
     document.getElementById("bundleCheckout").addEventListener("click", () => {
       const keys = bundlePicks.map(String).filter(key => STORE.books.some(b => String(b.id) === key && b.status !== "inactive" && !b.free && Number(b.price) > 0));
       if (keys.length !== 3) return;
+      bundleCartKeys = keys.slice();
+      try { localStorage.setItem('ce-bundle-cart-v1', JSON.stringify(bundleCartKeys)); } catch (e) {}
       keys.forEach(key => { if (!cartItems.some(id => String(id) === key)) cartItems.push(key); });
       saveCart();
       const first = STORE.books.find(b => String(b.id) === keys[0]);
@@ -3366,11 +3404,13 @@
       hideOtherOverlays("buy");
       checkoutCartKeys = Array.isArray(cartBookKeys) ? cartBookKeys.map(String) : [];
       reviewKeys = checkoutCartKeys.length ? checkoutCartKeys.slice() : [String(selectedBook.id)];
-      addedBolts = new Set(); discountMode = 'combo';
+      checkoutBundle = isBundleSet(reviewKeys); bundleValidated = false;
+      activeCouponCode = checkoutBundle ? 'WELCOME10' : null; activeCouponPercent = checkoutBundle ? 10 : 0;
+      addedBolts = new Set(); discountMode = checkoutBundle ? 'coupon' : 'combo';
       showCheckoutStep(1);
 
       latestPurchaseId = null; latestPurchasePrice = null; latestPurchaseAccessToken = null;
-      activeCouponCode = null; activeCouponPercent = 0;
+      activeCouponCode = checkoutBundle ? 'WELCOME10' : null; activeCouponPercent = checkoutBundle ? 10 : 0;
       const cartBooks = checkoutCartKeys.map(key => STORE.books.find(book => String(book.id) === key)).filter(Boolean);
       const cartCheckout = cartBooks.length > 0;
       document.getElementById("buyModalTitle").textContent = cartCheckout ? "Cart Checkout" : "Buy Now";
@@ -3385,6 +3425,9 @@
       try { const savedCust = JSON.parse(localStorage.getItem('ce-customer-details') || 'null'); if (savedCust) { if (savedCust.name) document.getElementById('customerName').value = savedCust.name; if (savedCust.whatsapp) document.getElementById('customerWhatsapp').value = savedCust.whatsapp; if (savedCust.telegram) document.getElementById('customerTelegram').value = savedCust.telegram; } } catch (e) {}
       document.getElementById("purchaseFormError").classList.add("hidden");
       document.getElementById("couponStatus").classList.add("hidden");
+      document.getElementById('createPurchaseBtn').disabled = checkoutBundle;
+      document.getElementById('createPurchaseBtn').textContent = 'Create order and continue';
+      if (checkoutBundle) { showCouponStatus('Checking automatic bundle offer…', true); validateBundleOffer(); }
 
       const isFree = !!selectedBook.free || Number(selectedBook.price) === 0;
       document.getElementById("modalPrice").textContent = isFree ? "Free" : money(cartCheckout ? cartBooks.reduce((sum, book) => sum + Number(book.price || 0), 0) : selectedBook.price);
