@@ -1553,11 +1553,10 @@
     let supabase = null;
     let privateLinks = {};
     let supabaseReady = false;
+    let catalogueReady = false;
 
     async function initializeSupabase() {
-      console.log("SKEL init", Date.now());
-      await new Promise(r => setTimeout(r, 5000));
-      console.log("SKEL delay done", Date.now());
+      await new Promise(r => setTimeout(r, 6000));
       if (SUPABASE_URL.includes("YOUR_PROJECT_REF") || SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") || ADMIN_EMAIL.includes("YOUR_OWNER_EMAIL")) return;
       const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
       supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
@@ -1576,7 +1575,6 @@
       const { data, error } = await supabase.from("storefront_public").select("data").eq("id", 1).maybeSingle();
       if (error) throw error;
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
-      console.log("SKEL merged books", STORE.books.length, Date.now());
       renderCart();
       await loadPublicReviews();
       await loadBookPairs();
@@ -1824,9 +1822,6 @@
     }
 
     function renderHero() {
-      console.log("SKEL renderHero books", STORE.books.length, Date.now());
-      const sceneCard = document.querySelector("#heroScene .hero-scene-card");
-      if (sceneCard) { sceneCard.classList.remove("ce-loading"); sceneCard.removeAttribute("aria-busy"); }
       document.querySelector("#home h1").textContent = STORE.heroTitle;
       (function () {
         const heroP = document.querySelector("#home p.mt-6");
@@ -1839,6 +1834,9 @@
         heroP.hidden = !heroP.textContent;
       })();
 
+      if (!catalogueReady) return;
+      const sceneCard = document.querySelector("#heroScene .hero-scene-card");
+      if (sceneCard) { sceneCard.classList.remove("ce-loading"); sceneCard.removeAttribute("aria-busy"); }
       const book = STORE.books.find(item => Number(item.id) === Number(STORE.featuredBookId)) || STORE.books[0];
       const title = document.getElementById("heroShowcaseTitle");
       const category = document.getElementById("heroShowcaseCategory");
@@ -3701,10 +3699,12 @@
     renderCart();
     renderFilters();
     initializeSupabase().then(() => {
+      catalogueReady = true;
       setupLinks(); renderFilters(); renderHero(); renderBooks(); renderReviews(); refreshAdminView();
       recordWebsiteVisit();
     }).catch(error => {
       console.error("Supabase initialization failed:", error);
+      catalogueReady = true;
       if (STORE.books.length) renderHero();
       else document.getElementById("featuredBook")?.classList.add("hidden");
       document.getElementById("adminLoginError").textContent = "Could not connect to Supabase. Check your project configuration and SQL setup.";
