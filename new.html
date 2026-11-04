@@ -961,10 +961,10 @@
         </button>
         <div id="ceHelpPanel" class="ce-set-panel hidden">
           <div class="grid grid-cols-2 gap-2">
-            <a href="https://ig.me/m/crazyebook.official" target="_blank" rel="noopener noreferrer" class="rounded-xl bg-slate-950 px-4 py-3 text-center text-sm font-extrabold text-white">📞 Call</a>
-            <button id="ceMessageBtn" type="button" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-extrabold text-white">✉️ Message</button>
+            <a href="https://ig.me/m/crazyebook.official" target="_blank" rel="noopener noreferrer" class="rounded-xl bg-slate-950 px-4 py-3 text-center text-sm font-extrabold text-white">📞 Instagram Call</a>
+            <a href="https://ig.me/m/crazyebook.official" target="_blank" rel="noopener noreferrer" class="rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-extrabold text-white">✉️ Instagram DM</a>
           </div>
-          <p class="mt-2 text-[11px] leading-4 opacity-60">Call opens our Instagram chat in the Instagram app - tap the phone icon at the top of the chat to start the call. Message opens our Telegram support chat.</p>
+          <p class="mt-2 text-[11px] leading-4 opacity-60">Both open our Instagram chat (@crazyebook.official) in the Instagram app. For a call, tap the phone icon at the top of the chat - Instagram calls can only be started inside the app.</p>
         </div>
       </div>
 
@@ -3707,13 +3707,6 @@
       diwaliRow.addEventListener("click", function () {
         try { localStorage.setItem(DIWALI_KEY, diwaliOn() ? "off" : "on"); } catch (e) {}
         location.reload();
-      });
-
-      // Help & Support: Message opens the Telegram support chat
-      byId("ceMessageBtn").addEventListener("click", function () {
-        var t = byId("footerTelegram") || byId("navTelegram");
-        if (t && t.href && !t.href.endsWith("#")) window.open(t.href, "_blank", "noopener");
-        else showToast && showToast("Support chat link is not available right now.", 3000, true);
       });
 
       // Bottom-nav Search: jump to the catalogue and focus the search box
