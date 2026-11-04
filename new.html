@@ -593,10 +593,12 @@
     html[data-theme="dark"] .ce-glass { background: rgba(23,31,70,.92); border-color: rgba(255,255,255,.12); box-shadow: 0 10px 34px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08); }
     .ce-tiles { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
     @media (min-width: 640px) { .ce-tiles { grid-template-columns: repeat(8, minmax(0,1fr)); } }
-    .ce-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 4px; border-radius: 1.1rem; font-size: 11px; font-weight: 800; color: inherit; background: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.4); backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5); box-shadow: 0 6px 20px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.5); transition: transform .16s ease, box-shadow .2s ease; cursor: pointer; }
+    .ce-tile { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 8px; border-radius: 1.1rem; font-size: 11px; font-weight: 800; color: inherit; background: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.4); backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5); box-shadow: 0 6px 20px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.5); transition: transform .16s ease, box-shadow .2s ease; cursor: pointer; }
     .ce-tile:active { transform: scale(.96); }
     html[data-theme="dark"] .ce-tile { background: rgba(23,31,70,.6); border-color: rgba(255,255,255,.12); box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
     .ce-tile-ic { font-size: 20px; line-height: 1; }
+    .ce-tile-art { display: block; width: 100%; }
+    .ce-tile-art img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: .8rem; }
     .diwali-theme-toggle { display: none !important; }
     .ce-tile-ic svg { width: 20px; height: 20px; display: block; }
     .ce-set-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 12px 2px; border: 0; background: none; color: inherit; font-weight: 800; font-size: 14px; cursor: pointer; text-align: left; }
@@ -738,6 +740,14 @@
     html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-auto { color:#5b4a2a; }
     .ce-details-actions { position:sticky; bottom:-0.75rem; z-index:2; margin-left:-.25rem; margin-right:-.25rem; padding:.5rem .25rem .25rem; background:#ffffff; border-top:1px solid rgba(120,120,140,.18); }
     html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-details-actions { background:#171F46; border-top-color:#3a4670; }
+    /* macOS-style traffic lights: header (desktop only) and modal top bars */
+    .ce-tl { width:12px; height:12px; border-radius:9999px; border:1px solid rgba(0,0,0,.18); display:inline-block; padding:0; box-sizing:border-box; }
+    .ce-tl-r { background:#FF5F57; } .ce-tl-y { background:#FEBC2E; } .ce-tl-g { background:#28C840; }
+    .ce-traffic { display:flex; align-items:center; gap:7px; }
+    button.ce-tl-r { cursor:pointer; flex:none; }
+    button.ce-tl-r:hover { filter:brightness(.92); }
+    button.ce-tl-r:focus-visible { outline:2px solid #FF8A00; outline-offset:2px; }
+    .ce-hd-traffic { margin-left:auto; gap:7px; align-items:center; }
   </style>
 </head>
 
@@ -749,8 +759,8 @@
   <header class="ce-glass-bar sticky top-0 z-40">
     <nav class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 sm:px-6 lg:px-8">
       <a href="#home" id="siteLogoLink" class="flex items-center gap-3" aria-label="Crazy E-Book home">
-        <img src="crazy-ebooks-logo.png" alt="Crazy E-Books" class="site-logo-light h-10 w-9 shrink-0 object-contain" width="40" height="46" fetchpriority="high" />
-        <img src="assets/crazy-ebook-logo-dark.jpeg" alt="" aria-hidden="true" class="site-logo-dark h-10 w-9 shrink-0 rounded-sm object-contain" width="40" height="46" fetchpriority="high" />
+        <img src="img/logo-crazy-badge.png" alt="Crazy E-Books" class="site-logo-light h-10 w-10 shrink-0 object-contain" width="40" height="40" fetchpriority="high" />
+        <img src="img/logo-crazy-badge.png" alt="" aria-hidden="true" class="site-logo-dark h-10 w-10 shrink-0 object-contain" width="40" height="40" fetchpriority="high" />
         <div>
           <div id="siteBrand" class="font-extrabold tracking-tight">Crazy E-Book</div>
           <div id="siteCreators" class="text-[11px] opacity-70">by Akki &amp; Aadi</div>
@@ -782,6 +792,8 @@
          class="hidden rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 lg:inline-flex">
         Telegram Support
       </a>
+
+      <span class="ce-hd-traffic hidden lg:flex" aria-hidden="true"><span class="ce-tl ce-tl-r"></span><span class="ce-tl ce-tl-y"></span><span class="ce-tl ce-tl-g"></span></span>
     </nav>
   </header>
 
@@ -805,15 +817,15 @@
       </div>
     </section>
 
-    <section class="mx-auto max-w-7xl px-4 pb-2 sm:px-6 lg:px-8" aria-label="Store promises">
-      <div class="ce-glass ce-trust reveal">
-        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg><span>Instant free samples</span></div>
-        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7v14H4z"/><path d="M13 5h7v14h-7z"/><path d="M11 5c-1.5-1.2-4-1.5-7-1v14c3-.5 5.5-.2 7 1 1.5-1.2 4-1.5 7-1V4c-3-.5-5.5-.2-7 1z"/></svg><span>Hindi + English books</span></div>
-        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Manual UPI check in 5-15 min</span></div>
-        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 5l-.7 3.2c.45 1.15.7 2.4.7 3.8z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span>Telegram support</span></div>
-      </div>
-    </section>
 
+    <section class="mx-auto max-w-7xl px-4 pb-2 pt-2 sm:px-6 lg:px-8" aria-label="Shop by category">
+      <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Shop by category</p>
+        <div class="ce-tiles mt-3" style="grid-template-columns: repeat(3, minmax(0,1fr));" aria-label="Book categories">
+          <button class="ce-tile" type="button" data-ce-category="Programming language"><span class="ce-tile-art" aria-hidden="true"><img src="img/cat-prog.webp" alt="" loading="lazy" decoding="async"></span><span>Programming Languages</span></button>
+          <button class="ce-tile" type="button" data-ce-category="Self Improvement"><span class="ce-tile-art" aria-hidden="true"><img src="img/cat-self.webp" alt="" loading="lazy" decoding="async"></span><span>Self Improvement</span></button>
+          <button class="ce-tile" type="button" data-ce-category="Programming Comic's"><span class="ce-tile-art" aria-hidden="true"><img src="img/cat-comics.webp" alt="" loading="lazy" decoding="async"></span><span>Comics</span></button>
+        </div>
+    </section>
     <section id="featuredBook" class="mx-auto max-w-7xl px-4 pb-2 pt-2 sm:px-6 lg:px-8" aria-label="Featured book">
       <div class="featured-book-panel hero-showcase">
 
@@ -901,32 +913,41 @@
             </div>
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="Free samples, slide 3 of 5">
-            <div class="deep-promo-card promo-si-card">
-              <p class="deep-promo-kicker promo-si-kicker">📖 Try before you buy</p>
-              <h2 class="deep-promo-title">Free sample of every book</h2>
-              <p class="deep-promo-text">Every book comes with a free sample PDF. Read the first pages, then decide.</p>
-              <div class="deep-promo-row">
-                <a class="deep-promo-btn" href="#books">Browse free samples</a>
+            <div class="deep-promo-card">
+              <img src="img/promo-sample.webp" width="1080" height="1350" loading="lazy" alt="Poster: Read the book before you buy - free sample PDF with every book">
+              <div>
+                <p class="deep-promo-kicker">📖 Try before you buy</p>
+                <h2 class="deep-promo-title">Free sample of every book</h2>
+                <p class="deep-promo-text">Every book comes with a free sample PDF. Read the first pages, then decide.</p>
+                <div class="deep-promo-row">
+                  <a class="deep-promo-btn" href="#books">Browse free samples</a>
+                </div>
               </div>
             </div>
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="Hindi and English editions, slide 4 of 5">
-            <div class="deep-promo-card promo-si-card">
-              <p class="deep-promo-kicker promo-si-kicker">🌏 Your language, your book</p>
-              <h2 class="deep-promo-title">Hindi + English editions</h2>
-              <p class="deep-promo-text">Many books come in both Hindi and English. Pick your language on the book card, or take both together.</p>
-              <div class="deep-promo-row">
-                <a class="deep-promo-btn" href="#books">See bilingual books</a>
+            <div class="deep-promo-card">
+              <img src="img/promo-bilingual.webp" width="1080" height="1350" loading="lazy" alt="Poster: Hindi and English editions of the same book, side by side">
+              <div>
+                <p class="deep-promo-kicker">🌏 Your language, your book</p>
+                <h2 class="deep-promo-title">Hindi + English editions</h2>
+                <p class="deep-promo-text">Many books come in both Hindi and English. Pick your language on the book card, or take both together.</p>
+                <div class="deep-promo-row">
+                  <a class="deep-promo-btn" href="#books">See bilingual books</a>
+                </div>
               </div>
             </div>
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="Telegram support, slide 5 of 5">
-            <div class="deep-promo-card promo-si-card">
-              <p class="deep-promo-kicker promo-si-kicker">💬 We reply fast</p>
-              <h2 class="deep-promo-title">Help on Telegram, 7 days a week</h2>
-              <p class="deep-promo-text">Questions about a book, a payment or a delivery? Message us on Telegram and we will sort it out.</p>
-              <div class="deep-promo-row">
-                <a class="deep-promo-btn" id="promoTelegramLink" href="#" target="_blank" rel="noopener noreferrer">Chat on Telegram</a>
+            <div class="deep-promo-card">
+              <img src="img/promo-telegram.webp" width="1080" height="1350" loading="lazy" alt="Poster: We reply fast on Telegram - support 7 days a week">
+              <div>
+                <p class="deep-promo-kicker">💬 We reply fast</p>
+                <h2 class="deep-promo-title">Help on Telegram, 7 days a week</h2>
+                <p class="deep-promo-text">Questions about a book, a payment or a delivery? Message us on Telegram and we will sort it out.</p>
+                <div class="deep-promo-row">
+                  <a class="deep-promo-btn" id="promoTelegramLink" href="#" target="_blank" rel="noopener noreferrer">Chat on Telegram</a>
+                </div>
               </div>
             </div>
           </div>
@@ -1023,14 +1044,6 @@
       </div>
     </section>
 
-    <section class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8" aria-label="Shop by category">
-      <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Shop by category</p>
-        <div class="ce-tiles mt-3" style="grid-template-columns: repeat(3, minmax(0,1fr));" aria-label="Book categories">
-          <button class="ce-tile" type="button" data-ce-category="Programming language"><span class="ce-tile-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/></svg></span><span>Programming</span></button>
-          <button class="ce-tile" type="button" data-ce-category="Self Improvement"><span class="ce-tile-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-4.2 3.1-6.4 7.5-6.4 0 4.2-3.1 6.4-7.5 6.4z"/><path d="M12 13c0-4.2-3.1-6.4-7.5-6.4 0 4.2 3.1 6.4 7.5 6.4z"/></svg></span><span>Self Improvement</span></button>
-          <button class="ce-tile" type="button" data-ce-category="Programming Comic's"><span class="ce-tile-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l3.5-4"/><path d="M7.5 8.5h9"/><path d="M7.5 12h5.5"/></svg></span><span>Comics</span></button>
-        </div>
-    </section>
 
     <section id="books" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-20 lg:px-8">
       <div class="reveal flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -1161,9 +1174,9 @@
 
   <div id="ceSettingsSheet" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="ce-glass max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-3xl p-5 shadow-2xl">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="ce-traffic"><button id="ceSettingsClose" type="button" class="ce-tl ce-tl-r" aria-label="Close settings"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div>
         <h2 class="text-lg font-black">Settings</h2>
-        <button id="ceSettingsClose" type="button" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close settings">×</button>
       </div>
 
       <div class="mt-3 border-b border-slate-400/20 pb-4">
@@ -1243,7 +1256,8 @@
 
   <div id="ceSitePopup" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-label="Site design choice">
     <div class="ce-glass w-full max-w-xs rounded-3xl p-5 text-center shadow-2xl">
-      <p class="text-2xl" aria-hidden="true">✨</p>
+      <div class="ce-traffic" aria-hidden="true"><span class="ce-tl ce-tl-r"></span><span class="ce-tl ce-tl-y"></span><span class="ce-tl ce-tl-g"></span></div>
+      <p class="mt-2 text-2xl" aria-hidden="true">✨</p>
       <h2 class="mt-1 text-base font-black">Prefer the classic look?</h2>
       <p class="mt-2 text-xs leading-5 opacity-75">You're on <strong>Site 1</strong>, our new design. <strong>Site 2</strong>, the classic version, is still here whenever you want it - from Settings too.</p>
       <div class="mt-4 grid gap-2">
@@ -1258,7 +1272,7 @@
        ========================================================= -->
   <div id="bookDetailsModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="bookDetailsTitle">
     <div class="max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-3 shadow-2xl sm:max-h-[92vh] sm:p-7">
-      <div class="flex justify-end"><button id="closeBookDetails" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Close">×</button></div>
+      <div class="flex items-center px-1 pt-1"><div class="ce-traffic"><button id="closeBookDetails" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div></div>
         <div class="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr] sm:gap-4">
         <img id="detailsCover" class="aspect-[2/3] w-full rounded-xl object-cover" alt="Book cover">
         <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div id="detailsMetadata" class="mt-4 space-y-3"></div><div id="detailsRelated" class="mt-5"></div><div class="ce-details-actions mt-5 grid grid-cols-2 gap-2"><div class="col-span-2 flex items-center justify-between rounded-xl px-1"><span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Price</span><span id="detailsBarPrice" class="text-lg font-black"></span></div><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-amber-400 px-3 py-3 text-sm font-bold text-slate-950">Buy Now</button></div></div>
@@ -1267,11 +1281,11 @@
   </div>
 
   <div id="cartModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2><button id="closeCart" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close">×</button></div><div id="cartItems" class="mt-4 space-y-3"></div><div id="cartReco" class="mt-4"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><div class="mt-4 grid grid-cols-2 gap-2"><button id="continueShopping" class="rounded-xl border px-4 py-3 font-bold">Continue shopping</button><button id="cartCheckout" class="rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout</button></div></div>
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeCart" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><h2 id="cartTitle" class="text-xl font-black">Your Cart</h2></div><div id="cartItems" class="mt-4 space-y-3"></div><div id="cartReco" class="mt-4"></div><div class="mt-4 flex justify-between border-t pt-4 font-black"><span>Total</span><span id="cartTotal"></span></div><div class="mt-4 grid grid-cols-2 gap-2"><button id="continueShopping" class="rounded-xl border px-4 py-3 font-bold">Continue shopping</button><button id="cartCheckout" class="rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white">Checkout</button></div></div>
   </div>
 
   <div id="libraryModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
-    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div><button id="closeLibrary" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100" aria-label="Close">×</button></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500">Loading your library…</p></div></div>
+    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeLibrary" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500">Loading your library…</p></div></div>
   </div>
 
   <div id="buyModal"
@@ -1280,15 +1294,13 @@
        aria-modal="true"
        aria-labelledby="buyModalTitle">
     <div class="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
-      <div class="flex items-start justify-between gap-4">
+      <div class="flex items-start gap-3">
+        <div class="ce-traffic" style="margin-top:.35rem"><button id="closeBuyModal" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div>
         <div>
           <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Checkout</p>
           <h2 id="buyModalTitle" class="mt-1 text-2xl font-black">Buy Now</h2>
           <p id="buyModalBook" class="mt-1 text-sm text-slate-500"></p>
         </div>
-        <button id="closeBuyModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">
-          ×
-        </button>
       </div>
 
       <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><p id="checkoutStepLabel" class="text-xs font-black uppercase tracking-widest text-indigo-600">Step 1 of 3 · Your details</p><div id="checkoutStepDetails" class="space-y-3"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID <span class="font-normal opacity-70">(optional)</span></label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p class="text-xs opacity-70">Add at least one: WhatsApp number or Telegram.</p><p id="detailsError" class="hidden text-sm font-bold text-rose-600"></p><button id="checkoutNextBtn" type="button" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Next</button></div><div id="checkoutStepReview" class="hidden space-y-3"><div id="reviewItems" class="space-y-2"></div><div id="reviewOffer" class="space-y-2"></div><fieldset id="discountModeBox" class="hidden space-y-2 rounded-xl border border-slate-200 p-3"><legend class="px-1 text-xs font-black">Choose one discount</legend><label class="flex cursor-pointer items-center gap-2 text-sm font-bold"><input type="radio" name="discountMode" value="combo" class="h-4 w-4"><span id="modeComboText">Combo saving</span></label><label class="flex cursor-pointer items-center gap-2 text-sm font-bold"><input type="radio" name="discountMode" value="coupon" class="h-4 w-4"><span>Use a coupon code instead</span></label></fieldset><section id="couponSection" class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Normal price</span><span id="couponOriginalTotal"></span></div><div id="comboSavingRow" class="hidden flex justify-between" style="color:#34d399"><span>Combo saving</span><span id="comboSavingTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><div class="flex gap-2"><button id="checkoutBackBtn" type="button" class="rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">Back</button><button id="createPurchaseBtn" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Create order and continue</button></div></div></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
@@ -1334,11 +1346,11 @@
   </div>
 
   <div id="reviewReadModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewReadTitle">
-    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div><button id="closeReviewRead" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close full review">×</button></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-amber-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
+    <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start gap-3"><div class="ce-traffic" style="margin-top:.35rem"><button id="closeReviewRead" type="button" class="ce-tl ce-tl-r" aria-label="Close full review"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><div><p id="reviewReadRating" class="text-sm font-black text-amber-500"></p><h2 id="reviewReadTitle" class="mt-1 text-lg font-black"></h2></div></div><p id="reviewReadBook" class="mt-2 text-xs font-bold text-amber-700"></p><p id="reviewReadComment" class="mt-4 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"></p><button id="closeReviewReadFooter" type="button" class="mt-5 rounded-xl border px-4 py-2.5 text-sm font-bold">Close</button></div>
   </div>
 
   <div id="reviewSubmitModal" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="reviewSubmitTitle">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start justify-between gap-4"><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div><button id="closeReviewSubmit" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100" aria-label="Close review form">×</button></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Submit Review</button></form></div>
+    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-start gap-3"><div class="ce-traffic" style="margin-top:.35rem"><button id="closeReviewSubmit" type="button" class="ce-tl ce-tl-r" aria-label="Close review form"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div><div><h2 id="reviewSubmitTitle" class="text-xl font-black">Write a Review</h2><p class="mt-1 text-xs text-slate-500">Available for books in your approved Library.</p></div></div><form id="customerReviewForm" class="mt-5 space-y-4"><label class="block text-sm font-bold">Book<select id="customerReviewBook" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="">Checking your Library…</option></select></label><label class="block text-sm font-bold">Rating<select id="customerReviewRating" required class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label class="block text-sm font-bold">Your review<textarea id="customerReviewComment" required minlength="1" maxlength="1000" rows="5" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-3 text-sm" placeholder="Share your experience"></textarea><span class="mt-1 block text-xs font-normal text-slate-500">Up to 1,000 characters. Your public name appears as “Verified customer” to protect checkout details.</span></label><p id="customerReviewStatus" class="hidden text-sm font-bold" role="status" aria-live="polite"></p><button id="submitCustomerReview" type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Submit Review</button></form></div>
   </div>
 
   <!-- =========================================================
@@ -1352,13 +1364,13 @@
        aria-labelledby="adminModalTitle">
     <div class="admin-panel w-full max-w-6xl rounded-3xl bg-white shadow-2xl">
       <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur sm:p-6">
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <div class="ce-traffic" style="margin-top:.35rem"><button id="closeAdminModal" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button><span class="ce-tl ce-tl-y" aria-hidden="true"></span><span class="ce-tl ce-tl-g" aria-hidden="true"></span></div>
           <div>
             <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Owner only</p>
             <h2 id="adminModalTitle" class="mt-1 text-2xl font-black">Crazy E-Book Admin Portal</h2>
             <p class="mt-1 text-sm text-slate-500">Manage books, pricing, ratings, free samples and the homepage showcase.</p>
           </div>
-          <button id="closeAdminModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200" aria-label="Close">×</button>
         </div>
       </div>
 
