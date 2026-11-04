@@ -492,6 +492,32 @@
     .deep-promo-note { margin-top:.4rem; font-size:.66rem; color:#9fb0e6; }
     @media (min-width:768px) { .deep-promo { padding:1.5rem 1.5rem 0; } .deep-promo-card { grid-template-columns:300px 1fr; padding:1.5rem 2rem; gap:2rem; border-radius:1.5rem; } .deep-promo-card img { max-width:340px; border-radius:1rem; } .deep-promo-kicker { font-size:.72rem; letter-spacing:.2em; } .deep-promo-title { margin-top:.4rem; font-size:2.4rem; } .deep-promo-text { margin-top:.6rem; font-size:.9rem; } .deep-promo-row { margin-top:1rem; gap:.6rem; } .deep-promo-code { padding:.6rem 1rem; border-radius:.9rem; font-size:1.15rem; } .deep-promo-btn { min-height:44px; padding:.6rem 1.1rem; border-radius:.9rem; font-size:.9rem; } .deep-promo-note { margin-top:.6rem; font-size:.75rem; } }
     @media (min-width:1024px) { .deep-promo { padding:1.5rem 2rem 0; } }
+
+    /* Offers carousel: Diwali offer + new book promos, auto-sliding and swipeable */
+    .promo-viewport { overflow:hidden; border-radius:1.1rem; touch-action:pan-y; padding:.2rem .2rem 2rem; margin:-.2rem -.2rem -2rem; }
+    .promo-track { display:flex; transition:transform .55s ease; will-change:transform; }
+    .promo-slide { flex:0 0 100%; min-width:0; }
+    .promo-slide .deep-promo-card { height:100%; box-sizing:border-box; }
+    .promo-track.js-on .promo-slide { visibility:hidden; transition:visibility 0s linear .55s; }
+    .promo-track.js-on .promo-slide.active { visibility:visible; transition-delay:0s; }
+    .promo-arrow { position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:36px; height:36px; border-radius:999px; border:1px solid rgba(255,179,0,.45); background:rgba(11,16,38,.72); color:#FFD54F; font-size:1.15rem; line-height:1; display:grid; place-items:center; cursor:pointer; }
+    .promo-arrow:hover { background:rgba(11,16,38,.92); }
+    .promo-arrow.prev { left:.45rem; } .promo-arrow.next { right:.45rem; }
+    .promo-dots { display:flex; gap:.45rem; justify-content:center; padding-top:.6rem; }
+    .promo-dot { width:8px; height:8px; padding:0; border-radius:999px; border:0; background:#c7cede; cursor:pointer; transition:transform .2s ease, background .2s ease; }
+    .promo-dot[aria-current="true"] { background:#FF8A00; transform:scale(1.35); }
+    .promo-carousel { position:relative; }
+    .promo-si-card { border-color:rgba(129,140,248,.5); background:radial-gradient(ellipse at 80% 0%,#312e81,transparent 62%),linear-gradient(145deg,#0f172a,#1e1b4b); }
+    .promo-si-covers { display:flex; align-items:center; justify-content:center; }
+    .promo-si-covers img { width:60%; height:auto; margin:0; border-radius:.5rem; display:block; box-shadow:0 8px 20px rgba(0,0,0,.4); }
+    .promo-si-covers img + img { margin-left:-24%; transform:rotate(5deg) translateY(4%); }
+    .promo-si-kicker { color:#A5B4FC; }
+    .promo-si-hindi { margin-top:.3rem; font-size:.72rem; font-weight:700; color:#e0e7ff; }
+    .promo-si-price { padding:.4rem .7rem; border-radius:.7rem; border:2px dashed #A5B4FC; background:rgba(129,140,248,.14); font-weight:900; font-size:.92rem; color:#C7D2FE; }
+    .promo-si-price small { font-size:.58rem; font-weight:800; letter-spacing:.04em; color:#9fb0e6; }
+    @media (min-width:768px) { .promo-viewport { border-radius:1.5rem; } .promo-si-hindi { margin-top:.5rem; font-size:.85rem; } .promo-si-price { padding:.55rem .9rem; border-radius:.9rem; font-size:1.05rem; } .promo-si-price small { font-size:.66rem; } }
+    @media (max-width:767px) { .promo-arrow { display:none; } .promo-si-desc { display:none; } }
+    @media (prefers-reduced-motion:reduce) { .promo-track { transition:none; } .promo-si-covers img + img { transform:none; } }
 </style>
   <style id="catalog-compact-mobile">
     @media (max-width: 639px) {
@@ -635,30 +661,98 @@
       </div>
     </section>
 
-    <!-- DIWALI COUPON PROMO -->
-    <section id="deepOffer" class="deep-promo" aria-label="Diwali offer">
-      <div class="deep-promo-card">
-        <img src="assets/share-preview-deep20.png" width="1080" height="1350" loading="lazy" alt="Crazy E-Books Diwali offer poster: 20% off with code DEEP20">
-        <div>
-          <p class="deep-promo-kicker">🪔 Diwali offer</p>
-          <h2 class="deep-promo-title">Use code <b>DEEP20</b> for 20% off</h2>
-          <p class="deep-promo-text">Pick your books, open the cart and enter the code at checkout to get 20% off your order.</p>
-          <div class="deep-promo-row">
-            <span class="deep-promo-code" id="deepCodeText">DEEP20</span>
-            <button type="button" class="deep-promo-btn" id="deepCopyBtn">Copy code</button>
-            <a class="deep-promo-btn" href="#books">Shop now</a>
+    <!-- OFFERS CAROUSEL: Diwali coupon + new Self Improvement books -->
+    <section id="deepOffer" class="deep-promo promo-carousel" aria-label="Offers and new books" aria-roledescription="carousel">
+      <div class="promo-viewport" id="promoViewport">
+        <div class="promo-track" id="promoTrack">
+          <div class="promo-slide active" role="group" aria-roledescription="slide" aria-label="Diwali offer, slide 1 of 2">
+            <div class="deep-promo-card">
+              <img src="assets/share-preview-deep20.png" width="1080" height="1350" loading="lazy" alt="Crazy E-Books Diwali offer poster: 20% off with code DEEP20">
+              <div>
+                <p class="deep-promo-kicker">🪔 Diwali offer</p>
+                <h2 class="deep-promo-title">Use code <b>DEEP20</b> for 20% off</h2>
+                <p class="deep-promo-text">Pick your books, open the cart and enter the code at checkout to get 20% off your order.</p>
+                <div class="deep-promo-row">
+                  <span class="deep-promo-code" id="deepCodeText">DEEP20</span>
+                  <button type="button" class="deep-promo-btn" id="deepCopyBtn">Copy code</button>
+                  <a class="deep-promo-btn" href="#books">Shop now</a>
+                </div>
+                <p class="deep-promo-note">Enter DEEP20 in the coupon box at checkout. The discount shows in your order total.</p>
+              </div>
+            </div>
           </div>
-          <p class="deep-promo-note">Enter DEEP20 in the coupon box at checkout. The discount shows in your order total.</p>
+          <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="New self improvement books, slide 2 of 2">
+            <div class="deep-promo-card promo-si-card">
+              <div class="promo-si-covers">
+                <img src="covers/motivational-en-cover.jpg" width="1200" height="1600" loading="lazy" alt="Cover of Being Alone, Connecting with Yourself">
+                <img src="covers/self-improvement-hi-cover.jpg" width="928" height="1238" loading="lazy" alt="Cover of कल से नहीं, आज से">
+              </div>
+              <div>
+                <p class="deep-promo-kicker promo-si-kicker">✨ New · Self Improvement</p>
+                <h2 class="deep-promo-title">Know yourself. <b>Start today.</b></h2>
+                <p class="deep-promo-text promo-si-desc">Two short, honest guides - <i>Being Alone, Connecting with Yourself</i> and <i>Not Tomorrow, Today</i>. 7 short chapters each, with a 7-day practice.</p>
+                <p class="promo-si-hindi">अकेले रहना, खुद से जुड़ना &nbsp;·&nbsp; कल से नहीं, आज से</p>
+                <div class="deep-promo-row">
+                  <span class="promo-si-price">₹49 <small>per language</small></span>
+                  <span class="promo-si-price">₹98 <small>Hindi + English</small></span>
+                  <a class="deep-promo-btn" href="#books">Explore new books</a>
+                </div>
+                <p class="deep-promo-note">Read in Hindi, English, or both - pick your language at checkout.</p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <button type="button" class="promo-arrow prev" id="promoPrev" aria-label="Previous offer">‹</button>
+      <button type="button" class="promo-arrow next" id="promoNext" aria-label="Next offer">›</button>
+      <div class="promo-dots" role="tablist" aria-label="Choose offer slide">
+        <button type="button" class="promo-dot" id="promoDot0" aria-label="Slide 1: Diwali offer" aria-current="true"></button>
+        <button type="button" class="promo-dot" id="promoDot1" aria-label="Slide 2: New self improvement books" aria-current="false"></button>
       </div>
     </section>
     <script>
       (function () {
-        var b = document.getElementById("deepCopyBtn"); if (!b) return;
-        b.addEventListener("click", function () {
+        var b = document.getElementById("deepCopyBtn");
+        if (b) b.addEventListener("click", function () {
           var done = function () { b.textContent = "Copied ✓"; setTimeout(function () { b.textContent = "Copy code"; }, 2000); };
           if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText("DEEP20").then(done, done); else done();
         });
+
+        var track = document.getElementById("promoTrack"); if (!track) return;
+        var viewport = document.getElementById("promoViewport");
+        var slides = track.children, n = slides.length; if (n < 2) return;
+        var dots = [document.getElementById("promoDot0"), document.getElementById("promoDot1")];
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+        var i = 0, timer = null, touchX = null;
+        track.classList.add("js-on");
+        function go(k) {
+          i = ((k % n) + n) % n;
+          track.style.transform = "translateX(" + (-i * 100) + "%)";
+          for (var j = 0; j < n; j++) {
+            slides[j].classList.toggle("active", j === i);
+            if (dots[j]) dots[j].setAttribute("aria-current", j === i ? "true" : "false");
+          }
+        }
+        function stop() { if (timer) { clearInterval(timer); timer = null; } }
+        function start() { if (timer || n < 2 || reduce.matches) return; timer = setInterval(function () { if (!document.hidden) go(i + 1); }, 5000); }
+        function userGo(k) { stop(); go(k); start(); }
+        document.getElementById("promoPrev").addEventListener("click", function () { userGo(i - 1); });
+        document.getElementById("promoNext").addEventListener("click", function () { userGo(i + 1); });
+        dots.forEach(function (d, j) { if (d) d.addEventListener("click", function () { userGo(j); }); });
+        viewport.addEventListener("pointerenter", stop);
+        viewport.addEventListener("pointerleave", function () { touchX = null; start(); });
+        viewport.addEventListener("focusin", stop);
+        viewport.addEventListener("focusout", start);
+        viewport.addEventListener("pointerdown", function (e) { touchX = e.clientX; stop(); });
+        viewport.addEventListener("pointerup", function (e) {
+          if (touchX === null) return;
+          var dx = e.clientX - touchX; touchX = null;
+          if (Math.abs(dx) > 40) go(i + (dx < 0 ? 1 : -1));
+          start();
+        });
+        viewport.addEventListener("pointercancel", function () { touchX = null; start(); });
+        if (reduce.addEventListener) reduce.addEventListener("change", function () { stop(); start(); });
+        go(0); start();
       })();
     </script>
 
