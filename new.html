@@ -908,6 +908,39 @@
       .promo-poster-card .deep-promo-text { font-size:.88rem; line-height:1.45; }
       .promo-poster-card .deep-promo-btn { min-height:46px; padding:.55rem 1rem; font-size:.85rem; }
     }
+
+    /* ===== v48: glossy look IS the site default (Akki) - restores glass on default theme only ===== */
+    html[data-ui-theme="default"][data-ui-theme="default"] .backdrop-blur-sm,
+    html[data-ui-theme="default"][data-ui-theme="default"] .backdrop-blur { backdrop-filter:blur(6px) !important; -webkit-backdrop-filter:blur(6px) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"] .ce-glass-bar,
+    html[data-ui-theme="default"][data-ui-theme="default"] .ce-glass,
+    html[data-ui-theme="default"][data-ui-theme="default"] .ce-tile,
+    html[data-ui-theme="default"][data-ui-theme="default"] .ce-search,
+    html[data-ui-theme="default"][data-ui-theme="default"] .ce-bottom-nav,
+    html[data-ui-theme="default"][data-ui-theme="default"] .hero-scene-card,
+    html[data-ui-theme="default"][data-ui-theme="default"] header.ce-glass-bar { backdrop-filter:blur(16px) saturate(1.5) !important; -webkit-backdrop-filter:blur(16px) saturate(1.5) !important; }
+
+    /* glossy surfaces - dark */
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .ce-glass { background:rgba(23,31,70,.82) !important; border-color:rgba(255,255,255,.20) !important; box-shadow:0 14px 34px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.22) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .ce-tile { background:linear-gradient(165deg, rgba(255,255,255,.17), rgba(255,255,255,.05) 55%, rgba(255,255,255,.02)) !important; border-color:rgba(255,255,255,.20) !important; box-shadow:0 10px 24px rgba(0,0,0,.40), inset 0 1px 0 rgba(255,255,255,.30) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .ce-search { background:rgba(23,31,70,.55) !important; border-color:rgba(255,255,255,.22) !important; box-shadow:0 6px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .ce-bottom-nav { background:rgba(15,21,50,.66) !important; border-top-color:rgba(255,255,255,.16) !important; box-shadow:0 -10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.16) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .hero-scene-card { background:rgba(23,31,70,.72) !important; border-color:rgba(255,255,255,.24) !important; box-shadow:0 16px 38px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.28) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .book-card { background:linear-gradient(168deg, rgba(255,255,255,.15), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 60%), linear-gradient(165deg,#20295a 0%,#141b3d 100%) !important; border-color:rgba(255,255,255,.18) !important; box-shadow:0 12px 28px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.22) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .deep-promo-card,
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"] .promo-si-card { border-color:rgba(255,213,79,.60) !important; box-shadow:0 14px 30px -6px rgba(3,6,20,.55), inset 0 1px 0 rgba(255,255,255,.24) !important; }
+
+    /* glossy surfaces - light */
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"] .ce-glass { background:rgba(255,255,255,.68) !important; border-color:rgba(255,255,255,.85) !important; box-shadow:0 12px 30px rgba(140,95,20,.16), inset 0 1px 0 rgba(255,255,255,.9) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"] .ce-tile { background:linear-gradient(165deg, rgba(255,255,255,.92), rgba(255,255,255,.55)) !important; border-color:rgba(255,255,255,.9) !important; box-shadow:0 8px 22px rgba(140,95,20,.14), inset 0 1px 0 #ffffff !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"] .ce-search { background:rgba(255,255,255,.70) !important; border-color:rgba(255,255,255,.85) !important; box-shadow:0 6px 18px rgba(140,95,20,.12), inset 0 1px 0 #ffffff !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"] .ce-bottom-nav { background:rgba(255,248,232,.72) !important; border-top-color:rgba(255,255,255,.80) !important; box-shadow:0 -10px 28px rgba(140,95,20,.16), inset 0 1px 0 rgba(255,255,255,.9) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"] .hero-scene-card { background:rgba(255,255,255,.78) !important; border-color:rgba(255,255,255,.90) !important; box-shadow:0 14px 34px rgba(140,95,20,.18), inset 0 1px 0 #ffffff !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"] .book-card { background:linear-gradient(168deg, rgba(255,255,255,.95), rgba(255,255,255,.60) 45%), linear-gradient(165deg,#fffdf6,#ffefd0) !important; border-color:#ffffff !important; box-shadow:0 10px 26px rgba(140,95,20,.16), inset 0 1px 0 #ffffff !important; }
+
+    /* glossy buttons - both modes */
+    html[data-ui-theme="default"][data-ui-theme="default"] .deep-promo-btn { background:linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.06) 48%, rgba(0,0,0,.10)), linear-gradient(135deg,#FF8A00,#FFB300 60%,#FFD54F) !important; box-shadow:0 8px 18px rgba(255,138,0,.35), inset 0 1px 0 rgba(255,255,255,.55) !important; }
+    html[data-ui-theme="default"][data-ui-theme="default"] .bg-amber-400 { background-image:linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.06) 48%, rgba(0,0,0,.08)) !important; box-shadow:0 8px 18px rgba(255,138,0,.30), inset 0 1px 0 rgba(255,255,255,.55) !important; }
 </style>
 </head>
 
@@ -1357,7 +1390,8 @@
         </button>
         <div id="ceUiPanel" class="ce-set-panel hidden">
           <div class="grid grid-cols-2 gap-2" id="ceUiOptions">
-            <button type="button" data-uit="default" class="ce-uit-opt" aria-pressed="true">Site default</button>
+            <button type="button" data-uit="default" class="ce-uit-opt" aria-pressed="true">Site default (glossy)</button>
+            <button type="button" data-uit="matte" class="ce-uit-opt" aria-pressed="false">Matte (old look)</button>
             <button type="button" data-uit="neu" class="ce-uit-opt" aria-pressed="false">Neumorphism</button>
             <button type="button" data-uit="clay" class="ce-uit-opt" aria-pressed="false">Claymorphism</button>
             <button type="button" data-uit="aurora" class="ce-uit-opt" aria-pressed="false">Aurora gradients</button>
@@ -4329,7 +4363,7 @@
 
       // UI theme picker (site-wide styles) + combinable effects
       var UIT_KEY = "ce-ui-theme-v1", FXP_KEY = "ce-fx-parallax-v1", FXH_KEY = "ce-fx-hover-v1";
-      var UIT_NAMES = { "default": "Site default", "neu": "Neumorphism", "clay": "Claymorphism", "aurora": "Aurora gradients", "brutal": "Neo-Brutalism", "bento": "Bento grid" };
+      var UIT_NAMES = { "default": "Glossy (default)", "matte": "Matte", "neu": "Neumorphism", "clay": "Claymorphism", "aurora": "Aurora gradients", "brutal": "Neo-Brutalism", "bento": "Bento grid" };
       var pxPairs = null, pxTick = false;
       function uitGet(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
       function paintUiTheme() {
