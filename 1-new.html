@@ -4672,9 +4672,18 @@
       try { audio.currentTime = 0; var p = audio.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
     }
     var selector = 'button,a[href],[role="button"],input[type="checkbox"],input[type="radio"],select,summary,.ce-tile,.ce-bn-item,.promo-dot,.category-btn,.book-card';
+    var pdown = null;
     document.addEventListener('pointerdown', function (e) {
-      if (e.isPrimary !== false && (e.button === undefined || e.button === 0) && e.target.closest(selector)) playTap();
+      if (e.isPrimary !== false && (e.button === undefined || e.button === 0) && e.target.closest(selector)) pdown = [e.clientX, e.clientY];
     }, { passive:true });
+    document.addEventListener('pointermove', function (e) {
+      if (pdown && Math.hypot(e.clientX - pdown[0], e.clientY - pdown[1]) > 12) pdown = null;
+    }, { passive:true });
+    document.addEventListener('pointerup', function (e) {
+      if (pdown && e.target.closest && e.target.closest(selector)) playTap();
+      pdown = null;
+    }, { passive:true });
+    document.addEventListener('pointercancel', function () { pdown = null; }, { passive:true });
     document.addEventListener('click', function (e) { if (e.detail === 0 && e.target.closest(selector)) playTap(); });
     var row = document.getElementById('ceSoundRow'), pill = document.getElementById('ceSoundState');
     function paintSound() { pill.textContent = soundOn ? 'On' : 'Off'; row.setAttribute('aria-pressed', String(soundOn)); }
