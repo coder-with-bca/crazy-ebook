@@ -1,5 +1,5 @@
-const CACHE = "crazy-ebook-v42";
-const FILES = ["./", "./index.html", "./new.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
+const CACHE = "crazy-ebook-v43";
+const FILES = ["./", "./index.html", "./new.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./diwali.js", "./hero-3d.js", "./upi-qr.jpg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
