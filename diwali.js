@@ -84,19 +84,14 @@
   html.diwali-night .diwali-toran {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    z-index: -1; /* behind the banner text, above its gradient (banner is a stacking context) */
     overflow: hidden;
     pointer-events: none;
     background: transparent;
   }
-  /* The toran now lives inside the sticky header as its background layer
-     (the header's own position: sticky anchors the absolute overlay), so the
-     nav rows must paint above it to keep the brand, links and Cart/Library
-     buttons fully readable and clickable. */
-  html.diwali-night body > header > nav { position: relative; z-index: 1; }
   html.diwali-night .diwali-toran .toran-wire {
-    position: absolute; left: 0; right: 0; top: 0; height: 12px;
-    border-bottom: 2px solid rgba(255, 179, 0, 0.45);
+    position: absolute; left: 0; right: 0; top: 1px; height: 8px;
+    border-bottom: 2px solid rgba(255, 179, 0, 0.4);
     border-radius: 0 0 50% 50% / 0 0 100% 100%;
   }
   html.diwali-night .diwali-toran .toran-hanger {
@@ -104,7 +99,7 @@
     background: linear-gradient(180deg, rgba(255, 179, 0, 0.55), rgba(255, 179, 0, 0.15));
   }
   html.diwali-night .diwali-toran .toran-flower {
-    position: absolute; width: 13px; height: 13px; border-radius: 50%;
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
     transform: translateX(-50%);
     box-shadow: 0 0 7px rgba(255, 179, 0, 0.55);
   }
@@ -112,7 +107,7 @@
   html.diwali-night .diwali-toran .toran-flower.gold { background: radial-gradient(circle at 35% 32%, #fff3c4 0%, #FFB300 58%, #dd8f00 100%); }
   html.diwali-night .diwali-toran .toran-flower.rani { background: radial-gradient(circle at 35% 32%, #ffb3d1 0%, #E0407B 60%, #b02158 100%); }
   html.diwali-night .diwali-toran .toran-bulb {
-    position: absolute; top: 11px; width: 6px; height: 6px; border-radius: 50%;
+    position: absolute; top: 6px; width: 5px; height: 5px; border-radius: 50%;
     transform: translateX(-50%);
     background: radial-gradient(circle, #fff8dc 0%, #FFD54F 70%);
     box-shadow: 0 0 8px 2px rgba(255, 213, 79, 0.75);
@@ -529,17 +524,17 @@
       document.body.insertBefore(root, document.body.firstChild);
     }
 
-    // Toran + fairy lights used as the sticky header's background layer
+    // Toran + fairy lights as the greeting banner's background layer
     var toran = document.createElement("div");
     toran.className = "diwali-toran";
     toran.setAttribute("aria-hidden", "true");
     toran.innerHTML = '<div class="toran-wire"></div>';
     var w = Math.max(320, window.innerWidth || 1024);
-    var count = Math.max(6, Math.min(16, Math.floor(w / 85)));
+    var count = Math.max(4, Math.min(12, Math.floor(w / 110)));
     var flowerClasses = ["marigold", "gold", "marigold", "rani"];
     for (var i = 0; i < count; i++) {
       var pct = ((i + 0.5) / count) * 100;
-      var stemLen = 4 + (i % 3) * 4;
+      var stemLen = 2 + (i % 3) * 3;
       var hanger = document.createElement("span");
       hanger.className = "toran-hanger";
       hanger.style.left = pct + "%";
@@ -548,7 +543,7 @@
       var flower = document.createElement("span");
       flower.className = "toran-flower " + flowerClasses[i % flowerClasses.length];
       flower.style.left = pct + "%";
-      flower.style.top = (10 + stemLen) + "px";
+      flower.style.top = (6 + stemLen) + "px";
       toran.appendChild(flower);
       if (i < count - 1) {
         var bulb = document.createElement("span");
@@ -568,13 +563,8 @@
       deep.style.animationDelay = ((j % 6) * 0.43 + 0.2) + "s";
       toran.appendChild(deep);
     }
-    // Hang the toran inside the header (background layer) instead of as a
-    // separate strip between the banner and the header
-    if (header) {
-      header.appendChild(toran);
-    } else if (root.parentNode) {
-      root.parentNode.insertBefore(toran, root.nextSibling);
-    }
+    // Hang the toran inside the banner, behind its greeting text
+    banner.appendChild(toran);
 
     // Hero decorations
     var hero = document.getElementById("heroSection");
