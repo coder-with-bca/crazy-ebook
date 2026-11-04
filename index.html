@@ -695,9 +695,9 @@
                 <div class="deep-promo-row">
                   <span class="promo-si-price">₹49 <small>per language</small></span>
                   <span class="promo-si-price">₹98 <small>Hindi + English</small></span>
-                  <a class="deep-promo-btn" href="#books">Explore new books</a>
+                  <a class="deep-promo-btn" id="promoSiCta" href="#books">Explore new books</a>
                 </div>
-                <p class="deep-promo-note">Read in Hindi, English, or both - pick your language at checkout.</p>
+                <p class="deep-promo-note">Each book: ₹49 in Hindi or English, ₹98 for both languages - choose the language on the book card.</p>
               </div>
             </div>
           </div>
@@ -736,6 +736,11 @@
         function stop() { if (timer) { clearInterval(timer); timer = null; } }
         function start() { if (timer || n < 2 || reduce.matches) return; timer = setInterval(function () { if (!document.hidden) go(i + 1); }, 5000); }
         function userGo(k) { stop(); go(k); start(); }
+        var siCta = document.getElementById("promoSiCta");
+        if (siCta) siCta.addEventListener("click", function () {
+          var pill = document.querySelector('.category-btn[data-category="Self Improvement"]');
+          if (pill) pill.click();
+        });
         document.getElementById("promoPrev").addEventListener("click", function () { userGo(i - 1); });
         document.getElementById("promoNext").addEventListener("click", function () { userGo(i + 1); });
         dots.forEach(function (d, j) { if (d) d.addEventListener("click", function () { userGo(j); }); });
