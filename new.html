@@ -3702,7 +3702,8 @@
       recordWebsiteVisit();
     }).catch(error => {
       console.error("Supabase initialization failed:", error);
-      renderHero();
+      if (STORE.books.length) renderHero();
+      else document.getElementById("featuredBook")?.classList.add("hidden");
       document.getElementById("adminLoginError").textContent = "Could not connect to Supabase. Check your project configuration and SQL setup.";
     });
     renderBooks();
