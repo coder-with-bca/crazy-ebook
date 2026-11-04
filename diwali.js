@@ -118,8 +118,8 @@
     box-shadow: 0 0 8px 2px rgba(255, 213, 79, 0.75);
   }
   html.diwali-night .diwali-toran .toran-bulb.deep {
-    width: 5px; height: 5px; opacity: 0.85;
-    box-shadow: 0 0 7px 1.5px rgba(255, 213, 79, 0.6);
+    width: 5px; height: 5px; opacity: 0.65;
+    box-shadow: 0 0 7px 1.5px rgba(255, 213, 79, 0.55);
   }
 
   /* --------------------- midnight-indigo surfaces --------------------- */
@@ -535,11 +535,11 @@
     toran.setAttribute("aria-hidden", "true");
     toran.innerHTML = '<div class="toran-wire"></div>';
     var w = Math.max(320, window.innerWidth || 1024);
-    var count = Math.max(8, Math.min(22, Math.floor(w / 60)));
+    var count = Math.max(6, Math.min(16, Math.floor(w / 85)));
     var flowerClasses = ["marigold", "gold", "marigold", "rani"];
     for (var i = 0; i < count; i++) {
       var pct = ((i + 0.5) / count) * 100;
-      var stemLen = 8 + (i % 4) * 6;
+      var stemLen = 4 + (i % 3) * 4;
       var hanger = document.createElement("span");
       hanger.className = "toran-hanger";
       hanger.style.left = pct + "%";
@@ -559,7 +559,7 @@
       }
     }
     // Extra fairy bulbs scattered deeper into the header background
-    var deepCount = Math.max(4, Math.floor(count * 0.6));
+    var deepCount = Math.max(4, Math.floor(count * 0.5));
     for (var j = 0; j < deepCount; j++) {
       var deep = document.createElement("span");
       deep.className = "toran-bulb deep";
