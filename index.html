@@ -652,9 +652,7 @@
         </div>
 
         <div class="hero-details reveal">
-          <p class="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter.
-          </p>
+          <p class="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg" hidden></p>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#books"
@@ -1339,7 +1337,7 @@
       upiId: "",
       upiQrImage: "upi-qr.jpg",
       heroTitle: "Learn faster. Study smarter. Build more.",
-      heroText: "Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter.",
+      heroText: "",
       featuredBookId: null,
       reviews: [],
       books: [] /* Real books are added by the admin; no demo products are published. */
@@ -1737,8 +1735,11 @@
       (function () {
         const heroP = document.querySelector("#home p.mt-6");
         const t = (STORE.heroText || "").trim();
-        const removed = "Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.";
-        heroP.textContent = t === removed ? "" : t;
+        const removed = [
+          "Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.",
+          "Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter."
+        ];
+        heroP.textContent = removed.includes(t) ? "" : t;
         heroP.hidden = !heroP.textContent;
       })();
 
