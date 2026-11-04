@@ -22,7 +22,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
   <script>try { localStorage.setItem("crazyebook-theme-v1", "dark"); } catch (e) {} document.documentElement.dataset.theme = "dark";</script>
-  <script>try{if(localStorage.getItem("ce-design-v1")==="new"){location.replace("new.html"+location.search+location.hash);}}catch(e){}</script>
+  <script>try{if(localStorage.getItem("ce-design-v1")!=="old"){location.replace("new.html"+location.search+location.hash);}}catch(e){}</script>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
@@ -587,13 +587,13 @@
          class="hidden rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 lg:inline-flex">
         Telegram Support
       </a>
-      <button id="trySite2Btn" type="button" onclick="try{localStorage.setItem('ce-design-v1','new')}catch(e){};location.href='new.html'+location.search+location.hash;" class="hidden rounded-full border border-indigo-200 px-4 py-2 text-sm font-extrabold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 lg:inline-flex" aria-label="Try Site 2, the new design">✨ Try Site 2</button>
+      <button id="trySite2Btn" type="button" onclick="try{localStorage.setItem('ce-design-v1','new')}catch(e){};location.href='new.html'+location.search+location.hash;" class="hidden rounded-full border border-indigo-200 px-4 py-2 text-sm font-extrabold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 lg:inline-flex" aria-label="Try Site 1, the new design">✨ Try Site 1</button>
     </nav>
     <nav class="mobile-section-nav flex gap-5 overflow-x-auto border-t border-slate-200 px-4 py-2.5 text-xs font-bold lg:hidden" aria-label="Main sections">
       <a href="#books" class="shrink-0">Books</a>
       <a href="#how-to-buy" class="shrink-0">How to Buy</a>
       <a href="#faq" class="shrink-0">FAQ</a>
-      <button id="trySite2BtnM" type="button" onclick="try{localStorage.setItem('ce-design-v1','new')}catch(e){};location.href='new.html'+location.search+location.hash;" class="shrink-0 rounded-full border border-indigo-200 px-2.5 py-1 font-black text-indigo-700" aria-label="Try Site 2, the new design">✨ Try Site 2</button>
+      <button id="trySite2BtnM" type="button" onclick="try{localStorage.setItem('ce-design-v1','new')}catch(e){};location.href='new.html'+location.search+location.hash;" class="shrink-0 rounded-full border border-indigo-200 px-2.5 py-1 font-black text-indigo-700" aria-label="Try Site 1, the new design">✨ Try Site 1</button>
     </nav>
   </header>
 
