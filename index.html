@@ -21,7 +21,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
-  <script>try { localStorage.setItem("crazyebook-theme-v1", "dark"); } catch (e) {} document.documentElement.dataset.theme = "dark";</script>
+  <script>try { var __ceTheme = localStorage.getItem("crazyebook-theme-v1"); document.documentElement.dataset.theme = (__ceTheme === "light") ? "light" : "dark"; } catch (e) { document.documentElement.dataset.theme = "dark"; }</script>
   <script>try{if(localStorage.getItem("ce-design-v1")!=="old"){location.replace("new.html"+location.search+location.hash);}}catch(e){}</script>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
@@ -1679,8 +1679,9 @@
       // Diwali brief: every fresh visit and reload opens in dark mode, even when a
       // previous session saved "light". The toggle still works after loading, and
       // unrelated saved data (cart, library) is left untouched.
-      try { localStorage.setItem(THEME_KEY, "dark"); } catch {}
-      applyTheme("dark");
+      let savedTheme = null;
+      try { savedTheme = localStorage.getItem(THEME_KEY); } catch {}
+      applyTheme(savedTheme === "light" ? "light" : "dark");
     }
 
     function bookSampleHref(book) {
