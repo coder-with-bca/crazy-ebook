@@ -513,7 +513,7 @@
     banner.setAttribute("role", "note");
     banner.innerHTML =
       '<span class="diwali-banner-sparkle sparkle-left" aria-hidden="true">🪔</span>' +
-      "Happy Diwali! Diwali Sale is LIVE — use code <strong>WELCOME10</strong> at checkout ✨" +
+      "Happy Diwali! Diwali Sale is LIVE — use code <strong>DEEP20</strong> for 20% off at checkout ✨" +
       '<span class="diwali-banner-sparkle sparkle-right" aria-hidden="true">🪔</span>';
     root.appendChild(banner);
 

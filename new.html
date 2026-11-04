@@ -393,7 +393,7 @@
     .book-card .book-detail-reveal { position:absolute; z-index:4; left:12px; right:12px; bottom:12px; transform:translateY(150%); opacity:0; transition:transform .38s cubic-bezier(.2,.9,.25,1),opacity .2s ease; }
     .book-card:hover .book-detail-reveal, .book-card:focus-within .book-detail-reveal { transform:translateY(0); opacity:1; }
     .book-card .book-card-cover { transition:transform .35s cubic-bezier(.2,.8,.2,1); }
-    .book-card .book-card-cover img { loading:lazy; }
+
     .book-detail-reveal button { width:100%; min-height:42px; border-radius:12px; background:var(--store-ink); color:white; font-size:12px; font-weight:850; box-shadow:0 8px 22px #101b2d33; }
     #cartModal { justify-content:flex-end; padding:0; }
     #cartModal > div { width:min(100%,460px); height:100%; max-height:100dvh; border-radius:24px 0 0 24px; padding:24px; animation:cart-drawer-in .35s cubic-bezier(.2,.8,.2,1) both; }
@@ -629,6 +629,110 @@
     .ce-bottom-nav { padding-left: 4px; padding-right: 4px; gap: 0; }
     .ce-bn-item { min-width: 0; flex: 1 1 0; padding: 4px 1px; font-size: 9px; white-space: nowrap; }
     @media (min-width: 1024px) { .ce-bn-item { padding: 4px 10px; font-size: 11px; } }
+
+    /* ===== Header Diwali theme (dark default) + true light mode (no dark surfaces) ===== */
+    html[data-theme="dark"][data-theme="dark"] header.ce-glass-bar { background: linear-gradient(90deg,#0B1026 0%,#1b1550 52%,#3a1648 100%) !important; border-bottom: 3px solid transparent !important; border-image: linear-gradient(90deg,#FF8A00,#FFD54F,#E0407B,#FFD54F,#FF8A00) 1 !important; color:#FFF8EA !important; box-shadow: 0 8px 26px rgba(0,0,0,.4), 0 0 24px rgba(255,179,0,.14) !important; }
+    header.ce-glass-bar { position: sticky; overflow: hidden; }
+    header.ce-glass-bar::before { content:""; position:absolute; inset:0; pointer-events:none; background: radial-gradient(circle at 12% 30%,rgba(255,179,0,.20),transparent 38%), radial-gradient(circle at 90% 70%,rgba(224,64,123,.18),transparent 40%); }
+    header.ce-glass-bar nav { position: relative; }
+    html[data-theme="dark"][data-theme="dark"] header.ce-glass-bar #siteBrand { color:#FFD54F !important; text-shadow:0 0 14px rgba(255,179,0,.35); }
+    html[data-theme="dark"][data-theme="dark"] header.ce-glass-bar #siteCreators { color:#FFF8EA !important; opacity:.78; }
+    header.ce-glass-bar #navTelegram { background: linear-gradient(135deg,#FF8A00,#FFB300) !important; color:#2e1a00 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] header.ce-glass-bar { background: linear-gradient(90deg,rgba(255,252,243,.82),rgba(255,239,205,.78) 55%,rgba(255,228,238,.8)) !important; backdrop-filter: blur(20px) saturate(1.7); -webkit-backdrop-filter: blur(20px) saturate(1.7); border-bottom: 3px solid transparent !important; border-image: linear-gradient(90deg,#FF8A00,#FFD54F,#E0407B,#FFD54F,#FF8A00) 1 !important; color:#2a1a00 !important; box-shadow: 0 8px 26px rgba(120,80,0,.12), inset 0 1px 0 rgba(255,255,255,.7) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] header.ce-glass-bar #siteBrand { color:#8a3a00 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] header.ce-glass-bar #siteCreators { color:#6b5420 !important; opacity:1; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] { --diwali-sky: radial-gradient(ellipse at 85% 8%,rgba(224,64,123,.10),transparent 46%), radial-gradient(ellipse at 12% 88%,rgba(255,138,0,.12),transparent 44%), linear-gradient(163deg,#fffaf0 0%,#fff4e0 50%,#ffedf2 100%); }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] body { background: var(--diwali-sky) !important; color:#101B2D !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .diwali-banner { background: linear-gradient(90deg,#fff3c4 0%,#ffd98a 50%,#fff3c4 100%) !important; color:#5a2d00 !important; text-shadow:none !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .diwali-banner strong { color:#b45309 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #books > .reveal > div > p, html[data-theme="light"][data-theme="light"][data-theme="light"] #how-to-buy > div > .reveal > p, html[data-theme="light"][data-theme="light"][data-theme="light"] #authors > .grid > .reveal > p, html[data-theme="light"][data-theme="light"][data-theme="light"] #faq > div > .reveal > p { color:#5b4a2a !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #books > .reveal > div > p:first-child, html[data-theme="light"][data-theme="light"][data-theme="light"] #how-to-buy > div > .reveal > p:first-child, html[data-theme="light"][data-theme="light"][data-theme="light"] #authors > .grid > .reveal > p:first-child, html[data-theme="light"][data-theme="light"][data-theme="light"] #faq > div > .reveal > p:first-child { color:#b45309 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #books > .reveal h2, html[data-theme="light"][data-theme="light"][data-theme="light"] #how-to-buy > div > .reveal h2, html[data-theme="light"][data-theme="light"][data-theme="light"] #authors > .grid > .reveal > h2, html[data-theme="light"][data-theme="light"][data-theme="light"] #faq > div > .reveal h2 { color:#1f1b3a !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #books > .mt-4 > label, html[data-theme="light"][data-theme="light"][data-theme="light"] #books > .mt-4 > span { color:#5b4a2a !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #books .book-view-btn:not([aria-pressed="true"]) { color:#3b2f14 !important; background-color:#fff !important; border-color:rgba(255,179,0,.55) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .reveal h1 { color:#2a1a00 !important; text-shadow:none !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .reveal p { color:#5b4a2a !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .reveal [class~="text-slate-600"] { color:#6b5420 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .reveal [class~="text-slate-500"] { color:#7a6a45 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .reveal [class~="bg-slate-50"] { background-color: rgba(255,179,0,.16) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .reveal [class~="border-slate-200"] { border-color: rgba(217,119,6,.35) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #heroSection .hero-scene { background: radial-gradient(ellipse at 50% 30%,rgba(255,179,0,.22),transparent 58%), linear-gradient(145deg,#fffdf7,#fbeccb) !important; box-shadow: 0 24px 60px rgba(160,100,0,.18) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .catalog-category-heading h3 { color:#b45309 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] body > footer { background: linear-gradient(180deg,#fff3dc 0%,#ffe6bf 100%) !important; color:#3b2f14 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] body > footer [class*="text-"] { color:#5b4a2a !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] body > footer [class*="border-"] { border-color: rgba(180,83,9,.25) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-card { background: radial-gradient(ellipse at 20% 0%,#fff3c4,transparent 60%), linear-gradient(145deg,#fffaf0,#ffe9bd) !important; color:#2a1a00 !important; box-shadow: 0 16px 36px rgba(160,100,0,.18) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-card img { box-shadow: 0 8px 20px rgba(120,80,0,.25); }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-title { color:#2a1a00 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-title b { color:#c2410c !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-kicker { color:#b45309 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-text { color:#5b4a2a !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-note { color:#7a6a45 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-code { color:#b45309 !important; background: rgba(255,179,0,.2) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-card { background: radial-gradient(ellipse at 80% 0%,#e0e7ff,transparent 62%), linear-gradient(145deg,#faf5ff,#e0e7ff) !important; border-color: rgba(99,102,241,.35) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-kicker { color:#4338ca !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-book { background: rgba(255,255,255,.7) !important; border-color: rgba(99,102,241,.3) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-book h3 { color:#1e1b4b !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-book p, html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-covers figcaption, html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-price small, html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-price del { color:#4b5563 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-price { color:#312e81 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-si-save { color:#15803d !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .promo-arrow { background: rgba(255,255,255,.88) !important; color:#b45309 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .diwali-footer-wish { color:#8a3a00 !important; background:none !important; -webkit-text-fill-color:#8a3a00 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] [class~="bg-slate-950"], html[data-theme="light"][data-theme="light"][data-theme="light"] [class~="bg-slate-900"] { background: linear-gradient(135deg,#FF8A00,#FFB300 60%,#FFD54F) !important; color:#2e1a00 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] body > footer[class~="bg-slate-950"] { background: linear-gradient(180deg,#fff3dc 0%,#ffe6bf 100%) !important; color:#3b2f14 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #ceSettingsSheet { background: rgba(255,244,220,.55) !important; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #ceSettingsSheet .ce-glass { background: rgba(255,252,243,.94) !important; }
+    /* ===== Matte finish: no glass blur, no translucency, no glossy highlights ===== */
+    .backdrop-blur-sm, .backdrop-blur, .ce-glass-bar, .ce-glass, .ce-tile, .ce-search, .ce-bottom-nav, .hero-scene-card, .hero-scene-hint, header.ce-glass-bar { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    header.ce-glass-bar::before { display: none !important; }
+    html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass, html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile, html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-search, html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-bottom-nav { border-color:#3a4670 !important; box-shadow: 0 2px 8px rgba(0,0,0,.30) !important; }
+    html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-glass, html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-tile, html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-search, html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .hero-scene-card { background:#171F46 !important; }
+    html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-bottom-nav { background:#101636 !important; }
+    html[data-theme="dark"][data-theme="dark"][data-theme="dark"] header.ce-glass-bar { box-shadow: 0 2px 8px rgba(0,0,0,.35) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass, html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile, html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-search, html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-bottom-nav { border-color:#f0d9a8 !important; box-shadow: 0 2px 8px rgba(120,80,0,.10) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-glass, html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-search, html[data-theme="light"][data-theme="light"][data-theme="light"] .hero-scene-card { background:#fffcf3 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-tile { background:#ffffff !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-bottom-nav { background:#fff8e8 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] header.ce-glass-bar { background: linear-gradient(90deg,#fffaf0,#ffeccb 55%,#ffe3ec) !important; box-shadow: 0 2px 8px rgba(120,80,0,.12) !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] #ceSettingsSheet { background: rgba(255,244,220,.82) !important; }
+
+    /* ===== Nov 2026 upgrade: skeleton loader, trust strip, header diyas ===== */
+    .ce-skel-wrap { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+    .ce-skel-card { border-radius:1rem; border:1px solid #3a4670; background:#171F46; padding:.75rem; animation:ceSkelPulse 1.4s ease-in-out infinite; }
+    .ce-skel-cover { aspect-ratio:2/3; border-radius:.75rem; background:#222c55; }
+    .ce-skel-line { height:10px; border-radius:6px; background:#222c55; margin-top:.6rem; }
+    @keyframes ceSkelPulse { 0%,100% { opacity:1 } 50% { opacity:.5 } }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-skel-card { border-color:#f0d9a8; background:#fffcf3; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-skel-cover, html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-skel-line { background:#f3e6c8; }
+    .ce-trust { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem .9rem; padding:.8rem 1rem; border-radius:1rem; }
+    @media (min-width:640px) { .ce-trust { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+    .ce-trust-item { display:flex; align-items:center; gap:.45rem; font-size:11px; font-weight:800; line-height:1.25; }
+    .ce-trust-item svg { width:15px; height:15px; flex:0 0 auto; color:#FFB300; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-trust-item svg { color:#b45309; }
+    .ce-diyas { flex:1 1 auto; display:flex; justify-content:center; align-items:center; min-width:0; height:30px; overflow:hidden; }
+    .ce-diyas svg { height:30px; width:auto; max-width:100%; }
+    .ce-flame { transform-box:fill-box; transform-origin:50% 100%; animation:ceFlame 1.7s ease-in-out infinite; }
+    .ce-flame-in { animation-duration:1.3s; }
+    .ce-diyas .diya:nth-child(2) .ce-flame { animation-delay:.35s; }
+    .ce-diyas .diya:nth-child(3) .ce-flame { animation-delay:.7s; }
+    .ce-diyas .diya:nth-child(4) .ce-flame { animation-delay:.2s; }
+    .ce-diyas .diya:nth-child(5) .ce-flame { animation-delay:.55s; }
+    .ce-diyas .diya:nth-child(6) .ce-flame { animation-delay:.9s; }
+    @keyframes ceFlame { 0%,100% { transform:scaleY(1) } 50% { transform:scaleY(.8) scaleX(1.1) } }
+    @media (max-width:430px) { .ce-diyas .diya:nth-child(6) { display:none; } }
+    @media (max-width:360px) { .ce-diyas .diya:nth-child(5) { display:none; } }
+
+    /* ===== Nov 2026 upgrade batch 2: cards, badges, sticky bar, offer extras ===== */
+    .book-card { transition:transform .15s ease, box-shadow .2s ease; }
+    .book-card:active { transform:scale(.985); }
+    .ce-save-badge { display:inline-block; margin-top:.35rem; border-radius:999px; background:rgba(52,211,153,.16); color:#34d399; font-size:10px; font-weight:900; padding:.18rem .55rem; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .ce-save-badge { background:#DCFCE7; color:#15803d; }
+    .deep-promo-timer { margin-top:.55rem; font-size:.78rem; font-weight:900; color:#FFD54F; }
+    .deep-promo-auto { margin-top:.45rem; display:flex; align-items:center; gap:.45rem; font-size:.74rem; font-weight:700; cursor:pointer; color:#FFF8EA; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-timer { color:#b45309; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] .deep-promo-auto { color:#5b4a2a; }
+    .ce-details-actions { position:sticky; bottom:-0.75rem; z-index:2; margin-left:-.25rem; margin-right:-.25rem; padding:.5rem .25rem .25rem; background:#ffffff; border-top:1px solid rgba(120,120,140,.18); }
+    html[data-theme="dark"][data-theme="dark"][data-theme="dark"] .ce-details-actions { background:#171F46; border-top-color:#3a4670; }
   </style>
 </head>
 
@@ -647,8 +751,17 @@
           <div id="siteCreators" class="text-[11px] opacity-70">by Akki &amp; Aadi</div>
         </div>
       </a>
-      <span class="ce-site-badge" title="You're browsing Site 1, the new design">Site 1</span>
-      <button id="headerSiteSwitch" type="button" class="ml-auto rounded-full border border-white/30 px-3 py-1.5 text-[11px] font-extrabold opacity-90 transition hover:opacity-100" title="Switch to Site 2, the classic design">🔁 Site 2</button>
+
+      <div class="ce-diyas" aria-hidden="true">
+        <svg viewBox="0 0 236 30" fill="none" preserveAspectRatio="xMidYMid meet">
+          <g class="diya" transform="translate(4,0)"><path class="ce-flame" d="M8 3 C11 7 11.6 10 8 13.4 C4.4 10 5 7 8 3 Z" fill="#FFB300"/><path class="ce-flame ce-flame-in" d="M8 7 C9.6 9.4 9.9 11 8 13 C6.1 11 6.4 9.4 8 7 Z" fill="#FF6D00"/><path d="M0 15 A8 6.4 0 0 0 16 15 L14.4 15 A6.4 4.6 0 0 1 1.6 15 Z" fill="#C2410C"/><path d="M0 15 A8 6.4 0 0 0 16 15 Z" fill="#9A3412"/><ellipse cx="8" cy="15" rx="8" ry="1.6" fill="#FFD54F"/></g>
+          <g class="diya" transform="translate(48,0)"><path class="ce-flame" d="M8 3 C11 7 11.6 10 8 13.4 C4.4 10 5 7 8 3 Z" fill="#FFB300"/><path class="ce-flame ce-flame-in" d="M8 7 C9.6 9.4 9.9 11 8 13 C6.1 11 6.4 9.4 8 7 Z" fill="#FF6D00"/><path d="M0 15 A8 6.4 0 0 0 16 15 Z" fill="#9A3412"/><ellipse cx="8" cy="15" rx="8" ry="1.6" fill="#FFD54F"/></g>
+          <g class="diya" transform="translate(92,0)"><path class="ce-flame" d="M8 3 C11 7 11.6 10 8 13.4 C4.4 10 5 7 8 3 Z" fill="#FFB300"/><path class="ce-flame ce-flame-in" d="M8 7 C9.6 9.4 9.9 11 8 13 C6.1 11 6.4 9.4 8 7 Z" fill="#FF6D00"/><path d="M0 15 A8 6.4 0 0 0 16 15 Z" fill="#9A3412"/><ellipse cx="8" cy="15" rx="8" ry="1.6" fill="#FFD54F"/></g>
+          <g class="diya" transform="translate(136,0)"><path class="ce-flame" d="M8 3 C11 7 11.6 10 8 13.4 C4.4 10 5 7 8 3 Z" fill="#FFB300"/><path class="ce-flame ce-flame-in" d="M8 7 C9.6 9.4 9.9 11 8 13 C6.1 11 6.4 9.4 8 7 Z" fill="#FF6D00"/><path d="M0 15 A8 6.4 0 0 0 16 15 Z" fill="#9A3412"/><ellipse cx="8" cy="15" rx="8" ry="1.6" fill="#FFD54F"/></g>
+          <g class="diya" transform="translate(180,0)"><path class="ce-flame" d="M8 3 C11 7 11.6 10 8 13.4 C4.4 10 5 7 8 3 Z" fill="#FFB300"/><path class="ce-flame ce-flame-in" d="M8 7 C9.6 9.4 9.9 11 8 13 C6.1 11 6.4 9.4 8 7 Z" fill="#FF6D00"/><path d="M0 15 A8 6.4 0 0 0 16 15 Z" fill="#9A3412"/><ellipse cx="8" cy="15" rx="8" ry="1.6" fill="#FFD54F"/></g>
+          <g class="diya" transform="translate(222,0)"><path class="ce-flame" d="M8 3 C11 7 11.6 10 8 13.4 C4.4 10 5 7 8 3 Z" fill="#FFB300"/><path class="ce-flame ce-flame-in" d="M8 7 C9.6 9.4 9.9 11 8 13 C6.1 11 6.4 9.4 8 7 Z" fill="#FF6D00"/><path d="M0 15 A8 6.4 0 0 0 16 15 Z" fill="#9A3412"/><ellipse cx="8" cy="15" rx="8" ry="1.6" fill="#FFD54F"/></g>
+        </svg>
+      </div>
 
       <div class="hidden items-center gap-6 lg:ml-4 lg:flex">
         <a href="#books" class="text-sm font-semibold opacity-80 transition hover:opacity-100">Books</a>
@@ -676,7 +789,7 @@
 
       <div class="relative mx-auto max-w-7xl px-4 pb-4 pt-6 sm:px-6 lg:px-8">
         <div class="hero-intro reveal">
-          <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">👋 Welcome back</p>
+          <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Original ebooks by Akki &amp; Aadi</p>
           <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-3xl">Learn faster. Study smarter. Build more.</h1>
           <p class="mt-6 max-w-2xl text-sm opacity-75" hidden></p>
         </div>
@@ -687,6 +800,15 @@
           <button class="ce-tile" type="button" data-ce-category="Programming Comic's"><span class="ce-tile-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l3.5-4"/><path d="M7.5 8.5h9"/><path d="M7.5 12h5.5"/></svg></span><span>Comics</span></button>
         </div>
 
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 pb-2 sm:px-6 lg:px-8" aria-label="Store promises">
+      <div class="ce-glass ce-trust reveal">
+        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg><span>Instant free samples</span></div>
+        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7v14H4z"/><path d="M13 5h7v14h-7z"/><path d="M11 5c-1.5-1.2-4-1.5-7-1v14c3-.5 5.5-.2 7 1 1.5-1.2 4-1.5 7-1V4c-3-.5-5.5-.2-7 1z"/></svg><span>Hindi + English books</span></div>
+        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Manual UPI check in 5-15 min</span></div>
+        <div class="ce-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 5l-.7 3.2c.45 1.15.7 2.4.7 3.8z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span>Telegram support</span></div>
       </div>
     </section>
 
@@ -714,8 +836,8 @@
                 <div class="hero-scene-actions">
                   <span id="heroShowcaseMrp" class="text-[10px] font-bold text-slate-400 line-through"></span>
                   <span id="heroShowcasePrice" class="mr-auto text-sm font-black text-slate-950"></span>
-                  <a id="heroSampleBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-lg border border-slate-300 text-center text-[10px] font-extrabold text-slate-700">Sample</a>
-                  <button id="heroBuyBtn" type="button" class="rounded-lg bg-slate-950 text-[10px] font-extrabold text-white">Buy Now</button>
+                  <a id="heroSampleBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-lg border border-slate-300 text-center text-[10px] font-extrabold text-slate-700">Free Sample</a>
+                  <button id="heroBuyBtn" type="button" class="rounded-lg bg-amber-400 text-[10px] font-extrabold text-slate-950">Buy Now</button>
                 </div>
               </div>
               <span id="heroShowcaseFooter" class="sr-only">Crazy E-Book</span>
@@ -740,7 +862,9 @@
                   <button type="button" class="deep-promo-btn" id="deepCopyBtn">Copy code</button>
                   <a class="deep-promo-btn" href="#books">Shop now</a>
                 </div>
-                <p class="deep-promo-note">Enter DEEP20 in the coupon box at checkout. The discount shows in your order total.</p>
+                <p class="deep-promo-timer" id="deepCountdown" role="timer" style="display:none">Ends in …</p>
+                <label class="deep-promo-auto"><input type="checkbox" id="autoDeep20" class="h-4 w-4"> Apply DEEP20 automatically at checkout</label>
+                <p class="deep-promo-note">The discount shows in your order total. Not valid with the combo saving.</p>
               </div>
             </div>
           </div>
@@ -858,6 +982,7 @@
             <circle cx="11" cy="11" r="7"></circle>
             <path d="m20 20-4-4"></path>
           </svg>
+          <button id="searchClear" type="button" aria-label="Clear search" class="absolute right-3 top-1/2 hidden h-7 w-7 -translate-y-1/2 place-items-center rounded-full border text-xs font-bold opacity-70 transition hover:opacity-100">✕</button>
         </div>
       </div>
 
@@ -1065,8 +1190,8 @@
     <div class="max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-3 shadow-2xl sm:max-h-[92vh] sm:p-7">
       <div class="flex justify-end"><button id="closeBookDetails" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Close">×</button></div>
         <div class="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr] sm:gap-4">
-        <img id="detailsCover" class="aspect-[3/4] w-full rounded-xl object-cover" alt="Book cover">
-        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div id="detailsMetadata" class="mt-4 space-y-3"></div><div class="mt-5 grid grid-cols-2 gap-2"><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-slate-950 px-3 py-3 text-sm font-bold text-white">Buy Now</button></div></div>
+        <img id="detailsCover" class="aspect-[2/3] w-full rounded-xl object-cover" alt="Book cover">
+        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div id="detailsMetadata" class="mt-4 space-y-3"></div><div class="ce-details-actions mt-5 grid grid-cols-2 gap-2"><div class="col-span-2 flex items-center justify-between rounded-xl px-1"><span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Price</span><span id="detailsBarPrice" class="text-lg font-black"></span></div><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-amber-400 px-3 py-3 text-sm font-bold text-slate-950">Buy Now</button></div></div>
       </div>
     </div>
   </div>
@@ -1098,28 +1223,29 @@
 
       <form id="purchaseForm" class="mt-5 space-y-3 rounded-2xl border border-slate-200 p-4"><p id="checkoutStepLabel" class="text-xs font-black uppercase tracking-widest text-indigo-600">Step 1 of 3 · Your details</p><div id="checkoutStepDetails" class="space-y-3"><div><label for="customerName" class="text-xs font-bold">Your name *</label><input id="customerName" required maxlength="120" autocomplete="name" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerWhatsapp" class="text-xs font-bold">WhatsApp number</label><input id="customerWhatsapp" type="tel" maxlength="40" autocomplete="tel" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><div><label for="customerTelegram" class="text-xs font-bold">Telegram username or ID <span class="font-normal opacity-70">(optional)</span></label><input id="customerTelegram" maxlength="100" placeholder="@username" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"></div><p class="text-xs opacity-70">Add at least one: WhatsApp number or Telegram.</p><p id="detailsError" class="hidden text-sm font-bold text-rose-600"></p><button id="checkoutNextBtn" type="button" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Next</button></div><div id="checkoutStepReview" class="hidden space-y-3"><div id="reviewItems" class="space-y-2"></div><div id="reviewOffer" class="space-y-2"></div><fieldset id="discountModeBox" class="hidden space-y-2 rounded-xl border border-slate-200 p-3"><legend class="px-1 text-xs font-black">Choose one discount</legend><label class="flex cursor-pointer items-center gap-2 text-sm font-bold"><input type="radio" name="discountMode" value="combo" class="h-4 w-4"><span id="modeComboText">Combo saving</span></label><label class="flex cursor-pointer items-center gap-2 text-sm font-bold"><input type="radio" name="discountMode" value="coupon" class="h-4 w-4"><span>Use a coupon code instead</span></label></fieldset><section id="couponSection" class="rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Coupon discount"><label for="couponCodeInputCheckout" class="text-xs font-bold">Coupon code</label><div class="mt-1 flex gap-2"><input id="couponCodeInputCheckout" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase" placeholder="Enter code"><button id="applyCouponBtn" type="button" class="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white">Apply</button><button id="clearCouponBtn" type="button" class="hidden rounded-lg border px-3 py-2 text-xs font-bold">Clear</button></div><p id="couponStatus" class="mt-1 hidden text-xs font-bold" role="status" aria-live="polite"></p><div id="couponTotals" class="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs"><div class="flex justify-between"><span>Normal price</span><span id="couponOriginalTotal"></span></div><div id="comboSavingRow" class="hidden flex justify-between" style="color:#34d399"><span>Combo saving</span><span id="comboSavingTotal"></span></div><div id="couponDiscountRow" class="hidden flex justify-between text-amber-700"><span>Discount</span><span id="couponDiscountTotal"></span></div><div class="flex justify-between font-black"><span>You pay</span><span id="couponFinalTotal"></span></div></div></section><p id="purchaseFormError" class="hidden text-sm font-bold text-rose-600"></p><div class="flex gap-2"><button id="checkoutBackBtn" type="button" class="rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold">Back</button><button id="createPurchaseBtn" class="flex-1 rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Create order and continue</button></div></div></form><a id="freeAccessLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-4 w-full rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-extrabold text-white">Open Free Book</a><div id="purchasePayment" class="hidden"><div id="checkoutSavedMessage" class="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-800"></div>
       <div id="paymentCollectBox" class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-        <div id="upiQrDynamic" class="mx-auto grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
-        <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
-          QR generation is unavailable. Copy the UPI ID below and pay the displayed amount.
-        </div>
+        <div class="text-xs font-bold uppercase tracking-widest text-slate-400">Amount to pay</div>
+        <div id="modalPrice" class="mt-1 text-3xl font-black tracking-tight text-slate-950"></div>
 
-        <div class="mt-5">
+        <div class="mt-4">
           <div class="text-xs font-bold uppercase tracking-widest text-slate-400">UPI ID</div>
           <div class="mt-1 flex items-center justify-center gap-2">
             <code id="upiIdText" class="break-all text-sm font-black text-slate-900"></code>
-            <button id="copyUpiBtn" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold transition hover:bg-slate-100">
+            <button id="copyUpiBtn" type="button" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold transition hover:bg-slate-100">
               Copy
             </button>
           </div>
         </div>
 
-        <div class="mt-5 flex items-center justify-center gap-2">
-          <span class="text-sm font-semibold text-slate-500">Amount</span>
-          <span id="modalPrice" class="text-xl font-black text-slate-950"></span>
+        <button id="payNowBtn" type="button" class="mt-4 w-full rounded-xl bg-amber-400 px-5 py-3.5 text-sm font-extrabold text-slate-950">Open UPI App &amp; Pay</button>
+        <p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Scan the QR code below instead.</p>
+
+        <div class="mt-5 text-xs font-bold uppercase tracking-widest text-slate-400">Or scan this QR</div>
+        <div id="upiQrDynamic" class="mx-auto mt-2 grid min-h-52 w-52 place-items-center rounded-xl border border-slate-200 bg-white p-2" aria-label="UPI payment QR code"></div>
+        <div id="qrFallback" class="hidden rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500">
+          QR generation is unavailable. Copy the UPI ID above and pay the displayed amount.
         </div>
       </div>
-
-      <button id="payNowBtn" type="button" class="mt-5 w-full rounded-xl bg-amber-400 px-5 py-3.5 text-sm font-extrabold text-slate-950">Pay Now</button><p id="paymentError" class="mt-2 hidden text-sm text-rose-600">Payment app could not be opened. Please use the QR code below.</p><div id="pendingPaymentInfo" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Payment starts as Pending. We verify it manually (usually within 5–15 minutes). Your order access token is saved in this browser.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
+<div id="pendingPaymentInfo" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Payment starts as Pending. We verify it manually (usually within 5–15 minutes). Your order access token is saved in this browser.</div><p id="customerOrderStatus" class="mt-3 hidden rounded-xl border p-4 text-sm font-bold" aria-live="polite"></p>
 
       <a id="verifyTelegram"
          href="#"
@@ -1128,6 +1254,7 @@
          class="mt-5 flex w-full items-center justify-center rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-slate-800">
         Verify on Telegram
       </a>
+      <button id="continueShoppingBtn" type="button" class="mt-3 w-full rounded-xl border border-slate-300 px-5 py-3 text-sm font-bold">Continue shopping</button>
       </div>
     </div>
   </div>
@@ -1963,9 +2090,9 @@
       return `
         <article data-details="${escapeHtml(book.id)}" class="book-card group flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
           <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
-            <div class="cover-shadow relative aspect-[3/4] overflow-hidden rounded-xl" ${editionSiblings(book).length ? `data-edition-cover="${escapeHtml(book.id)}"` : ''}>
+            <div class="cover-shadow relative aspect-[2/3] overflow-hidden rounded-xl" ${editionSiblings(book).length ? `data-edition-cover="${escapeHtml(book.id)}"` : ''}>
               ${editionSiblings(book).length ? editionCoverInner(book) : imageUrl
-                ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" loading="lazy" class="h-full w-full object-cover" />`
+                ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)} cover" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
                 : `<div class="${escapeHtml(book.coverClass || 'bg-slate-950 text-white')} flex h-full flex-col justify-between p-5"><div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div><div><div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || 'BOOK')}</div><div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</div></div></div>`}
             </div>
             ${publicBookTag(book) ? `<span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">${escapeHtml(publicBookTag(book))}</span>` : ''}
@@ -1975,12 +2102,13 @@
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
             <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</h3>
             <div class="book-price-line mt-2"><span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${editionSiblings(book).length ? `<span class="book-mrp" data-edition-mrp="${escapeHtml(book.id)}">${editionMrpText(book)}</span>` : (Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : '')}</div>
+            ${!editionSiblings(book).length && Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="ce-save-badge">Save ${money(Number(book.mrp) - Number(book.price))}</span>` : ''}
             ${editionPickerHtml(book)}
             <div class="book-actions mt-3 grid grid-cols-2 gap-2">
-              ${editionSiblings(book).length ? `<div data-edition-sample="${escapeHtml(book.id)}">${editionSampleInner(book, false)}</div>` : sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
+              ${editionSiblings(book).length ? `<div data-edition-sample="${escapeHtml(book.id)}">${editionSampleInner(book, false)}</div>` : sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-amber-400 px-2 py-2.5 text-center text-xs font-extrabold text-amber-700 transition hover:border-amber-500 hover:bg-amber-50">Free Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
               <button type="button" data-add-cart="${escapeHtml(book.id)}" aria-label="Add ${escapeHtml(book.title)} to cart" class="add-cart-btn rounded-xl border border-indigo-200 bg-indigo-50 px-2 py-2.5 text-[10px] font-extrabold text-indigo-800">+ Add to Cart</button>
             </div>
-            <button type="button" data-buy="${escapeHtml(book.id)}" class="buy-btn mt-2 w-full rounded-xl bg-slate-950 px-3 py-2.5 text-xs font-extrabold text-white transition hover:bg-slate-800">${book.free ? 'Get Free' : 'Buy Now'}</button>
+            <button type="button" data-buy="${escapeHtml(book.id)}" class="buy-btn mt-2 w-full rounded-xl bg-amber-400 px-3 py-2.5 text-xs font-extrabold text-slate-950 transition hover:bg-amber-300">${book.free ? 'Get Free' : 'Buy Now'}</button>
           </div>
         </article>`;
     }
@@ -2006,6 +2134,11 @@
       if (bookSort === 'price-high') filtered.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
       const grid = document.getElementById('bookGrid');
       const empty = document.getElementById('emptyBooks');
+      if (!catalogueReady && !STORE.books.length) {
+        empty.classList.add('hidden');
+        grid.innerHTML = '<div class="ce-skel-wrap" aria-hidden="true">' + '<div class="ce-skel-card"><div class="ce-skel-cover"></div><div class="ce-skel-line" style="width:55%"></div><div class="ce-skel-line" style="width:35%"></div><div class="ce-skel-line" style="width:75%"></div></div>'.repeat(6) + '</div>';
+        return;
+      }
       empty.classList.toggle('hidden', filtered.length !== 0);
       if (!filtered.length) {
         grid.replaceChildren();
@@ -2206,6 +2339,9 @@
       });
       document.getElementById("reviewItems").innerHTML = rows.join("");
       document.getElementById("reviewOffer").innerHTML = pairOffersFor(reviewKeys).map(o => `<label class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm" style="background:rgba(16,185,129,.14);border-color:rgba(52,211,153,.65);color:#f1f5f9"><input type="checkbox" data-review-offer="${escapeHtml(o.bolt.id)}" ${addedBolts.has(String(o.bolt.id)) ? "checked" : ""} class="mt-1 h-4 w-4"><span><span class="font-black">Add ${escapeHtml(o.bolt.title)}</span><br><span class="text-xs" style="color:#cbd5e1">${o.save > 0 ? (Number(o.bolt.price) - o.save) <= 0 ? `Normal ${money(o.bolt.price)} · Free with this book` : `Normal ${money(o.bolt.price)} · Save ${money(o.save)} · You pay only ${money(Number(o.bolt.price) - o.save)} more` : `${money(o.bolt.price)} (combo saving is off while you use a coupon)`}</span></span></label>`).join("");
+      if (!activeCouponCode && pairSavingFor(reviewKeys) === 0) {
+        try { if (localStorage.getItem('ce-auto-deep20') === '1') { const ci = document.getElementById('couponCodeInputCheckout'); if (ci && !ci.value.trim()) { ci.value = 'DEEP20'; applyCheckoutCoupon(); } } } catch (e) {}
+      }
       renderCheckoutCouponTotals();
     }
     function onReviewChange(event) {
@@ -2290,6 +2426,7 @@
           return;
         }
         renderUpiQr(latestPurchasePrice, latestPurchaseId);
+        try { localStorage.setItem('ce-customer-details', JSON.stringify({ name, whatsapp, telegram })); } catch (e) {}
         rememberPurchaseReference(latestPurchaseId, accessToken);
         try { localStorage.setItem("crazyebook-latest-purchase", latestPurchaseId); } catch {}
         if (checkoutCartKeys.length) {
@@ -2298,7 +2435,7 @@
           checkoutCartKeys = [];
           saveCart();
         }
-        document.getElementById("modalPrice").textContent = money(latestPurchasePrice);
+        document.getElementById("modalPrice").textContent = money2(latestPurchasePrice);
         document.getElementById("checkoutSavedMessage").textContent = `Order ${latestPurchaseId} saved. Payment status: Pending.`;
         document.getElementById("purchaseForm").classList.add("hidden");
         document.getElementById("purchasePayment").classList.remove("hidden");
@@ -2341,6 +2478,28 @@
     }
 
     let customerStatusTimer = null;
+    function openSavedPurchasePayment(purchaseId, accessToken) {
+      rememberOverlay("buy");
+      hideOtherOverlays("buy");
+      latestPurchaseId = purchaseId; latestPurchaseAccessToken = accessToken;
+      document.getElementById("buyModalTitle").textContent = "Complete Payment";
+      document.getElementById("buyModalBook").textContent = `Order ${purchaseId}`;
+      document.getElementById("purchaseForm").classList.add("hidden");
+      document.getElementById("purchasePayment").classList.remove("hidden");
+      document.getElementById("freeAccessLink").classList.add("hidden");
+      document.getElementById("customerOrderStatus").classList.add("hidden");
+      document.getElementById("pendingPaymentInfo").classList.remove("hidden");
+      document.getElementById("payNowBtn").classList.remove("hidden");
+      document.getElementById("paymentCollectBox").classList.remove("hidden");
+      document.getElementById("upiIdText").textContent = STORE.upiId || "";
+      if (latestPurchasePrice != null) document.getElementById("modalPrice").textContent = money2(latestPurchasePrice);
+      renderUpiQr(latestPurchasePrice, purchaseId);
+      const verify = document.getElementById("verifyTelegram");
+      if (verify && selectedBook) { verify.href = telegramPaymentLink(selectedBook, purchaseId); verify.classList.remove("hidden"); }
+      const modal = document.getElementById("buyModal");
+      modal.classList.remove("hidden"); modal.classList.add("flex");
+      document.body.classList.add("modal-open");
+    }
     async function refreshCustomerPurchaseStatus(purchaseId, accessToken = latestPurchaseAccessToken) {
       if (!supabase || !purchaseId || !accessToken) return;
       const { data, error } = await supabase.rpc("get_customer_purchase_items", { p_purchase_id: purchaseId, p_access_token: accessToken });
@@ -2348,6 +2507,15 @@
       const p = data[0];
       const approved = p.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(p.order_status);
       const declined = p.payment_status === "Rejected";
+      if (!approved && !declined) {
+        latestPurchaseId = purchaseId; latestPurchaseAccessToken = accessToken;
+        if (Number(p.price) > 0) latestPurchasePrice = Number(p.price);
+        if (!selectedBook && p.book_key) selectedBook = bookById(p.book_key) || selectedBook;
+        const upiEl = document.getElementById("upiIdText"); if (upiEl) upiEl.textContent = STORE.upiId || "";
+        const priceEl = document.getElementById("modalPrice"); if (priceEl && latestPurchasePrice != null) priceEl.textContent = money2(latestPurchasePrice);
+        renderUpiQr(latestPurchasePrice, purchaseId);
+        ["paymentCollectBox", "payNowBtn"].forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove("hidden"); });
+      }
       const noticeState = approved ? "approved" : declined ? "declined" : "pending";
       document.getElementById("pendingPaymentInfo").classList.toggle("hidden", approved || declined);
       ["paymentCollectBox", "payNowBtn", "paymentError"].forEach(id => { const el = document.getElementById(id); if (el && (approved || declined)) el.classList.add("hidden"); });
@@ -2364,6 +2532,11 @@
       note.className = `font-bold ${approved ? "text-amber-800" : declined ? "text-rose-800" : "text-amber-900"}`;
       note.textContent = approved ? "Payment Approved ✓\nEbook is ready." : declined ? "Order Declined\nYour payment was not approved." : "Payment Pending\nWaiting for verification.";
       notificationBox.append(note);
+      if (!approved && !declined) {
+        const pay = document.createElement("button"); pay.textContent = "Continue to payment"; pay.className = "mt-2 mr-2 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950";
+        pay.addEventListener("click", () => openSavedPurchasePayment(purchaseId, accessToken));
+        notificationBox.append(pay);
+      }
       const minimize = document.createElement("button"); minimize.textContent = declined ? "Dismiss" : "Minimize"; minimize.className = "mt-2 rounded-lg border px-3 py-2 text-xs font-bold";
       minimize.addEventListener("click", () => { localStorage.setItem(notificationKey, "true"); notification.classList.add("hidden"); });
       if (approved && approvedItems.length) {
@@ -2658,7 +2831,7 @@
     }
     function editionCoverInner(book) {
       const sel = editionSelectedBooks(book);
-      if (sel.length > 1) return `<div class="relative h-full w-full">${editionCoverImg(sel[0], "absolute left-0 top-0 aspect-[3/4] w-[72%] rounded-lg object-cover shadow-lg ring-1 ring-white/20")}${editionCoverImg(sel[1], "absolute bottom-0 right-0 aspect-[3/4] w-[72%] rounded-lg object-cover shadow-xl ring-1 ring-white/30")}</div>`;
+      if (sel.length > 1) return `<div class="relative h-full w-full">${editionCoverImg(sel[0], "absolute left-0 top-0 aspect-[2/3] w-[72%] rounded-lg object-cover shadow-lg ring-1 ring-white/20")}${editionCoverImg(sel[1], "absolute bottom-0 right-0 aspect-[2/3] w-[72%] rounded-lg object-cover shadow-xl ring-1 ring-white/30")}</div>`;
       return editionCoverImg(sel[0], "h-full w-full object-cover");
     }
     function refreshEditionCovers() {
@@ -2749,8 +2922,12 @@
       }
       const detailsPrice = document.getElementById("detailsPrice");
       detailsPrice.innerHTML = `${money(book.price)}${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? ` <del class="ml-2 text-base font-semibold text-slate-500">${money(book.mrp)}</del>` : ''}`;
+      const detailsBarPrice = document.getElementById("detailsBarPrice");
+      if (detailsBarPrice) detailsBarPrice.innerHTML = detailsPrice.innerHTML;
       if (editionSiblings(book).length) {
         detailsPrice.innerHTML = `<span data-edition-price="${escapeHtml(book.id)}">${editionPriceText(book)}</span> <del class="ml-2 text-base font-semibold text-slate-500" data-edition-mrp="${escapeHtml(book.id)}">${editionMrpText(book)}</del>`;
+        const detailsBarPrice2 = document.getElementById("detailsBarPrice");
+        if (detailsBarPrice2) detailsBarPrice2.innerHTML = `<span data-edition-price="${escapeHtml(book.id)}">${editionPriceText(book)}</span>`;
         let slot = document.getElementById("detailsEditionPicker");
         if (!slot) { slot = document.createElement("div"); slot.id = "detailsEditionPicker"; detailsPrice.insertAdjacentElement("afterend", slot); }
         slot.innerHTML = editionPickerHtml(book); bindEditionPickers(slot);
@@ -2802,6 +2979,7 @@
       document.getElementById("customerOrderStatus").classList.add("hidden");
       document.getElementById("freeAccessLink").classList.add("hidden");
       document.getElementById("purchaseForm").reset();
+      try { const savedCust = JSON.parse(localStorage.getItem('ce-customer-details') || 'null'); if (savedCust) { if (savedCust.name) document.getElementById('customerName').value = savedCust.name; if (savedCust.whatsapp) document.getElementById('customerWhatsapp').value = savedCust.whatsapp; if (savedCust.telegram) document.getElementById('customerTelegram').value = savedCust.telegram; } } catch (e) {}
       document.getElementById("purchaseFormError").classList.add("hidden");
       document.getElementById("couponStatus").classList.add("hidden");
 
@@ -2885,6 +3063,7 @@
     function renderReviews() {
       const grid = document.getElementById("reviewsGrid");
       const reviews = (Array.isArray(STORE.reviews) ? STORE.reviews : []).filter(review => review.visible !== false);
+      document.getElementById("authors")?.classList.toggle("hidden", reviews.length === 0);
       document.getElementById("reviewCount").textContent = `${reviews.length} comment${reviews.length === 1 ? "" : "s"}`;
 
       if (!reviews.length) {
@@ -3540,7 +3719,9 @@
       event.preventDefault();
       scrollToCatalogue();
     });
-    document.getElementById("searchInput").addEventListener("input", renderBooks);
+    const searchClearBtn = document.getElementById("searchClear");
+    document.getElementById("searchInput").addEventListener("input", () => { searchClearBtn.classList.toggle("hidden", !document.getElementById("searchInput").value); searchClearBtn.classList.toggle("grid", !!document.getElementById("searchInput").value); renderBooks(); });
+    searchClearBtn.addEventListener("click", () => { const inp = document.getElementById("searchInput"); inp.value = ""; searchClearBtn.classList.add("hidden"); searchClearBtn.classList.remove("grid"); renderBooks(); inp.focus(); });
     document.getElementById("bookSort").addEventListener("change", event => { bookSort = event.currentTarget.value; renderBooks(); });
     document.querySelectorAll("[data-book-view]").forEach(button => button.addEventListener("click", () => setBookView(button.dataset.bookView)));
     document.getElementById("couponForm").addEventListener("submit", saveCoupon);
@@ -3592,6 +3773,7 @@
     document.getElementById("reviewForm").addEventListener("submit", saveReview);
     document.getElementById("settingsForm").addEventListener("submit", saveSettings);
     document.getElementById("cancelReviewEdit").addEventListener("click", resetReviewForm);
+    document.getElementById("continueShoppingBtn").addEventListener("click", () => closeBuyModal());
     document.getElementById("buyModal").addEventListener("click", event => {
       if (event.target === event.currentTarget) closeBuyModal();
     });
@@ -3723,6 +3905,9 @@
     }).catch(error => {
       console.error("Supabase initialization failed:", error);
       catalogueReady = true;
+      const eb = document.getElementById('emptyBooks');
+      if (eb && !STORE.books.length) { eb.querySelector('h3').textContent = 'Could not load the bookstore'; eb.querySelector('p').textContent = 'Check your internet connection and refresh the page.'; document.getElementById('emptyBookSuggestions').replaceChildren(); }
+      renderBooks();
       if (STORE.books.length) renderHero();
       else document.getElementById("featuredBook")?.classList.add("hidden");
       document.getElementById("adminLoginError").textContent = "Could not connect to Supabase. Check your project configuration and SQL setup.";
@@ -3755,7 +3940,6 @@
       byId("ceSettingsClose").addEventListener("click", closeSheet);
       sheet.addEventListener("click", function (e) { if (e.target === sheet) closeSheet(); });
       byId("ceSwitchSite1").addEventListener("click", goToSite2);
-      byId("headerSiteSwitch").addEventListener("click", goToSite2);
 
       // Settings accordion rows
       document.querySelectorAll("[data-ce-acc]").forEach(function (btn) {
@@ -3837,6 +4021,28 @@
         goToSite2();
       });
       popup.addEventListener("click", function (e) { if (e.target === popup) closePopup(); });
+    })();
+  </script>
+  <script>
+    (function () {
+      // Set to true to re-enable the visible offer countdown once the deadline is confirmed.
+      var SHOW_DEEP_COUNTDOWN = false;
+      var end = new Date('2026-11-15T23:59:59+05:30').getTime();
+      var el = document.getElementById('deepCountdown');
+      if (el && SHOW_DEEP_COUNTDOWN) { el.style.display = '';
+        var tick = function () {
+          var d = end - Date.now();
+          if (d <= 0) { el.textContent = 'Offer ends tonight'; return; }
+          var days = Math.floor(d / 86400000), hrs = Math.floor(d % 86400000 / 3600000), mins = Math.floor(d % 3600000 / 60000);
+          el.textContent = '⏳ Ends in ' + (days > 0 ? days + 'd ' : '') + hrs + 'h ' + mins + 'm';
+        };
+        tick(); setInterval(tick, 30000);
+      }
+      var auto = document.getElementById('autoDeep20');
+      if (auto) {
+        try { auto.checked = localStorage.getItem('ce-auto-deep20') === '1'; } catch (e) {}
+        auto.addEventListener('change', function () { try { localStorage.setItem('ce-auto-deep20', auto.checked ? '1' : '0'); } catch (e) {} });
+      }
     })();
   </script>
   <script type="module" src="hero-3d.js"></script>
