@@ -1854,6 +1854,19 @@
     /* =========================================================
        CATEGORY FILTERS
        ========================================================= */
+    // Match the catalogue entry view: category choices just below the sticky header.
+    // Use layout offsets so reveal transforms cannot shift the scroll destination.
+    function scrollToCatalogue(targetId = "filterPills") {
+      requestAnimationFrame(() => {
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        let top = 0;
+        for (let node = target; node; node = node.offsetParent) top += node.offsetTop;
+        const headerHeight = document.querySelector("header")?.getBoundingClientRect().height || 0;
+        window.scrollTo({ top: Math.max(0, top - headerHeight - 12), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+      });
+    }
+
     function renderFilters() {
       const container = document.getElementById("filterPills");
       const cats = categories();
@@ -1879,6 +1892,7 @@
           activeCategory = button.dataset.category;
           renderFilters();
           renderBooks();
+          scrollToCatalogue();
         });
       });
     }
@@ -3463,6 +3477,12 @@
     /* =========================================================
        EVENTS
        ========================================================= */
+    document.addEventListener("click", event => {
+      const link = event.target.closest('a[href="#books"]');
+      if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      scrollToCatalogue();
+    });
     document.getElementById("searchInput").addEventListener("input", renderBooks);
     document.getElementById("bookSort").addEventListener("change", event => { bookSort = event.currentTarget.value; renderBooks(); });
     document.querySelectorAll("[data-book-view]").forEach(button => button.addEventListener("click", () => setBookView(button.dataset.bookView)));
@@ -3487,7 +3507,7 @@
     document.getElementById("closeLibrary").addEventListener("click", () => closeTransientOverlay("library"));
     document.getElementById("libraryModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("library"); });
     document.getElementById("closeCart").addEventListener("click", () => closeTransientOverlay("cart"));
-    document.getElementById("continueShopping").addEventListener("click", () => { closeTransientOverlay("cart"); document.getElementById("books").scrollIntoView({ behavior: "smooth" }); });
+    document.getElementById("continueShopping").addEventListener("click", () => { closeTransientOverlay("cart"); scrollToCatalogue(); });
     document.getElementById("cartCheckout").addEventListener("click", () => {
       const keys = cartItems.map(String).filter(key => STORE.books.some(book => String(book.id) === key && book.status !== "inactive" && !book.free && Number(book.price) > 0));
       if (!keys.length) { showToast("Your cart is empty."); return; }
