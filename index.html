@@ -507,16 +507,24 @@
     .promo-dot { width:8px; height:8px; padding:0; border-radius:999px; border:0; background:#c7cede; cursor:pointer; transition:transform .2s ease, background .2s ease; }
     .promo-dot[aria-current="true"] { background:#FF8A00; transform:scale(1.35); }
     .promo-carousel { position:relative; }
-    .promo-si-card { border-color:rgba(129,140,248,.5); background:radial-gradient(ellipse at 80% 0%,#312e81,transparent 62%),linear-gradient(145deg,#0f172a,#1e1b4b); }
-    .promo-si-covers { display:flex; align-items:center; justify-content:center; }
-    .promo-si-covers img { width:60%; height:auto; margin:0; border-radius:.5rem; display:block; box-shadow:0 8px 20px rgba(0,0,0,.4); }
-    .promo-si-covers img + img { margin-left:-24%; transform:rotate(5deg) translateY(4%); }
+    .promo-si-card { display:flex; flex-direction:column; align-items:stretch; justify-content:center; gap:.55rem; border-color:rgba(129,140,248,.5); background:radial-gradient(ellipse at 80% 0%,#312e81,transparent 62%),linear-gradient(145deg,#0f172a,#1e1b4b); }
     .promo-si-kicker { color:#A5B4FC; }
-    .promo-si-hindi { margin-top:.3rem; font-size:.72rem; font-weight:700; color:#e0e7ff; }
-    .promo-si-price { padding:.4rem .7rem; border-radius:.7rem; border:2px dashed #A5B4FC; background:rgba(129,140,248,.14); font-weight:900; font-size:.92rem; color:#C7D2FE; }
-    .promo-si-price small { font-size:.58rem; font-weight:800; letter-spacing:.04em; color:#9fb0e6; }
-    @media (min-width:768px) { .promo-viewport { border-radius:1.5rem; } .promo-si-hindi { margin-top:.5rem; font-size:.85rem; } .promo-si-price { padding:.55rem .9rem; border-radius:.9rem; font-size:1.05rem; } .promo-si-price small { font-size:.66rem; } }
-    @media (max-width:767px) { .promo-arrow { display:none; } .promo-si-desc { display:none; } }
+    .promo-si-books { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+    .promo-si-book { min-width:0; padding:.5rem; border:1px solid #818cf855; border-radius:.8rem; background:#ffffff08; text-align:center; }
+    .promo-si-book h3 { min-height:2.4em; font-size:.73rem; line-height:1.2; font-weight:900; color:#fff8ea; }
+    .promo-si-book p { font-size:.6rem; color:#c7d2fe; margin-top:.2rem; }
+    .promo-si-covers { display:flex; align-items:center; justify-content:center; gap:.3rem; margin-top:.4rem; }
+    .promo-si-covers figure { margin:0; }
+    .promo-si-covers img { width:auto; height:70px; max-width:100%; border-radius:.25rem; }
+    .promo-si-covers figcaption { font-size:.55rem; color:#cbd5f5; margin-top:.15rem; }
+    .promo-si-price { font-weight:900; font-size:.95rem; color:#e0e7ff; }
+    .promo-si-price small { font-size:.64rem; font-weight:600; color:#c7d2fe; }
+    .promo-si-price del { font-size:.72rem; color:#a5b4fc; margin-right:.2rem; }
+    .promo-si-save { color:#86efac; font-size:.65rem; font-weight:800; }
+    .promo-si-card .deep-promo-row { margin-top:0; justify-content:center; gap:.45rem .7rem; }
+    .promo-si-card .deep-promo-note { text-align:center; margin-top:0; }
+    @media(min-width:768px) { .promo-viewport { border-radius:1.5rem; } .promo-si-card { gap:.8rem; } .promo-si-book { padding:.75rem; } .promo-si-book h3 { font-size:1.15rem; min-height:0; } .promo-si-book p { font-size:.8rem; } .promo-si-covers img { height:150px; } .promo-si-covers { gap:.7rem; } .promo-si-covers figcaption { font-size:.7rem; } .promo-si-price { font-size:1.25rem; } .promo-si-price small,.promo-si-save { font-size:.85rem; } }
+    @media(max-width:767px) { .promo-arrow { display:none; } .promo-si-card { padding:.7rem; } .promo-si-card .deep-promo-btn { min-height:34px; padding:.4rem .7rem; font-size:.7rem; } }
     @media (prefers-reduced-motion:reduce) { .promo-track { transition:none; } .promo-si-covers img + img { transform:none; } }
 </style>
   <style id="catalog-compact-mobile">
@@ -683,22 +691,32 @@
           </div>
           <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="New self improvement books, slide 2 of 2">
             <div class="deep-promo-card promo-si-card">
-              <div class="promo-si-covers">
-                <img src="covers/motivational-en-cover.jpg" width="1200" height="1600" loading="lazy" alt="Cover of Being Alone, Connecting with Yourself">
-                <img src="covers/self-improvement-hi-cover.jpg" width="928" height="1238" loading="lazy" alt="Cover of कल से नहीं, आज से">
+              <p class="deep-promo-kicker promo-si-kicker">✨ 2 new books · Self Improvement</p>
+              <div class="promo-si-books">
+                <article class="promo-si-book">
+                  <h3>Being Alone,<br>Connecting with Yourself</h3>
+                  <p>अकेले रहना, खुद से जुड़ना</p>
+                  <div class="promo-si-covers">
+                    <figure><img src="covers/motivational-hi-cover.jpg" width="1200" height="1600" loading="lazy" alt="Being Alone, Hindi edition"><figcaption>Hindi</figcaption></figure>
+                    <figure><img src="covers/motivational-en-cover.jpg" width="1200" height="1600" loading="lazy" alt="Being Alone, English edition"><figcaption>English</figcaption></figure>
+                  </div>
+                </article>
+                <article class="promo-si-book">
+                  <h3>Not Tomorrow,<br>Today</h3>
+                  <p>कल से नहीं, आज से</p>
+                  <div class="promo-si-covers">
+                    <figure><img src="covers/self-improvement-hi-cover.jpg" width="928" height="1238" loading="lazy" alt="Not Tomorrow Today, Hindi edition"><figcaption>Hindi</figcaption></figure>
+                    <figure><img src="covers/self-improvement-en-cover.jpg" width="928" height="1238" loading="lazy" alt="Not Tomorrow Today, English edition"><figcaption>English</figcaption></figure>
+                  </div>
+                </article>
               </div>
-              <div>
-                <p class="deep-promo-kicker promo-si-kicker">✨ New · Self Improvement</p>
-                <h2 class="deep-promo-title">Know yourself. <b>Start today.</b></h2>
-                <p class="deep-promo-text promo-si-desc">Two short, honest guides - <i>Being Alone, Connecting with Yourself</i> and <i>Not Tomorrow, Today</i>. 7 short chapters each, with a 7-day practice.</p>
-                <p class="promo-si-hindi">अकेले रहना, खुद से जुड़ना &nbsp;·&nbsp; कल से नहीं, आज से</p>
-                <div class="deep-promo-row">
-                  <span class="promo-si-price">₹49 <small>per language</small></span>
-                  <span class="promo-si-price">₹98 <small>Hindi + English</small></span>
-                  <a class="deep-promo-btn" id="promoSiCta" href="#books">Explore new books</a>
-                </div>
-                <p class="deep-promo-note">Each book: ₹49 in Hindi or English, ₹98 for both languages - choose the language on the book card.</p>
+              <div class="deep-promo-row">
+                <span class="promo-si-price">₹49 <small>per language</small></span>
+                <span class="promo-si-price"><del>₹98</del> ₹69 <small>Hindi + English</small></span>
+                <span class="promo-si-save">Save ₹29 per book</span>
+                <a class="deep-promo-btn" id="promoSiCta" href="#books">Explore new books</a>
               </div>
+              <p class="deep-promo-note">₹69 = both languages of ONE book. Choose on the book card.</p>
             </div>
           </div>
         </div>
@@ -1945,6 +1963,8 @@
     function pairOffersFor(keys) {
       const set = new Set(keys.map(String)); const out = [];
       bookPairs.forEach(p => {
+        const main = bookById(p.main); const mate = bookById(p.bolt);
+        if (main?.editionGroup && main.editionGroup === mate?.editionGroup) return;
         if (!set.has(p.main) || (set.has(p.bolt) && !addedBolts.has(p.bolt))) return;
         const bolt = bookById(p.bolt); if (!bolt || bolt.status === "inactive" || Number(bolt.price) <= 0) return;
         out.push({ bolt, save: discountMode === 'coupon' ? 0 : Math.min(p.discount, Number(bolt.price)) });
@@ -2060,7 +2080,7 @@
           if (doneGroups.has(book.editionGroup)) return; doneGroups.add(book.editionGroup);
           const chosen = reviewKeys.filter(k => sibs.some(x => String(x.id) === String(k)));
           const value = chosen.length > 1 ? "both" : String(chosen[0]);
-          const total = chosen.reduce((sum, k) => sum + Number(bookById(k)?.price || 0), 0);
+          const total = chosen.reduce((sum, k) => sum + Number(bookById(k)?.price || 0), 0) - pairSavingFor(chosen);
           const options = sibs.map(b => `<option value="${escapeHtml(b.id)}" ${value === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)}</option>`).join("") + `<option value="both" ${value === "both" ? "selected" : ""}>Both</option>`;
           rows.push(`<div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 text-sm"><div class="min-w-0"><div class="truncate font-bold">${escapeHtml(book.editionTitle || book.title)}</div><label class="mt-1 flex items-center gap-2 text-xs text-slate-500">Language <select data-review-lang="${escapeHtml(book.editionGroup)}" class="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-bold text-slate-900">${options}</select></label></div><div class="shrink-0 font-black">${money(total)}</div></div>`);
         } else {
@@ -2081,6 +2101,7 @@
         const rest = reviewKeys.filter(k => !sibIds.has(String(k)));
         const add = t.value === "both" ? sibs.map(b => String(b.id)) : [String(t.value)];
         rest.splice(Math.max(0, pos), 0, ...add);
+        if (t.value === "both" && pairSavingRaw(add) > 0) { discountMode = "combo"; if (activeCouponCode) clearCheckoutCoupon(); }
         reviewKeys = rest;
         renderCheckoutReview();
       } else if (t.name === 'discountMode') {
@@ -2468,7 +2489,9 @@
       if (items.length !== oldCount) { const count = document.getElementById("cartCount"); count.classList.remove("bump"); void count.offsetWidth; count.classList.add("bump"); }
       document.getElementById("openCartBtn").setAttribute("aria-label", `Open cart, ${items.length} item${items.length === 1 ? "" : "s"}`);
       document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(safeHrefOrBlank(book.coverImage))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}${book.editionLang && !String(book.title).toLowerCase().includes(String(book.editionLang).toLowerCase()) ? ` (${escapeHtml(book.editionLang)})` : ""}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
-      document.getElementById("cartTotal").textContent = money(items.reduce((total, book) => total + Number(book.price || 0), 0));
+      const cartNormal = items.reduce((total,book) => total + Number(book.price || 0),0);
+      const cartSaving = pairSavingRaw(items.map(b => String(b.id)));
+      document.getElementById("cartTotal").innerHTML = (cartSaving > 0 ? `<del class="mr-2 text-xs opacity-60">${money(cartNormal)}</del>` : "") + money(cartNormal - cartSaving);
       document.getElementById("cartCheckout").disabled = !items.length;
       document.querySelectorAll("[data-cart-remove]").forEach(button => button.addEventListener("click", () => { cartItems = cartItems.filter(id => String(id) !== button.dataset.cartRemove); saveCart(); }));
       syncCartFeedback();
@@ -2498,8 +2521,8 @@
       const sibs = editionSiblings(book);
       if (!sibs.length) return "";
       const pick = editionPick[book.editionGroup] || String(sibs[0].id);
-      const total = sibs.reduce((sum, b) => sum + Number(b.price || 0), 0);
-      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Both - ${money(total)}</option></select></label>`;
+      const total = editionBundleTotal(sibs);
+      return `<label class="mt-2 block text-[10px] font-black uppercase tracking-widest text-slate-500">Language<select data-edition-select="${escapeHtml(book.editionGroup)}" aria-label="Choose language" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold text-slate-800">${sibs.map(b => `<option value="${escapeHtml(b.id)}" ${pick === String(b.id) ? "selected" : ""}>${escapeHtml(b.editionLang)} - ${money(b.price)}</option>`).join("")}<option value="both" ${pick === "both" ? "selected" : ""}>Hindi + English - ${money(total)}${pairSavingRaw(sibs.map(b => String(b.id))) > 0 ? " (save " + money(pairSavingRaw(sibs.map(b => String(b.id)))) + ")" : ""}</option></select></label>`;
     }
     function editionSampleInner(book, details) {
       const sel = editionSelectedBooks(book);
@@ -2533,12 +2556,14 @@
         if (b) el.innerHTML = editionSampleInner(b, el.dataset.editionDetails === "1");
       });
     }
+    function editionBundleTotal(books) { return Math.max(0, books.reduce((sum,b) => sum + Number(b.price || 0),0) - pairSavingRaw(books.map(b => String(b.id)))); }
     function editionMrpText(book) {
       const sel = editionSelectedBooks(book);
+      if (sel.length > 1 && pairSavingRaw(sel.map(b => String(b.id))) > 0) return money(sel.reduce((sum,b) => sum + Number(b.price || 0),0));
       if (!sel.length || !sel.every(b => Number(b.mrp) > Number(b.price))) return "";
       return money(sel.reduce((sum, b) => sum + Number(b.mrp), 0));
     }
-    function editionPriceText(book) { return money(editionSelectedBooks(book).reduce((sum, b) => sum + Number(b.price || 0), 0)); }
+    function editionPriceText(book) { return money(editionBundleTotal(editionSelectedBooks(book))); }
     function bindEditionPickers(root) {
       root.querySelectorAll("[data-edition-select]").forEach(select => select.addEventListener("change", () => {
         editionPick[select.dataset.editionSelect] = select.value;
