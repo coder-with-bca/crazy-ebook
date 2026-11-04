@@ -241,6 +241,8 @@
     html.diwali-night .diwali-diya { width: 44px; opacity: 0.95; }
     html.diwali-night .diwali-diya.diya-left { top: 8px; bottom: auto; left: 6px; }
     html.diwali-night .diwali-diya.diya-right { display: none; }
+    /* Keep the corner diya clearly separated from the greeting text. */
+    html.diwali-night .diwali-greeting { margin-left: 54px; }
   }
 
   /* ------------------- rangoli (hero corner accent) ------------------- */
