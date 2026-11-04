@@ -560,7 +560,7 @@
        ========================================================= -->
   <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-      <a href="#home" class="flex items-center gap-3" aria-label="Crazy E-Book home">
+      <a href="#home" id="siteLogoLink" class="flex items-center gap-3" aria-label="Crazy E-Book home">
         <img src="crazy-ebooks-logo.png" alt="Crazy E-Books" class="site-logo-light h-11 w-10 shrink-0 object-contain" width="40" height="46" fetchpriority="high" />
         <img src="assets/crazy-ebook-logo-dark.jpeg" alt="" aria-hidden="true" class="site-logo-dark h-11 w-10 shrink-0 rounded-sm object-contain" width="40" height="46" fetchpriority="high" />
         <div>
@@ -945,7 +945,6 @@
             <a id="footerTelegram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Telegram Support</a>
             <a id="footerInstagram" href="#" target="_blank" rel="noopener noreferrer" class="block transition hover:text-white">Instagram</a>
             <a id="footerEmail" href="#" class="block transition hover:text-white">Support Email</a>
-            <button id="openAdminBtn" type="button" class="admin-btn mt-3 rounded-lg px-3 py-2 text-xs font-black transition">Admin Portal</button>
           </div>
         </div>
 
@@ -3491,7 +3490,23 @@
       }
     });
 
-    document.getElementById("openAdminBtn").addEventListener("click", openAdminModal);
+    // Admin access: triple-click the logo (same as Site 1)
+    (function () {
+      const logo = document.getElementById("siteLogoLink");
+      if (!logo) return;
+      let taps = 0, tapTimer = null;
+      logo.addEventListener("click", event => {
+        taps += 1;
+        clearTimeout(tapTimer);
+        if (taps >= 3) {
+          event.preventDefault();
+          taps = 0;
+          openAdminModal();
+        } else {
+          tapTimer = setTimeout(() => { taps = 0; }, 650);
+        }
+      });
+    })();
     document.getElementById("closeAdminModal").addEventListener("click", closeAdminModal);
 
     async function adminLogin() {
