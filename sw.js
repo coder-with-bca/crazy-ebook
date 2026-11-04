@@ -1,4 +1,4 @@
-const CACHE = "crazy-ebook-v35";
+const CACHE = "crazy-ebook-v36";
 const FILES = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {

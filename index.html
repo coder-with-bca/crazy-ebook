@@ -2069,7 +2069,7 @@
       const headLine = document.getElementById("buyModalBook");
       if (headLine) {
         const hb = bookById(reviewKeys[0]);
-        headLine.textContent = reviewKeys.length > 1 ? `${reviewKeys.length} books · one order and one payment` : (hb ? hb.title : headLine.textContent);
+        headLine.textContent = reviewKeys.length > 1 ? `${reviewKeys.length} editions · one order and one payment` : (hb ? hb.title : headLine.textContent);
       }
       const rows = []; const doneGroups = new Set();
       reviewKeys.forEach(key => {
@@ -2677,7 +2677,7 @@
       const cartBooks = checkoutCartKeys.map(key => STORE.books.find(book => String(book.id) === key)).filter(Boolean);
       const cartCheckout = cartBooks.length > 0;
       document.getElementById("buyModalTitle").textContent = cartCheckout ? "Cart Checkout" : "Buy Now";
-      document.getElementById("buyModalBook").textContent = cartCheckout ? `${cartBooks.length} books · one order and one payment` : selectedBook.title;
+      document.getElementById("buyModalBook").textContent = cartCheckout ? `${cartBooks.length} editions · one order and one payment` : selectedBook.title;
       document.getElementById("purchaseForm").classList.toggle("hidden", !!selectedBook.free || Number(selectedBook.price) === 0);
       document.getElementById("purchasePayment").classList.add("hidden");
       document.getElementById("pendingPaymentInfo").classList.remove("hidden");
