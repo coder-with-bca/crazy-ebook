@@ -527,10 +527,11 @@
     @media (min-width:1024px) { .deep-promo { padding:1.5rem 2rem 0; } }
 
     /* Offers carousel: Diwali offer + new book promos, auto-sliding and swipeable */
-    .promo-viewport { overflow:hidden; border-radius:1.1rem; touch-action:pan-y; padding:.2rem .2rem 2rem; margin:-.2rem -.2rem -2rem; }
-    .promo-track { display:flex; transition:transform .55s ease; will-change:transform; }
+    .promo-viewport { overflow:hidden; border-radius:1.1rem; touch-action:pan-y; padding:.2rem .2rem 2rem; margin:-.2rem -.2rem -2rem; transition:height .45s ease; }
+    .promo-track { display:flex; align-items:flex-start; transition:transform .55s ease; will-change:transform; }
     .promo-slide { flex:0 0 100%; min-width:0; }
     .promo-slide .deep-promo-card { height:100%; box-sizing:border-box; }
+    .promo-slide .promo-si-card { display:flex; flex-direction:column; justify-content:center; }
     .promo-track.js-on .promo-slide { visibility:hidden; transition:visibility 0s linear .55s; }
     .promo-track.js-on .promo-slide.active { visibility:visible; transition-delay:0s; }
     .promo-arrow { position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:36px; height:36px; border-radius:999px; border:1px solid rgba(255,179,0,.45); background:rgba(11,16,38,.72); color:#FFD54F; font-size:1.15rem; line-height:1; display:grid; place-items:center; cursor:pointer; }
@@ -877,16 +878,16 @@
                   <h3>Being Alone,<br>Connecting with Yourself</h3>
                   <p>अकेले रहना, खुद से जुड़ना</p>
                   <div class="promo-si-covers">
-                    <figure><img src="covers/motivational-hi-cover.jpg" width="1200" height="1600" loading="lazy" alt="Being Alone, Hindi edition"><figcaption>Hindi</figcaption></figure>
-                    <figure><img src="covers/motivational-en-cover.jpg" width="1200" height="1600" loading="lazy" alt="Being Alone, English edition"><figcaption>English</figcaption></figure>
+                    <figure><img src="covers/motivational-hi-cover.webp" width="1200" height="1600" loading="lazy" alt="Being Alone, Hindi edition"><figcaption>Hindi</figcaption></figure>
+                    <figure><img src="covers/motivational-en-cover.webp" width="1200" height="1600" loading="lazy" alt="Being Alone, English edition"><figcaption>English</figcaption></figure>
                   </div>
                 </article>
                 <article class="promo-si-book">
                   <h3>Not Tomorrow,<br>Today</h3>
                   <p>कल से नहीं, आज से</p>
                   <div class="promo-si-covers">
-                    <figure><img src="covers/self-improvement-hi-cover.jpg" width="928" height="1238" loading="lazy" alt="Not Tomorrow Today, Hindi edition"><figcaption>Hindi</figcaption></figure>
-                    <figure><img src="covers/self-improvement-en-cover.jpg" width="928" height="1238" loading="lazy" alt="Not Tomorrow Today, English edition"><figcaption>English</figcaption></figure>
+                    <figure><img src="covers/self-improvement-hi-cover.webp" width="928" height="1238" loading="lazy" alt="Not Tomorrow Today, Hindi edition"><figcaption>Hindi</figcaption></figure>
+                    <figure><img src="covers/self-improvement-en-cover.webp" width="928" height="1238" loading="lazy" alt="Not Tomorrow Today, English edition"><figcaption>English</figcaption></figure>
                   </div>
                 </article>
               </div>
@@ -956,6 +957,13 @@
         var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
         var i = 0, timer = null, touchX = null;
         track.classList.add("js-on");
+        function syncHeight() {
+          var h = slides[i].offsetHeight;
+          if (h > 0) {
+            var cs = getComputedStyle(viewport);
+            viewport.style.height = (h + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)) + "px";
+          }
+        }
         function go(k) {
           i = ((k % n) + n) % n;
           track.style.transform = "translateX(" + (-i * 100) + "%)";
@@ -963,7 +971,11 @@
             slides[j].classList.toggle("active", j === i);
             if (dots[j]) dots[j].setAttribute("aria-current", j === i ? "true" : "false");
           }
+          syncHeight();
         }
+        window.addEventListener("resize", syncHeight);
+        window.addEventListener("load", syncHeight);
+        track.querySelectorAll("img").forEach(function (img) { if (!img.complete) img.addEventListener("load", syncHeight); });
         function stop() { if (timer) { clearInterval(timer); timer = null; } }
         function start() { if (timer || n < 2 || reduce.matches) return; timer = setInterval(function () { if (!document.hidden) go(i + 1); }, 5000); }
         function userGo(k) { stop(); go(k); start(); }
@@ -2066,7 +2078,7 @@
       footer.textContent = STORE.brandName;
 
       cover.innerHTML = book.coverImage
-        ? `<img src="${escapeHtml(safeUrl(book.coverImage))}" alt="${escapeHtml(book.title)} cover" class="h-full w-full object-cover" />`
+        ? `<img src="${escapeHtml(safeUrl(coverUrl(book.coverImage)))}" alt="${escapeHtml(book.title)} cover" class="h-full w-full object-cover" />`
         : `<div class="${escapeHtml(book.coverClass || "bg-slate-950 text-white")} flex h-full flex-col justify-between p-5">
              <div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div>
              <div>
@@ -2074,7 +2086,7 @@
                <div class="mt-2 text-xs font-semibold opacity-75">${escapeHtml(book.title)}</div>
              </div>
            </div>`;
-      const modelCover = safeHrefOrBlank(book.coverImage);
+      const modelCover = coverUrl(safeHrefOrBlank(book.coverImage));
       modelFallback.classList.toggle("has-cover", !!modelCover);
       modelFallback.style.backgroundImage = modelCover ? `url("${modelCover}")` : "";
 
@@ -2143,9 +2155,20 @@
     /* =========================================================
        BOOK CARDS
        ========================================================= */
+    /* Prefer the WebP twin of any repo-hosted cover; fall back to the JPG on error. */
+    function coverUrl(u) {
+      return String(u || "").replace(/(https:\/\/coder-with-bca\.github\.io\/crazy-ebook\/covers\/[^?#]+)\.jpg$/i, "$1.webp");
+    }
+    document.addEventListener("error", function (e) {
+      const t = e.target;
+      if (t && t.tagName === "IMG" && /\.webp($|\?)/.test(t.src) && !t.dataset.jpgFallback) {
+        t.dataset.jpgFallback = "1";
+        t.src = t.src.replace(/\.webp($|\?)/, ".jpg");
+      }
+    }, true);
     function renderBookCard(book) {
       const sample = bookSampleHref(book);
-      const imageUrl = safeHrefOrBlank(book.coverImage);
+      const imageUrl = coverUrl(safeHrefOrBlank(book.coverImage));
       return `
         <article data-details="${escapeHtml(book.id)}" class="book-card group flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
           <div class="book-card-cover relative mx-auto w-full max-w-[210px] pt-2">
@@ -2837,7 +2860,7 @@
       };
       const stepper = step => step === 0 ? "" : `<div class="mt-2 flex items-center gap-1" aria-hidden="true">${["Ordered", "Paid", "Delivered"].map((lab, i) => `<span class="rounded-full px-1.5 py-0.5 text-[9px] font-black ${i < step ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400"}">${lab}</span>${i < 2 ? `<span class="h-0.5 w-2 ${i < step - 1 ? "bg-emerald-500" : "bg-slate-200"}"></span>` : ""}`).join("")}</div>`;
       list.innerHTML = all.map(item => {
-        const cover = safeHrefOrBlank(item.cover_image);
+        const cover = coverUrl(safeHrefOrBlank(item.cover_image));
         const delivery = safeHrefOrBlank(item.delivery_url);
         const st = statusOf(item);
         const openable = item.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(item.order_status) && delivery.startsWith("https://");
@@ -2859,7 +2882,7 @@
       document.getElementById("cartCount").textContent = String(items.length);
       if (items.length !== oldCount) { const count = document.getElementById("cartCount"); count.classList.remove("bump"); void count.offsetWidth; count.classList.add("bump"); }
       document.getElementById("openCartBtn").setAttribute("aria-label", `Open cart, ${items.length} item${items.length === 1 ? "" : "s"}`);
-      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(safeHrefOrBlank(book.coverImage))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}${book.editionLang && !String(book.title).toLowerCase().includes(String(book.editionLang).toLowerCase()) ? ` (${escapeHtml(book.editionLang)})` : ""}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
+      document.getElementById("cartItems").innerHTML = items.length ? items.map(book => `<div class="flex items-center gap-3 rounded-xl border p-3">${book.coverImage ? `<img src="${escapeHtml(coverUrl(safeHrefOrBlank(book.coverImage)))}" alt="" class="h-16 w-12 rounded object-cover">` : `<div class="h-16 w-12 rounded ${escapeHtml(book.coverClass || "bg-slate-100")}"></div>`}<div class="min-w-0 flex-1"><strong class="line-clamp-2 text-sm">${escapeHtml(book.title)}${book.editionLang && !String(book.title).toLowerCase().includes(String(book.editionLang).toLowerCase()) ? ` (${escapeHtml(book.editionLang)})` : ""}</strong><p class="text-sm text-slate-500">${money(book.price)}</p></div><button data-cart-remove="${escapeHtml(book.id)}" class="rounded-lg border px-3 py-2 text-xs font-bold">Remove</button></div>`).join("") : '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Your cart is empty.</p>';
       const cartNormal = items.reduce((total,book) => total + Number(book.price || 0),0);
       const cartSaving = pairSavingRaw(items.map(b => String(b.id)));
       document.getElementById("cartTotal").innerHTML = (cartSaving > 0 ? `<del class="mr-2 text-xs opacity-60">${money(cartNormal)}</del>` : "") + money(cartNormal - cartSaving);
@@ -2908,7 +2931,7 @@
       return sel.length > 1 ? `<div class="grid gap-1.5">${sel.map(mk).join("")}</div>` : mk(sel[0]);
     }
     function editionCoverImg(b, cls) {
-      const u = safeHrefOrBlank(b.coverImage);
+      const u = coverUrl(safeHrefOrBlank(b.coverImage));
       return u ? `<img src="${escapeHtml(u)}" alt="${escapeHtml(b.title)} cover" loading="lazy" class="${cls}" />` : `<div class="${cls} ${escapeHtml(b.coverClass || 'bg-slate-950 text-white')} flex items-center justify-center p-2 text-center text-xs font-black">${escapeHtml(b.coverLabel || 'BOOK')}</div>`;
     }
     function editionCoverInner(book) {
@@ -2997,7 +3020,7 @@
       const rel = relatedBooksFor(book, [], 4);
       if (!rel.length) { slot.innerHTML = ""; return; }
       slot.innerHTML = '<p class="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">You may also like</p><div class="grid grid-cols-2 gap-2">' + rel.map(b => {
-        const cover = safeHrefOrBlank(b.coverImage);
+        const cover = coverUrl(safeHrefOrBlank(b.coverImage));
         return `<button type="button" data-related-open="${escapeHtml(b.id)}" class="flex items-center gap-2 rounded-xl border border-slate-200 p-2 text-left">${cover ? `<img src="${escapeHtml(cover)}" alt="" loading="lazy" class="h-14 w-10 shrink-0 rounded-md object-cover">` : '<div class="h-14 w-10 shrink-0 rounded-md bg-slate-100"></div>'}<span class="min-w-0"><span class="line-clamp-2 text-xs font-bold">${escapeHtml(b.title)}</span><span class="mt-0.5 block text-xs font-black text-slate-700">${money(b.price)}</span></span></button>`;
       }).join("") + '</div>';
       slot.querySelectorAll("[data-related-open]").forEach(btn => btn.addEventListener("click", () => openBookDetails(btn.dataset.relatedOpen)));
@@ -3009,7 +3032,7 @@
       const books = STORE.books.filter(b => b.status !== "inactive" && !b.free && Number(b.price) > 0 && !isHiddenEdition(b));
       row.innerHTML = books.map(b => {
         const picked = bundlePicks.some(id => String(id) === String(b.id));
-        const cover = safeHrefOrBlank(b.coverImage);
+        const cover = coverUrl(safeHrefOrBlank(b.coverImage));
         return `<button type="button" data-bundle-pick="${escapeHtml(b.id)}" aria-pressed="${picked}" class="relative w-24 shrink-0 rounded-xl border p-1.5 text-left ${picked ? "border-amber-400" : "border-slate-200"}">${cover ? `<img src="${escapeHtml(cover)}" alt="" loading="lazy" class="h-28 w-full rounded-lg object-cover">` : `<div class="h-28 w-full rounded-lg bg-slate-100"></div>`}<span class="mt-1 line-clamp-2 block text-[10px] font-bold leading-3">${escapeHtml(b.title)}</span><span class="mt-0.5 block text-[10px] font-black">${money(b.price)}</span>${picked ? '<span class="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-amber-400 text-[10px] font-black text-slate-950">✓</span>' : ""}</button>`;
       }).join("");
       row.querySelectorAll("[data-bundle-pick]").forEach(btn => btn.addEventListener("click", () => {
@@ -3047,7 +3070,7 @@
     }
     function openBookDetails(bookId) {
       const book = STORE.books.find(item => Number(item.id) === Number(bookId)); if (!book) return; detailsBookId = book.id;
-      const cover = safeHrefOrBlank(book.coverImage); const img = document.getElementById("detailsCover");
+      const cover = coverUrl(safeHrefOrBlank(book.coverImage)); const img = document.getElementById("detailsCover");
       img.src = cover || ""; img.alt = `${book.title} cover`; img.classList.toggle("hidden", !cover);
       const sampleLink = document.getElementById("detailsSample");
       const sampleHref = bookSampleHref(book);
@@ -3508,7 +3531,7 @@
           <td class="px-4 py-4">
             <div class="flex min-w-[260px] items-center gap-3">
               ${book.coverImage
-                ? `<img class="admin-cover-preview" src="${escapeHtml(safeUrl(book.coverImage))}" alt="" />`
+                ? `<img class="admin-cover-preview" src="${escapeHtml(safeUrl(coverUrl(book.coverImage)))}" alt="" />`
                 : `<div class="${escapeHtml(book.coverClass || "bg-slate-950 text-white")} grid h-[108px] w-[82px] place-items-center rounded-[10px] p-2 text-center text-[10px] font-black">${escapeHtml(book.coverLabel || "BOOK")}</div>`
               }
               <div>
