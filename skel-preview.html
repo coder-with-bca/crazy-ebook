@@ -1555,7 +1555,9 @@
     let supabaseReady = false;
 
     async function initializeSupabase() {
+      console.log("SKEL init", Date.now());
       await new Promise(r => setTimeout(r, 5000));
+      console.log("SKEL delay done", Date.now());
       if (SUPABASE_URL.includes("YOUR_PROJECT_REF") || SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") || ADMIN_EMAIL.includes("YOUR_OWNER_EMAIL")) return;
       const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
       supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
@@ -1574,6 +1576,7 @@
       const { data, error } = await supabase.from("storefront_public").select("data").eq("id", 1).maybeSingle();
       if (error) throw error;
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
+      console.log("SKEL merged books", STORE.books.length, Date.now());
       renderCart();
       await loadPublicReviews();
       await loadBookPairs();
@@ -1821,6 +1824,7 @@
     }
 
     function renderHero() {
+      console.log("SKEL renderHero books", STORE.books.length, Date.now());
       const sceneCard = document.querySelector("#heroScene .hero-scene-card");
       if (sceneCard) { sceneCard.classList.remove("ce-loading"); sceneCard.removeAttribute("aria-busy"); }
       document.querySelector("#home h1").textContent = STORE.heroTitle;
