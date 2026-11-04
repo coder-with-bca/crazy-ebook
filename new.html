@@ -986,7 +986,7 @@
         Telegram Support
       </a>
 
-      <span class="ce-hd-traffic hidden lg:flex" aria-hidden="true"><span class="ce-tl ce-tl-r"></span><span class="ce-tl ce-tl-y"></span><span class="ce-tl ce-tl-g"></span></span>
+      <span class="ce-hd-traffic hidden lg:flex" aria-label="Window controls"><button type="button" id="ceWinClose" class="ce-tl ce-tl-r" aria-label="Close site window" title="Close site window"></button><button type="button" id="ceWinMin" class="ce-tl ce-tl-y" aria-label="Minimize site window" title="Minimize site window"></button><button type="button" id="ceWinMax" class="ce-tl ce-tl-g" aria-label="Enter fullscreen" title="Enter fullscreen"></button></span>
     </nav>
   </header>
 
@@ -1410,6 +1410,10 @@
         </div>
       </div>
 
+      <button id="ceSoundRow" type="button" class="ce-set-row border-b border-slate-400/20" aria-pressed="true">
+        <span>Sound on tap</span><span id="ceSoundState" class="ce-set-pill">On</span>
+      </button>
+
       <button id="ceDiwaliRow" type="button" class="ce-set-row border-b border-slate-400/20">
         <span>🪔 Diwali theme</span>
         <span id="ceDiwaliState" class="ce-set-pill">On</span>
@@ -1504,7 +1508,7 @@
   </div>
 
   <div id="libraryModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
-    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeLibrary" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500">Loading your library…</p></div></div>
+    <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl"><div class="flex items-center gap-3"><div class="ce-traffic"><button id="closeLibrary" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div></div><div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500 ce-book-loading" role="status">Loading your library…</p></div></div>
   </div>
 
   <div id="buyModal"
@@ -2948,7 +2952,7 @@
     }
     async function loadPurchases() {
       if (!supabase || !adminAuthenticated || !document.getElementById("purchasesList")) return;
-      const list = document.getElementById("purchasesList"); list.innerHTML = '<p class="text-sm text-slate-500">Loading purchases…</p>';
+      const list = document.getElementById("purchasesList"); list.innerHTML = '<p class="text-sm text-slate-500 ce-book-loading" role="status">Loading purchases…</p>';
       const { data, error } = await supabase.from("purchases").select("*").order("created_at", { ascending: false });
       if (error) { list.innerHTML = '<p class="text-sm text-rose-600">Could not load purchases. Check the SQL policies.</p>'; return; }
       const rows = data || [];
@@ -2982,7 +2986,7 @@
     async function renderAdminCoupons() {
       const list = document.getElementById('adminCouponsList');
       if (!supabase || !adminAuthenticated) return;
-      list.innerHTML = '<p class="text-sm text-slate-500">Loading coupons…</p>';
+      list.innerHTML = '<p class="text-sm text-slate-500 ce-book-loading" role="status">Loading coupons…</p>';
       const { data, error } = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
       if (error) { list.innerHTML = '<p class="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Could not load coupons. Run the coupon migration in Supabase first.</p>'; return; }
       if (!data?.length) { list.innerHTML = '<p class="rounded-xl border border-dashed p-4 text-sm text-slate-500">No coupons yet.</p>'; return; }
@@ -3067,7 +3071,7 @@
       const list = document.getElementById("libraryItems");
       const references = getStoredPurchaseReferences();
       if (!supabaseReady || !references.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No approved purchases are saved in this browser yet.</p>'; return; }
-      list.innerHTML = '<p class="text-sm text-slate-500">Checking approved purchases…</p>';
+      list.innerHTML = '<p class="text-sm text-slate-500 ce-book-loading" role="status">Checking approved purchases…</p>';
       const results = await Promise.all(references.map(async ref => {
         const { data, error } = await supabase.rpc("get_customer_purchase_items", { p_purchase_id: ref.purchaseId, p_access_token: ref.accessToken });
         return error ? [] : (data || []);
@@ -4496,6 +4500,150 @@
        or simply set DIWALI_ENABLED = false at the top of diwali.js. -->
   <script src="diwali.js?v=13" defer></script>
   <!-- DIWALI THEME END -->
+
+  <!-- Local tap audio and desktop window controls. No account or payment state changes. -->
+  <style>
+    .ce-hd-traffic button.ce-tl { border:0; padding:0; cursor:pointer; flex-shrink:0; }
+    .ce-hd-traffic button.ce-tl:focus-visible { outline:2px solid #fbbf24; outline-offset:4px; }
+    html[data-ce-window] body > :not(#ceWindowState):not(#ceBookCursor) { visibility:hidden !important; pointer-events:none !important; }
+    html[data-ce-window] body { overflow:hidden !important; }
+    #ceWindowState { position:fixed; inset:0; z-index:2147483647; display:grid; place-items:center; padding:24px; background:var(--bg,#0f172a); color:var(--text,#f8fafc); }
+    #ceWindowState[hidden] { display:none; }
+    .ce-window-card { width:min(440px,100%); padding:36px; border:1px solid #f59e0b55; border-radius:24px; text-align:center; background:var(--card,#172033); box-shadow:0 24px 80px #0003; }
+    .ce-window-card h2 { font-size:26px; font-weight:800; margin:0 0 12px; }
+    .ce-window-card p { font-size:14px; line-height:1.7; opacity:.75; margin:0 0 24px; }
+    #ceWindowRestore { background:#fbbf24; color:#201305; border:0; border-radius:14px; padding:14px 24px; font-weight:800; cursor:pointer; }
+    html[data-ce-window="minimized"] #ceWindowState { place-items:end center; padding-bottom:28px; }
+    html[data-ce-window="minimized"] .ce-window-card { width:auto; padding:8px; border-radius:22px; }
+    html[data-ce-window="minimized"] .ce-window-card h2,
+    html[data-ce-window="minimized"] .ce-window-card p { display:none; }
+    html[data-theme="light"] #ceWindowState { background:#fff7ed; color:#1e293b; }
+    html[data-theme="light"] .ce-window-card { background:#fff; }
+    #ceWindowNotice { position:fixed; bottom:100px; left:50%; transform:translateX(-50%); z-index:99999; max-width:90vw; background:#1e293b; color:#fff; padding:12px 18px; border-radius:14px; font-size:13px; }
+  </style>
+  <section id="ceWindowState" hidden role="dialog" aria-modal="true" aria-labelledby="ceWindowTitle">
+    <div class="ce-window-card">
+      <h2 id="ceWindowTitle">See you soon!</h2>
+      <p>The site window is closed. Your cart and settings are still here. Reopen whenever you're ready.</p>
+      <button type="button" id="ceWindowRestore">Reopen Crazy E-Book</button>
+    </div>
+  </section>
+  <div id="ceWindowNotice" role="status" hidden></div>
+  <script>
+  (function () {
+    var soundOn = true, audio;
+    try { soundOn = localStorage.getItem('ce-sound-v1') !== '0'; } catch (e) {}
+    try { audio = new Audio('assets/tap.wav'); audio.preload = 'auto'; audio.volume = 0.35; } catch (e) {}
+    function playTap() {
+      if (!soundOn || !audio) return;
+      try { audio.currentTime = 0; var p = audio.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
+    }
+    var selector = 'button,a[href],[role="button"],input[type="checkbox"],input[type="radio"],select,summary,.ce-tile,.ce-bn-item,.promo-dot,.category-btn,.book-card';
+    document.addEventListener('pointerdown', function (e) {
+      if (e.isPrimary !== false && (e.button === undefined || e.button === 0) && e.target.closest(selector)) playTap();
+    }, { passive:true });
+    document.addEventListener('click', function (e) { if (e.detail === 0 && e.target.closest(selector)) playTap(); });
+    var row = document.getElementById('ceSoundRow'), pill = document.getElementById('ceSoundState');
+    function paintSound() { pill.textContent = soundOn ? 'On' : 'Off'; row.setAttribute('aria-pressed', String(soundOn)); }
+    paintSound();
+    row.addEventListener('click', function () {
+      soundOn = !soundOn;
+      try { localStorage.setItem('ce-sound-v1', soundOn ? '1' : '0'); } catch (e) {}
+      paintSound();
+    });
+    var root = document.documentElement, state = document.getElementById('ceWindowState');
+    var restore = document.getElementById('ceWindowRestore'), priorFocus, inerted = [];
+    function showWindowState(mode) {
+      priorFocus = document.activeElement;
+      Array.from(document.body.children).forEach(function (el) {
+        if (el !== state && !el.inert) { el.inert = true; inerted.push(el); }
+      });
+      root.setAttribute('data-ce-window', mode); state.hidden = false;
+      restore.textContent = mode === 'minimized' ? 'Crazy E-Book · Restore window' : 'Reopen Crazy E-Book';
+      restore.focus();
+    }
+    function reopen() {
+      delete root.dataset.ceWindow; state.hidden = true;
+      inerted.forEach(function (el) { el.inert = false; }); inerted = [];
+      if (priorFocus) priorFocus.focus();
+    }
+    document.getElementById('ceWinClose').addEventListener('click', function () { showWindowState('closed'); });
+    document.getElementById('ceWinMin').addEventListener('click', function () { showWindowState('minimized'); });
+    restore.addEventListener('click', reopen);
+    state.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); reopen(); }
+      else if (e.key === 'Tab') { e.preventDefault(); restore.focus(); }
+    });
+    var max = document.getElementById('ceWinMax'), notice = document.getElementById('ceWindowNotice'), noticeTimer;
+    function syncFullscreen() {
+      var label = document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen';
+      max.setAttribute('aria-label', label); max.title = label; max.setAttribute('aria-pressed', String(!!document.fullscreenElement));
+    }
+    max.addEventListener('click', async function () {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else if (root.requestFullscreen) await root.requestFullscreen();
+        else throw new Error('unavailable');
+      } catch (e) {
+        notice.textContent = 'Fullscreen is unavailable here. Try your browser fullscreen control.'; notice.hidden = false;
+        clearTimeout(noticeTimer); noticeTimer = setTimeout(function () { notice.hidden = true; }, 4500);
+      }
+      syncFullscreen();
+    });
+    document.addEventListener('fullscreenchange', syncFullscreen); syncFullscreen();
+  })();
+  </script>
+
+  <style>
+    #ceBookCursor { display:none; position:fixed; left:0; top:0; width:36px; height:36px; z-index:2147483647; pointer-events:none; filter:drop-shadow(0 2px 3px #0006); }
+    html.ce-book-cursor, html.ce-book-cursor * { cursor:none !important; }
+    html.ce-book-cursor #ceBookCursor { display:block; }
+  </style>
+  <img id="ceBookCursor" src="assets/cursor-book.svg" alt="" aria-hidden="true" draggable="false">
+  <script>
+  (function () {
+    var fine = matchMedia('(hover:hover) and (pointer:fine)'), root = document.documentElement;
+    var cursor = document.getElementById('ceBookCursor');
+    function hide() { root.classList.remove('ce-book-cursor'); }
+    document.addEventListener('pointermove', function (e) {
+      if (!fine.matches || e.pointerType !== 'mouse' || e.target.closest('input,textarea,[contenteditable="true"]')) { hide(); return; }
+      // The little gold bookmark tip is the click point.
+      cursor.style.transform = 'translate(' + (e.clientX - 26) + 'px,' + (e.clientY - 33) + 'px)';
+      root.classList.add('ce-book-cursor');
+    }, { passive:true });
+    document.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') hide(); }, { passive:true });
+    document.documentElement.addEventListener('pointerleave', hide);
+    window.addEventListener('blur', hide);
+    document.addEventListener('keydown', hide);
+    fine.addEventListener('change', hide);
+  })();
+  </script>
+
+  <style>
+    @keyframes ce-book-flip { 0%,100% { transform:translateY(0) rotate(-9deg) scaleX(1); } 35% { transform:translateY(-4px) rotate(6deg) scaleX(.72); } 65% { transform:translateY(-2px) rotate(-3deg) scaleX(1); } }
+    .ce-book-loading::before, .hero-scene-card.ce-loading::before {
+      content:""; display:inline-block; width:30px; height:30px; flex-shrink:0; vertical-align:middle; margin-right:7px;
+      background:url('assets/cursor-book.svg') center/contain no-repeat; animation:ce-book-flip 1s ease-in-out infinite;
+    }
+    button.ce-book-loading::before { width:22px; height:22px; }
+    .hero-scene-card.ce-loading::before { position:absolute; left:12px; top:12px; z-index:3; width:40px; height:40px; }
+    @media (prefers-reduced-motion:reduce) { .ce-book-loading::before, .hero-scene-card.ce-loading::before { animation:none; } }
+  </style>
+  <script>
+  (function () {
+    // Add the same book animation to transient text-only loading labels.
+    // Only presentation changes; requests, checkout and response handling stay unchanged.
+    var labels = /^(Checking…|Creating order…|Loading visits\.\.\.)$/;
+    function mark(el) {
+      if (!el || el.nodeType !== 1 || !el.matches('button,#visitorStatus')) return;
+      el.classList.toggle('ce-book-loading', labels.test(el.textContent.trim()));
+    }
+    document.querySelectorAll('button,#visitorStatus').forEach(mark);
+    new MutationObserver(function (changes) {
+      changes.forEach(function (m) { var el = m.target.nodeType === 1 ? m.target : m.target.parentElement; mark(el); });
+    }).observe(document.body, { childList:true, subtree:true, characterData:true });
+  })();
+  </script>
 </body>
 </html>
 
