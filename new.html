@@ -565,6 +565,15 @@
     html[data-theme="dark"] .ce-tile { background: rgba(23,31,70,.6); border-color: rgba(255,255,255,.12); box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
     .ce-tile-ic { font-size: 20px; line-height: 1; }
     .diwali-theme-toggle { bottom: 96px !important; }
+    #ceSettingsSheet { z-index: 80; }
+    .ce-search { background: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.4); backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5); box-shadow: 0 6px 20px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.5); color: inherit; }
+    .ce-search:focus { border-color: rgba(99,102,241,.6); box-shadow: 0 0 0 4px rgba(99,102,241,.15); }
+    html[data-theme="dark"] .ce-search { background: rgba(23,31,70,.6); border-color: rgba(255,255,255,.12); }
+    .featured-book-panel .hero-scene { height: auto; overflow: visible; border: 0; background: none; box-shadow: none; border-radius: 0; touch-action: auto; }
+    .featured-book-panel .hero-scene-card { position: static; margin: 0; }
+    .featured-book-panel .hero-model-fallback, .featured-book-panel .hero-scene-glow, .featured-book-panel .hero-scene-hint { display: none !important; }
+    .featured-book-panel .hero-scene-cover { width: 84px; height: 112px; }
+    section[id] { scroll-margin-bottom: 96px; }
     #heroSection .hero-scene { height: clamp(230px, 34vw, 320px); border-radius: 1.5rem; }
     .ce-bottom-nav { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 2px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.6); border-top: 1px solid rgba(255,255,255,.4); backdrop-filter: blur(20px) saturate(1.7); -webkit-backdrop-filter: blur(20px) saturate(1.7); box-shadow: 0 -8px 30px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.5); }
     html[data-theme="dark"] .ce-bottom-nav { background: rgba(17,24,56,.72); border-top-color: rgba(255,255,255,.10); box-shadow: 0 -8px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07); }
@@ -611,6 +620,20 @@
       </a>
     </nav>
   </header>
+  <div class="ce-searchrow mx-auto w-full max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+    <div class="relative w-full">
+      <label for="searchInput" class="sr-only">Search books</label>
+      <input id="searchInput"
+             type="search"
+             placeholder="Search titles or subjects..."
+             class="ce-search w-full rounded-2xl px-4 py-3 pl-11 text-sm outline-none" />
+      <svg class="absolute left-4 top-3.5 h-5 w-5 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-4-4"></path>
+      </svg>
+    </div>
+  </div>
+
 
   <main id="home">
 
@@ -637,38 +660,6 @@
           <a class="ce-tile" href="#authors"><span class="ce-tile-ic" aria-hidden="true">⭐</span><span>Reviews</span></a>
           <a class="ce-tile" href="#faq"><span class="ce-tile-ic" aria-hidden="true">❓</span><span>FAQ</span></a>
           <button class="ce-tile" type="button" data-ce-telegram="1"><span class="ce-tile-ic" aria-hidden="true">💬</span><span>Support</span></button>
-        </div>
-
-        <div class="featured-book-panel hero-showcase mt-6">
-          <div id="heroScene" class="hero-scene" aria-label="Interactive 3D ebook model">
-            <div class="hero-scene-glow" aria-hidden="true"></div>
-            <div id="heroModelFallback" class="hero-model-fallback" aria-hidden="true"></div>
-            <canvas id="hero3dCanvas" aria-hidden="true"></canvas>
-            <span class="hero-scene-hint" aria-hidden="true">Move to explore · scroll to turn</span>
-            <div class="hero-scene-card">
-              <div id="heroShowcaseCover" class="hero-scene-cover"></div>
-              <div class="hero-scene-copy">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="rounded-full bg-amber-50 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-amber-700">Featured</span>
-                  <span id="heroShowcaseTag" class="truncate text-[10px] font-bold text-slate-400"></span>
-                </div>
-                <div id="heroShowcaseCategory" class="mt-2 truncate text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600"></div>
-                <h3 id="heroShowcaseTitle" class="mt-1 font-black tracking-tight text-slate-950"></h3>
-                <p id="heroShowcaseSummary" class="hero-scene-summary mt-1 text-xs leading-4 text-slate-600"></p>
-                <div class="mt-1 flex items-center gap-1 text-xs">
-                  <span id="heroShowcaseStars" class="font-black text-amber-500"></span>
-                  <span id="heroShowcaseRating" class="font-bold text-slate-500"></span>
-                </div>
-                <div class="hero-scene-actions">
-                  <span id="heroShowcaseMrp" class="text-[10px] font-bold text-slate-400 line-through"></span>
-                  <span id="heroShowcasePrice" class="mr-auto text-sm font-black text-slate-950"></span>
-                  <a id="heroSampleBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-lg border border-slate-300 text-center text-[10px] font-extrabold text-slate-700">Sample</a>
-                  <button id="heroBuyBtn" type="button" class="rounded-lg bg-slate-950 text-[10px] font-extrabold text-white">Buy Now</button>
-                </div>
-              </div>
-              <span id="heroShowcaseFooter" class="sr-only">Crazy E-Book</span>
-            </div>
-          </div>
         </div>
 
         <div class="hero-details mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold opacity-75">
@@ -792,6 +783,40 @@
     <!-- =========================================================
          BOOKS / FILTERS
          ========================================================= -->
+    <section id="featuredBook" class="mx-auto max-w-7xl px-4 pb-2 pt-2 sm:px-6 lg:px-8" aria-label="Featured book">
+      <div class="featured-book-panel hero-showcase">
+
+          <div id="heroScene" class="hero-scene" aria-label="Interactive 3D ebook model">
+            <div class="hero-scene-glow" aria-hidden="true"></div>
+            <div id="heroModelFallback" class="hero-model-fallback" aria-hidden="true"></div>
+            <span class="hero-scene-hint" aria-hidden="true">Move to explore · scroll to turn</span>
+            <div class="hero-scene-card">
+              <div id="heroShowcaseCover" class="hero-scene-cover"></div>
+              <div class="hero-scene-copy">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="rounded-full bg-amber-50 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-amber-700">Featured</span>
+                  <span id="heroShowcaseTag" class="truncate text-[10px] font-bold text-slate-400"></span>
+                </div>
+                <div id="heroShowcaseCategory" class="mt-2 truncate text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600"></div>
+                <h3 id="heroShowcaseTitle" class="mt-1 font-black tracking-tight text-slate-950"></h3>
+                <p id="heroShowcaseSummary" class="hero-scene-summary mt-1 text-xs leading-4 text-slate-600"></p>
+                <div class="mt-1 flex items-center gap-1 text-xs">
+                  <span id="heroShowcaseStars" class="font-black text-amber-500"></span>
+                  <span id="heroShowcaseRating" class="font-bold text-slate-500"></span>
+                </div>
+                <div class="hero-scene-actions">
+                  <span id="heroShowcaseMrp" class="text-[10px] font-bold text-slate-400 line-through"></span>
+                  <span id="heroShowcasePrice" class="mr-auto text-sm font-black text-slate-950"></span>
+                  <a id="heroSampleBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-lg border border-slate-300 text-center text-[10px] font-extrabold text-slate-700">Sample</a>
+                  <button id="heroBuyBtn" type="button" class="rounded-lg bg-slate-950 text-[10px] font-extrabold text-white">Buy Now</button>
+                </div>
+              </div>
+              <span id="heroShowcaseFooter" class="sr-only">Crazy E-Book</span>
+            </div>
+          </div>
+      </div>
+    </section>
+
     <section id="books" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-20 lg:px-8">
       <div class="reveal flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
@@ -799,17 +824,6 @@
           <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Pick your next read.</h2>
         </div>
 
-        <div class="relative w-full lg:max-w-sm">
-          <label for="searchInput" class="sr-only">Search books</label>
-          <input id="searchInput"
-                 type="search"
-                 placeholder="Search titles or subjects..."
-                 class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pl-11 text-sm outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5" />
-          <svg class="absolute left-4 top-3.5 h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="7"></circle>
-            <path d="m20 20-4-4"></path>
-          </svg>
-        </div>
       </div>
 
       <div id="filterPills" class="reveal mt-7 flex flex-wrap gap-2"></div>
