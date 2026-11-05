@@ -3701,7 +3701,7 @@
         if (tgBase === "#") return "";
         const msg = `Hi, I want to ask about my order ${item.__pid} (${item.book_title}).`;
         const href = `${tgBase}${STORE.telegramLink.includes("?") ? "&" : "?"}text=${encodeURIComponent(msg)}`;
-        return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="ml-auto shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700">Ask on Telegram</a>`;
+        return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700">Ask on Telegram</a>`;
       };
       const stepPills = step => ["Ordered", "Paid", "Delivered"].map((lab, i) => `<span class="rounded-full px-2 py-1 text-[10px] font-black ${i < step ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400"}">${lab}</span>`).join("");
       list.innerHTML = all.map(item => {
@@ -3710,10 +3710,10 @@
         const st = statusOf(item);
         const openable = item.payment_status === "Paid" && ["Approved", "Paid", "Delivered"].includes(item.order_status) && delivery.startsWith("https://");
         const action = openable
-          ? `<a href="${escapeHtml(delivery)}" target="_blank" rel="noopener noreferrer" class="ml-auto shrink-0 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950">Open Ebook</a>`
+          ? `<a href="${escapeHtml(delivery)}" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950">Open Ebook</a>`
           : trackLink(item);
         const statusPill = st.step === 3 ? "" : `<span class="rounded-full px-2 py-1 text-[10px] font-black" style="${st.cls}">${st.label}</span>`;
-        return `<article class="rounded-xl border p-3"><div class="flex items-start gap-3">${cover ? `<img src="${escapeHtml(cover)}" alt="" class="h-20 w-14 shrink-0 rounded-lg object-cover">` : '<div class="h-20 w-14 shrink-0 rounded-lg bg-slate-100"></div>'}<div class="min-w-0 flex-1"><h3 class="break-words text-sm font-bold">${escapeHtml(item.book_title)}</h3><p class="mt-1 break-all text-[11px] text-slate-500">Order ${escapeHtml(item.__pid)}</p><p class="mt-0.5 text-[11px] text-slate-500">${new Date(item.created_at).toLocaleDateString()}</p></div></div><div class="mt-2 flex flex-wrap items-center gap-1.5">${stepPills(st.step)}${statusPill}${action}</div></article>`;
+        return `<article class="rounded-xl border p-3"><div class="flex items-start gap-3">${cover ? `<img src="${escapeHtml(cover)}" alt="" class="h-20 w-14 shrink-0 rounded-lg object-cover">` : '<div class="h-20 w-14 shrink-0 rounded-lg bg-slate-100"></div>'}<div class="min-w-0 flex-1"><h3 class="break-words text-sm font-bold">${escapeHtml(item.book_title)}</h3><p class="mt-1 break-all text-[11px] text-slate-500">Order ${escapeHtml(item.__pid)}</p><div class="mt-0.5 flex flex-wrap items-center gap-2"><p class="text-[11px] text-slate-500">${new Date(item.created_at).toLocaleDateString()}</p>${action}</div></div></div><div class="mt-2 flex flex-wrap items-center gap-1.5">${stepPills(st.step)}${statusPill}</div></article>`;
       }).join("");
     }
     function openMyLibrary() {
