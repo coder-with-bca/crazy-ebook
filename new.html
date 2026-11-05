@@ -961,6 +961,16 @@
     html[data-theme] .ce-bn-item::after { content:""; position:absolute; left:28%; right:28%; bottom:-2px; height:3px; border-radius:3px; background:var(--ce-teal-grad); transform:scaleX(0); opacity:0; transition:transform .25s ease, opacity .25s ease; }
     html[data-theme] .ce-bn-item:hover, html[data-theme] .ce-bn-item.is-active, html[data-theme] .ce-bn-item:focus-visible { color:var(--ce-teal-ink); }
     html[data-theme] .ce-bn-item:hover::after, html[data-theme] .ce-bn-item.is-active::after { transform:scaleX(1); opacity:1; }
+    /* v69 (Aadi): video-style nav - thin outline icons + sliding mint glow under the active tab.
+       One shared indicator moves to the active item; no layout shift, transform-only animation. */
+    .ce-bn-ico { display: inline-flex; }
+    .ce-bn-ico svg { width: 20px; height: 20px; }
+    .ce-bn-glow { position: absolute; z-index: 0; top: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); left: 0; width: 56px; border-radius: .9rem; background: var(--ce-teal-soft); box-shadow: 0 0 14px rgba(20,216,196,.40), inset 0 0 0 1px rgba(20,216,196,.32); opacity: 0; transform: translateX(0); transition: transform .45s cubic-bezier(.3,1.35,.4,1), width .45s cubic-bezier(.3,1.35,.4,1), opacity .25s ease; pointer-events: none; }
+    .ce-bn-glow.is-on { opacity: 1; }
+    .ce-bn-glow::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: 2px; height: 3px; border-radius: 3px; background: var(--ce-teal-grad); box-shadow: 0 0 8px rgba(20,216,196,.85); }
+    .ce-bottom-nav > .ce-bn-item { position: relative; z-index: 1; }
+    html[data-theme] .ce-bn-item.is-active::after { transform: scaleX(0); opacity: 0; }
+
     html[data-theme] footer a:hover, html[data-theme] .ce-set-row:hover .ce-set-chev { color:var(--ce-teal-ink); }
     html[data-theme] #cartCount { color:inherit; }
     @media (prefers-reduced-motion: no-preference) {
@@ -1984,13 +1994,14 @@
   </footer>
 
   <nav class="ce-bottom-nav" aria-label="Primary navigation">
-    <a href="#home" class="ce-bn-item"><span aria-hidden="true">🏠</span><span>Home</span></a>
-    <button id="ceSearchNavBtn" type="button" class="ce-bn-item" aria-label="Search books"><span aria-hidden="true">🔍</span><span>Search</span></button>
-    <a href="#books" class="ce-bn-item"><span aria-hidden="true">📚</span><span>Books</span></a>
-    <a href="#deepOffer" class="ce-bn-item"><span aria-hidden="true">🎉</span><span>Offers</span></a>
-    <button id="openCartBtn" type="button" class="ce-bn-item" aria-label="Open cart"><span aria-hidden="true">🛒</span><span>Cart (<span id="cartCount">0</span>)</span></button>
-    <button id="openLibraryBtn" type="button" class="ce-bn-item" aria-label="Open My Library"><span aria-hidden="true">📖</span><span>Library</span></button>
-    <button id="ceSettingsBtn" type="button" class="ce-bn-item" aria-label="Open settings"><span aria-hidden="true">⚙️</span><span>Settings</span></button>
+    <span class="ce-bn-glow" id="ceBnGlow" aria-hidden="true"></span>
+    <a href="#home" class="ce-bn-item"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span>Home</span></a>
+    <button id="ceSearchNavBtn" type="button" class="ce-bn-item" aria-label="Search books"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><span>Search</span></button>
+    <a href="#books" class="ce-bn-item"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></span><span>Books</span></a>
+    <a href="#deepOffer" class="ce-bn-item"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span><span>Offers</span></a>
+    <button id="openCartBtn" type="button" class="ce-bn-item" aria-label="Open cart"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span><span>Cart (<span id="cartCount">0</span>)</span></button>
+    <button id="openLibraryBtn" type="button" class="ce-bn-item" aria-label="Open My Library"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span>Library</span></button>
+    <button id="ceSettingsBtn" type="button" class="ce-bn-item" aria-label="Open settings"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span><span>Settings</span></button>
   </nav>
 
   <div id="ceSitePopup" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-label="Site design choice">
@@ -5324,6 +5335,7 @@
           var item = document.querySelector(NAV[key]);
           if (item) item.classList.toggle("is-active", key === name);
         });
+        ceMoveNavGlow();
         /* v61c: land at scroll top with the full banner visible on every view
            switch (Akki). Instant, so no smooth-scroll drift. */
         try {
@@ -5340,6 +5352,22 @@
            the keyboard opens only when he taps inside the search bar. */
       }
       window.ceShowWindow = ceShowWindow;
+      /* v69: slide the shared glow indicator under the active tab. */
+      function ceMoveNavGlow() {
+        var nav = document.querySelector(".ce-bottom-nav");
+        var glow = document.getElementById("ceBnGlow");
+        if (!nav || !glow) return;
+        var active = nav.querySelector(".ce-bn-item.is-active");
+        if (!active) { glow.classList.remove("is-on"); return; }
+        glow.style.width = active.offsetWidth + "px";
+        glow.style.transform = "translateX(" + active.offsetLeft + "px)";
+        glow.classList.add("is-on");
+      }
+      window.ceMoveNavGlow = ceMoveNavGlow;
+      window.addEventListener("resize", ceMoveNavGlow);
+      window.addEventListener("orientationchange", ceMoveNavGlow);
+      window.addEventListener("load", ceMoveNavGlow);
+
       window.ceWinBack = function () { ceShowWindow(lastWin && lastWin !== current ? lastWin : "home"); };
 
       // Home / Search / Offers taps switch windows instead of anchor-scrolling.
