@@ -993,6 +993,7 @@
     .ce-win-in-r { animation: ceWinInR .26s ease both; }
     @media (prefers-reduced-motion: reduce) { .ce-win-in-l, .ce-win-in-r { animation: none; } }
     html[data-ce-view="search"] #books > .reveal:first-child { display: none; }
+    html[data-ce-view="search"] #booksIntro { display: none; } /* v73b: star-field made the old first-child selector miss */
     html:not([data-ce-view="search"]) #books .ce-searchbar { display: none !important; }
     html[data-ce-view="search"] #books, html[data-ce-view="books"] #books { padding-top: 1.25rem; }
     html[data-ce-view="offers"] #deepOffer { margin-top: 1.25rem; }
@@ -1776,7 +1777,7 @@
 
 
     <section id="books" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-20 lg:px-8">
-      <div class="reveal flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div id="booksIntro" class="reveal flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Library</p>
           <h2 class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Pick your next read.</h2>
