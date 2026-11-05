@@ -415,8 +415,9 @@
 
   /* ------------------------- footer wish line ----------------------- */
   html.diwali-night .diwali-footer-wish {
-    margin: 0; padding: 18px 16px 22px; text-align: center;
-    font-weight: 800; font-size: clamp(13px, 2.6vw, 15.5px); letter-spacing: 0.01em;
+    margin: 0; padding: 8px 10px 10px; text-align: center;
+    font-weight: 800; font-size: clamp(10.5px, 2.9vw, 15.5px); letter-spacing: 0.005em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     font-family: "Playfair Display", Georgia, serif;
     background: linear-gradient(92deg, #FF8A00 0%, #FFD54F 45%, #FFB300 65%, #E0407B 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
