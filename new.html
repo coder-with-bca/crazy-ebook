@@ -2550,7 +2550,7 @@
         heroP.hidden = !heroP.textContent;
       })();
 
-      if (!catalogueReady && !STORE.books.length) return;
+      if (!catalogueReady) return;
       const sceneCard = document.querySelector("#heroScene .hero-scene-card");
       if (sceneCard) { sceneCard.classList.remove("ce-loading"); sceneCard.removeAttribute("aria-busy"); }
       const book = STORE.books.find(item => Number(item.id) === Number(STORE.featuredBookId)) || STORE.books[0];
@@ -2729,7 +2729,7 @@
       if (bookSort === 'price-high') filtered.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
       const grid = document.getElementById('bookGrid');
       const empty = document.getElementById('emptyBooks');
-      if (!catalogueReady && !STORE.books.length) {
+      if (!catalogueReady) {
         empty.classList.add('hidden');
         grid.innerHTML = '<div class="ce-skel-wrap" aria-hidden="true">' + '<div class="ce-skel-card"><div class="ce-skel-cover"></div><div class="ce-skel-line" style="width:55%"></div><div class="ce-skel-line" style="width:35%"></div><div class="ce-skel-line" style="width:75%"></div></div>'.repeat(6) + '</div>';
         return;
