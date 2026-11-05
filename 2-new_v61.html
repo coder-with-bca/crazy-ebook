@@ -5047,7 +5047,20 @@
           var item = document.querySelector(NAV[key]);
           if (item) item.classList.toggle("is-active", key === name);
         });
-        window.scrollTo(0, 0);
+        /* v61: land directly with the window title under the golden line.
+           The old scrollTo(0,0) was smooth (CSS scroll-behavior), so the page
+           animated up to the banner on every tap and fought the landing
+           corrections. Jump straight to the title instead. */
+        try {
+          var ceTb = document.querySelector(".ce-win-titlebar");
+          var ceDb = document.querySelector(".ce-deskbar");
+          var ceOff = ceDb && getComputedStyle(ceDb).display !== "none" && ceDb.offsetHeight > 0 ? ceDb.offsetHeight : 6;
+          var ceY = ceTb ? Math.max(0, Math.round(ceTb.getBoundingClientRect().top + window.scrollY - ceOff)) : 0;
+          var cePrev = document.documentElement.style.scrollBehavior;
+          document.documentElement.style.scrollBehavior = "auto";
+          window.scrollTo(0, ceY);
+          document.documentElement.style.scrollBehavior = cePrev;
+        } catch (e) { window.scrollTo(0, 0); }
         try {
           if (opts.push === false || same) history.replaceState({ ceWin: name }, "", "#" + name);
           else history.pushState({ ceWin: name }, "", "#" + name);
@@ -5156,14 +5169,19 @@
         function scheduleLanding(times) {
           var seq = ++landSeq;
           var lastY = null;
+          function correct() {
+            if (seq !== landSeq) return;
+            if (lastY !== null && Math.abs(window.scrollY - lastY) > 2) return;
+            var y = targetY();
+            if (y <= 0) return; /* titlebar not measurable yet; later timers retry */
+            if (Math.abs(window.scrollY - y) >= 8) { jump(y); lastY = y; }
+            else { lastY = Math.round(window.scrollY); }
+          }
           times.forEach(function (ms) {
-            setTimeout(function () {
-              if (seq !== landSeq) return;
-              if (lastY !== null && Math.abs(window.scrollY - lastY) > 2) return;
-              var y = targetY();
-              if (Math.abs(window.scrollY - y) >= 8) { jump(y); lastY = y; }
-              else { lastY = Math.round(window.scrollY); }
-            }, ms);
+            /* v61: run the first correction synchronously so the landing
+               happens in the same frame as the tap - no banner flash */
+            if (ms === 0) correct();
+            else setTimeout(correct, ms);
           });
         }
 
