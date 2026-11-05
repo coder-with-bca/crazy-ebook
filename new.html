@@ -2045,6 +2045,19 @@
     <button id="ceSettingsBtn" type="button" class="ce-bn-item" aria-label="Open settings"><span aria-hidden="true" class="ce-bn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span><span>Settings</span></button>
   </nav>
 
+  <div id="ceExitPopup" class="fixed inset-0 z-[95] hidden items-end justify-center bg-slate-950/60 p-4 sm:items-center" role="dialog" aria-modal="true" aria-label="Stay or exit">
+    <div class="ce-glass w-full max-w-xs rounded-3xl p-5 text-center shadow-2xl">
+      <p class="text-4xl" aria-hidden="true">📚</p>
+      <h2 class="mt-2 text-base font-black">Ruk jao na, ek aur book? 🥺</h2>
+      <p class="mt-2 text-xs leading-5 opacity-75">Crazy E-Book se jaa rahe ho? Abhi kuch mast books baaki hain!</p>
+      <div class="mt-4 grid gap-2">
+        <button id="ceExitStay" type="button" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Stay 💛</button>
+        <button id="ceExitGo" type="button" class="w-full rounded-xl border border-slate-400/40 px-4 py-3 text-sm font-bold">Exit</button>
+      </div>
+      <p id="ceExitNote" class="mt-3 hidden text-[11px] leading-4 opacity-70">Browser is page ko khud band nahi karne deta - tab ya app swipe karke band kar do 🙏</p>
+    </div>
+  </div>
+
   <div id="ceSitePopup" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-label="Site design choice">
     <div class="ce-glass w-full max-w-xs rounded-3xl p-5 text-center shadow-2xl">
       <div class="ce-traffic"><button id="cePopupClose" type="button" class="ce-tl ce-tl-r" aria-label="Stay on Site 1"></button></div>
@@ -5455,9 +5468,21 @@
           window.scrollTo(0, 0);
           document.documentElement.style.scrollBehavior = cePrev;
         } catch (e) { window.scrollTo(0, 0); }
+        /* v79: back-stack model [guard, home, window?]. Any non-home window sits one
+           entry above Home, so Back/cross from any tab lands on Home; Back on Home
+           reaches the guard entry and shows the Stay / Exit popup. */
         try {
-          if (opts.push === false || same) history.replaceState({ ceWin: name }, "", "#" + name);
-          else history.pushState({ ceWin: name }, "", "#" + name);
+          if (opts.push !== false) {
+            var st = history.state || {};
+            var onWin = st.ceWin && st.ceWin !== "home" && !st.__crazyEbookOverlay;
+            if (name === "home") {
+              if (onWin) { window.ceBackSkip = true; history.go(-1); }
+              else history.replaceState({ ceWin: "home" }, "", "#home");
+            } else if (onWin) history.replaceState({ ceWin: name }, "", "#" + name);
+            else history.pushState({ ceWin: name }, "", "#" + name);
+          } else if (!(history.state && history.state.ceGuard)) {
+            history.replaceState(Object.assign({}, history.state || {}, { ceWin: name }), "", "#" + name);
+          }
         } catch (e) {}
         /* v64 (Akki): opening the Search window must NOT auto-focus the input;
            the keyboard opens only when he taps inside the search bar. */
@@ -5492,12 +5517,37 @@
 
       // Android/browser Back returns to the previous window instead of leaving.
       window.addEventListener("popstate", function (event) {
-        var name = (event.state && event.state.ceWin) || HASH[location.hash] || "home";
+        var st = event.state || {};
+        if (st.ceGuard) {
+          if (window.ceExiting) return;
+          /* Back pressed on Home: restore Home entry and ask Stay / Exit */
+          try { history.pushState({ ceWin: "home" }, "", "#home"); } catch (e) {}
+          ceShowWindow("home", { push: false });
+          if (window.ceShowExitPopup) window.ceShowExitPopup();
+          return;
+        }
+        window.ceBackSkip = false;
+        var name = st.ceWin || HASH[location.hash] || "home";
         ceShowWindow(name, { push: false });
       });
 
+      /* v79: "Books" links (nav, Shop now, Browse...) go through the window switcher
+         instead of a native hash jump, so they cannot add stray history entries. */
+      document.addEventListener("click", function (event) {
+        var link = event.target.closest('a[href="#books"]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        ceShowWindow("books");
+      });
+
       // Land in the window named by the URL hash (default: home); no slide on first paint.
-      ceShowWindow(HASH[location.hash] || "home", { push: false, animate: false });
+      var firstWin = HASH[location.hash] || "home";
+      try {
+        history.replaceState({ ceGuard: true }, "", location.pathname + location.search);
+        history.pushState({ ceWin: "home" }, "", "#home");
+      } catch (e) {}
+      ceShowWindow("home", { push: false, animate: false });
+      if (firstWin !== "home") ceShowWindow(firstWin);
     })();
   </script>
   <script id="ce-v56-navscroll">
@@ -5633,6 +5683,33 @@
           scheduleLanding([50, 250, 650, 1200]);
         }).observe(de, { attributes: true, attributeFilter: ["data-ce-view"] });
       } catch (e) {}
+    })();
+  </script>
+  <script id="ce-v79-exit">
+    /* v79: Stay / Exit popup shown when Back is pressed on Home. */
+    (function () {
+      var pop = document.getElementById("ceExitPopup");
+      if (!pop) return;
+      var note = document.getElementById("ceExitNote");
+      function hide() { pop.classList.add("hidden"); pop.classList.remove("flex"); document.body.classList.remove("modal-open"); }
+      window.ceShowExitPopup = function () {
+        if (note) note.classList.add("hidden");
+        pop.classList.remove("hidden"); pop.classList.add("flex");
+      };
+      document.getElementById("ceExitStay").addEventListener("click", hide);
+      pop.addEventListener("click", function (e) { if (e.target === pop) hide(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !pop.classList.contains("hidden")) hide(); });
+      document.getElementById("ceExitGo").addEventListener("click", function () {
+        window.ceExiting = true;
+        /* step back past Home and the guard entry; leaves the site / closes the installed app when there is an earlier page */
+        try { history.go(-2); } catch (e) {}
+        setTimeout(function () {
+          try { window.close(); } catch (e) {}
+          setTimeout(function () {
+            if (document.visibilityState === "visible") { window.ceExiting = false; if (note) note.classList.remove("hidden"); }
+          }, 400);
+        }, 500);
+      });
     })();
   </script>
 </body>
