@@ -5504,7 +5504,7 @@
       window.addEventListener("orientationchange", ceMoveNavGlow);
       window.addEventListener("load", ceMoveNavGlow);
 
-      window.ceWinBack = function () { ceShowWindow(lastWin && lastWin !== current ? lastWin : "home"); };
+      window.ceWinBack = function () { ceShowWindow("home"); }; /* v79c: cross/back controls always return to Home */
 
       // Home / Search / Offers taps switch windows instead of anchor-scrolling.
       document.addEventListener("click", function (event) {
