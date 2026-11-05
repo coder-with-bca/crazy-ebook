@@ -2588,10 +2588,11 @@
       const sel = editionSelectedBooks(book);
       const cls = details ? "rounded-xl border border-slate-300 px-3 py-3 text-center text-sm font-bold" : "rounded-xl border border-slate-300 px-2 py-2.5 text-center text-xs font-extrabold";
       const mk = b => {
-        const href = bookSampleHref(b); const label = `${b.editionLang} sample`;
+        const href = bookSampleHref(b);
+        const twoLine = (top, bottom) => `<span class="block leading-tight">${escapeHtml(top)}</span><span class="block leading-tight">${escapeHtml(bottom)}</span>`;
         return href
-          ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="sample-btn block ${cls} text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">${escapeHtml(label)}</a>`
-          : `<button type="button" disabled title="${escapeHtml(b.editionLang)} sample unavailable" class="sample-btn block w-full cursor-not-allowed ${cls} text-slate-400 opacity-60">No ${escapeHtml(b.editionLang)} sample</button>`;
+          ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="sample-btn block ${cls} text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">${twoLine(b.editionLang, "Sample")}</a>`
+          : `<button type="button" disabled title="${escapeHtml(b.editionLang)} sample unavailable" class="sample-btn block w-full cursor-not-allowed ${cls} text-slate-400 opacity-60">${twoLine(b.editionLang, "No sample")}</button>`;
       };
       return sel.length > 1 ? `<div class="grid gap-1.5">${sel.map(mk).join("")}</div>` : mk(sel[0]);
     }
