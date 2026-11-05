@@ -1448,8 +1448,8 @@
   </style>
   <style id="ce-v73">
     /* v73: (1) brand banner on Home only; (2) Flipkart-style back + cart buttons flanking
-       the Search bar; (3) Sort/View row on the Books & Search windows; (4) discount % off
-       on card prices; (5) inline expanding language picker (no native popup). */
+       the Search bar; (3) Sort/View row on the Books & Search windows; (4) discount shown as rupee savings
+       (↓₹N off) on card prices, struck MRP beside the price, no separate Save pill; (5) inline expanding language picker (no native popup). */
     html:not([data-ce-view="home"]) #ceBanner { display:none !important; }
     .ce-searchbar-row { display:flex; align-items:center; gap:10px; }
     .ce-bar-btn { position:relative; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:14px; border:1px solid rgba(148,163,184,.5); background:rgba(255,255,255,.7); color:inherit; cursor:pointer; padding:0; }
@@ -1464,6 +1464,7 @@
     html[data-theme="dark"] .ce-sv-viewbtn { background-color:#141b3d; }
     .ce-off-pct { color:#15803d; font-size:.8rem; font-weight:900; white-space:nowrap; }
     html[data-theme="dark"] .ce-off-pct { color:#34d399; }
+    .ce-price-now { display:inline-flex; align-items:baseline; gap:.35rem; white-space:nowrap; }
     .ce-edpick { margin-top:8px; }
     .ce-edpick-label { display:block; margin-bottom:4px; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.12em; color:#64748b; }
     html[data-theme="dark"] .ce-edpick-label { color:#94a3b8; }
@@ -2973,7 +2974,7 @@
     function offPctText(mrp, price) {
       const m = Number(mrp), p = Number(price);
       if (!Number.isFinite(m) || !Number.isFinite(p) || m <= p || m <= 0) return "";
-      return "\u2193" + Math.round(((m - p) / m) * 100) + "% off";
+      return "\u2193\u20B9" + Math.round(m - p) + " off";
     }
     function renderBookCard(book) {
       const sample = bookSampleHref(book);
@@ -2994,8 +2995,7 @@
           <div class="book-card-content mt-4 flex flex-1 flex-col">
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
             <h3 class="mt-2 break-words text-base font-black tracking-tight sm:text-lg">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</h3>
-            <div class="book-price-line mt-2">${offText ? `<span class="ce-off-pct"${editionMode ? ` data-edition-off="${escapeHtml(book.id)}"` : ''}>${offText}</span>` : (editionMode ? `<span class="ce-off-pct" data-edition-off="${escapeHtml(book.id)}" hidden></span>` : '')}<span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${editionSiblings(book).length ? `<span class="book-mrp" data-edition-mrp="${escapeHtml(book.id)}">${editionMrpText(book)}</span>` : (Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : '')}</div>
-            ${!editionSiblings(book).length && Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="ce-save-badge">Save ${money(Number(book.mrp) - Number(book.price))}</span>` : ''}
+            <div class="book-price-line mt-2">${offText ? `<span class="ce-off-pct"${editionMode ? ` data-edition-off="${escapeHtml(book.id)}"` : ''}>${offText}</span>` : (editionMode ? `<span class="ce-off-pct" data-edition-off="${escapeHtml(book.id)}" hidden></span>` : '')}<span class="ce-price-now"><span class="book-price text-xl font-black text-slate-950" ${editionSiblings(book).length ? `data-edition-price="${escapeHtml(book.id)}"` : ''}>${editionSiblings(book).length ? editionPriceText(book) : money(book.price)}</span>${editionSiblings(book).length ? `<span class="book-mrp" data-edition-mrp="${escapeHtml(book.id)}">${editionMrpText(book)}</span>` : (Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? `<span class="book-mrp" aria-label="MRP ${money(book.mrp)}">${money(book.mrp)}</span>` : '')}</span></div>
             ${editionPickerHtml(book)}
             <div class="book-actions mt-3 grid grid-cols-2 gap-2">
               ${editionSiblings(book).length ? `<div data-edition-sample="${escapeHtml(book.id)}">${editionSampleInner(book, false)}</div>` : sample ? `<a href="${escapeHtml(sample)}" target="_blank" rel="noopener noreferrer" class="sample-btn rounded-xl border border-amber-400 px-2 py-2.5 text-center text-xs font-extrabold leading-tight text-amber-700 transition hover:border-amber-500 hover:bg-amber-50">Free<br>Sample</a>` : `<button type="button" disabled title="Sample unavailable for this book" aria-label="Sample unavailable for ${escapeHtml(book.title)}" class="sample-btn cursor-not-allowed rounded-xl border border-slate-300 px-2 py-2.5 text-xs font-extrabold text-slate-400 opacity-60">No sample</button>`}
