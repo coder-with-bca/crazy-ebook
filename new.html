@@ -3787,7 +3787,16 @@
     function renderReviews() {
       const grid = document.getElementById("reviewsGrid");
       const reviews = (Array.isArray(STORE.reviews) ? STORE.reviews : []).filter(review => review.visible !== false);
-      document.getElementById("authors")?.classList.toggle("hidden", reviews.length === 0);
+      // v62: the Reviews section belongs to Home only. Toggling its visibility here
+      // used to un-hide it after async review loads even while Cart/Library/Settings
+      // was the active window (the refresh bug). Respect the current window and let
+      // ceShowWindow own section visibility; only apply the zero-reviews hide on Home.
+      window.ceHasVisibleReviews = reviews.length > 0;
+      const authorsSection = document.getElementById("authors");
+      if (authorsSection) {
+        const ceView = document.documentElement.getAttribute("data-ce-view") || "home";
+        authorsSection.classList.toggle("hidden", reviews.length === 0 || ceView !== "home");
+      }
       document.getElementById("reviewCount").textContent = `${reviews.length} comment${reviews.length === 1 ? "" : "s"}`;
 
       if (!reviews.length) {
@@ -5041,6 +5050,12 @@
           el.classList.remove("ce-win-in-r");
           if (show && opts.animate !== false) { void el.offsetWidth; el.classList.add(dir === "r" ? "ce-win-in-r" : "ce-win-in-l"); }
         });
+        /* v62: keep the zero-reviews hide when landing back on Home (renderReviews
+           only runs on data loads, not on tab switches). */
+        if (name === "home" && window.ceHasVisibleReviews === false) {
+          var authorsSec = document.getElementById("authors");
+          if (authorsSec) authorsSec.classList.add("hidden");
+        }
         Object.keys(NAV).forEach(function (key) {
           var item = document.querySelector(NAV[key]);
           if (item) item.classList.toggle("is-active", key === name);
