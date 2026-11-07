@@ -1,9 +1,11 @@
 /* ============================ DIWALI THEME START ============================
    Crazy E-Book - "Diwali Night" festive theme (self-contained)
    -------------------------------------------------------------------------
-   SITE OWNER SWITCH: set DIWALI_ENABLED to false below and deploy to retire
-   the whole theme. Everything (banner, toran, diyas, rangoli, fireworks,
-   colors) disappears with that one change. Nothing else depends on this file.
+   SITE OWNER SWITCH: the owner turns this theme on/off from Admin > Website
+   Management > Theme manager (stored in the storefront config; cached in this
+   browser's localStorage as crazyebook-site-config-v1). To hard-retire the
+   theme forever, set DIWALI_ENABLED to false below and deploy, or delete this
+   file and its <script> tag. Nothing else depends on this file.
    VISITOR SWITCH: the floating "Diwali ON/OFF" button saves the visitor's
    choice in localStorage (key crazyebook-diwali-v1) and reloads once to
    apply it. Every festive style is scoped under the html.diwali-night
@@ -14,11 +16,23 @@
 (function () {
   "use strict";
 
-  var DIWALI_ENABLED = true; // <-- the site owner's master on/off switch
-  var DIWALI_VERSION = "7-smooth";
+  var DIWALI_ENABLED = true; // <-- hard retire switch (code change + deploy)
+  var DIWALI_VERSION = "8-owner-manager";
   var PREF_KEY = "crazyebook-diwali-v1"; // visitor's own ON/OFF choice
+  var SITE_CONFIG_KEY = "crazyebook-site-config-v1"; // owner toggles, cached from the storefront config
 
-  if (!DIWALI_ENABLED) {
+  // Owner switch from Admin > Website Management > Theme manager. new.html caches
+  // the storefront config in localStorage after every storefront load, so this file
+  // can read the owner's choice synchronously on later visits. Default (no cache): on.
+  function ownerEnabled() {
+    try {
+      var cfg = JSON.parse(localStorage.getItem(SITE_CONFIG_KEY) || "null");
+      if (cfg && cfg.diwaliEnabled === false) return false;
+    } catch (e) {}
+    return DIWALI_ENABLED;
+  }
+
+  if (!ownerEnabled()) {
     document.documentElement.classList.remove("diwali-night");
     return;
   }
