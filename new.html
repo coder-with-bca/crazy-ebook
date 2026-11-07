@@ -21,7 +21,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
-  <script>try { var __ceTheme = localStorage.getItem("crazyebook-theme-v1"); document.documentElement.dataset.theme = (__ceTheme === "dark") ? "dark" : "light"; } catch (e) { document.documentElement.dataset.theme = "light"; }</script>
+  <script>try { var __ceTheme = localStorage.getItem("crazyebook-theme-v1"); if (__ceTheme !== "dark" && __ceTheme !== "light") { var __ceCfg = null; try { __ceCfg = JSON.parse(localStorage.getItem("crazyebook-site-config-v1") || "null"); } catch (e2) {} __ceTheme = (__ceCfg && __ceCfg.defaultTheme === "dark") ? "dark" : "light"; } document.documentElement.dataset.theme = __ceTheme; } catch (e) { document.documentElement.dataset.theme = "light"; }</script>
   <script>try { var de = document.documentElement; de.dataset.uiTheme = localStorage.getItem("ce-ui-theme-v1") || "brutal"; /* v61b: Neo-Brutalism is the default UI theme for fresh/unset visitors (Akki) */ de.dataset.fxParallax = localStorage.getItem("ce-fx-parallax-v1") !== "0" ? "1" : "0"; de.dataset.fxHover = localStorage.getItem("ce-fx-hover-v1") !== "0" ? "1" : "0"; } catch (e) {}</script>
   <script>try{if(localStorage.getItem("ce-design-v1")==="old"){location.replace("index.html"+location.search+location.hash);}}catch(e){}</script>
   <link rel="manifest" href="manifest.json?v=55" />
@@ -1551,7 +1551,6 @@
         <div class="hero-intro reveal">
           <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Original ebooks by Akki &amp; Aadi</p>
           <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-3xl">Learn faster. Study smarter. Build more.</h1>
-          <p class="mt-6 max-w-2xl text-sm opacity-75">30-day plans, comics and self-improvement ebooks in Hindi and English. Pay with UPI and get your book in minutes.</p>
           <a href="#books" class="mt-4 inline-block rounded-xl bg-amber-400 px-6 py-3 text-sm font-extrabold text-slate-950">Browse books</a>
         </div>
 
@@ -2179,7 +2178,7 @@
           <div>
             <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Owner only</p>
             <h2 id="adminModalTitle" class="mt-1 text-2xl font-black">Crazy E-Book Admin Portal</h2>
-            <p class="mt-1 text-sm text-slate-500">Manage books, pricing, ratings, free samples and the homepage showcase.</p>
+            <p class="mt-1 text-sm text-slate-500">Manage books, pricing, ratings, free samples and website management.</p>
           </div>
         </div>
       </div>
@@ -2212,7 +2211,7 @@
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="visitors">Visitors</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="reviews">Reviews</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="coupons">Coupons</button>
-          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Homepage Showcase</button>
+          <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="showcase">Website Management</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="settings">Settings</button>
           <button class="admin-tab rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600" data-admin-tab="data">Backup / Restore</button>
           <button id="adminLogoutBtn" type="button" class="ml-auto rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600 hover:bg-slate-50">Log out</button>
@@ -2358,32 +2357,38 @@
 
         <section id="adminTabShowcase" class="admin-tab-panel hidden pt-6">
           <div>
-            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Homepage controls</p>
-            <h3 class="mt-1 text-2xl font-black">Change the front-page showcase</h3>
-            <p class="mt-2 text-sm text-slate-500">Choose the featured book and change the hero copy shown above the library.</p>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Homepage, themes &amp; default view</p>
+            <h3 class="mt-1 text-2xl font-black">Website management</h3>
+            <p class="mt-2 text-sm text-slate-500">Change the hero title and featured book, manage seasonal themes, and pick the default view for new visitors.</p>
           </div>
 
-          <div class="mt-6 grid gap-5 lg:grid-cols-2">
+          <div class="mt-6 grid gap-5">
             <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <label class="text-xs font-black text-slate-500">Hero title</label>
+              <h4 class="font-black">Homepage</h4>
+              <label class="mt-3 block text-xs font-black text-slate-500">Hero title</label>
               <textarea id="heroTitleInput" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
-
-              <label class="mt-4 block text-xs font-black text-slate-500">Hero description</label>
-              <textarea id="heroTextInput" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></textarea>
 
               <label class="mt-4 block text-xs font-black text-slate-500">Featured book</label>
               <select id="featuredBookSelect" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"></select>
-
-              <button id="saveShowcaseBtn" type="button" class="mt-5 rounded-xl bg-amber-400 px-5 py-3.5 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Save Homepage</button>
             </div>
 
-            <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6">
-              <div class="text-xs font-black uppercase tracking-widest text-indigo-600">Live preview</div>
-              <div class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
-                <p id="showcasePreviewCategory" class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600"></p>
-                <h4 id="showcasePreviewTitle" class="mt-2 text-2xl font-black"></h4>
-                <p id="showcasePreviewText" class="mt-3 text-sm leading-6 text-slate-600"></p>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h4 class="font-black">Theme manager</h4>
+              <p class="mt-1 text-xs leading-5 text-slate-500">Turn a seasonal theme off without deleting it - the theme stays saved here and you can switch it back on anytime (for example, next Diwali). New themes added later will appear in this list automatically.</p>
+              <div id="themeManagerList" class="mt-4 grid gap-3"></div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h4 class="font-black">Default view</h4>
+              <p class="mt-1 text-xs leading-5 text-slate-500">Choose whether new visitors start in Light or Dark mode. Visitors who already picked a theme keep their own choice.</p>
+              <div class="mt-3 flex gap-2" role="group" aria-label="Default view for new visitors">
+                <button id="defaultViewLightBtn" type="button" aria-pressed="true" class="ce-default-view rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600">&#9728;&#65039; Light</button>
+                <button id="defaultViewDarkBtn" type="button" aria-pressed="false" class="ce-default-view rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-600">&#127769; Dark</button>
               </div>
+            </div>
+
+            <div>
+              <button id="saveShowcaseBtn" type="button" class="rounded-xl bg-amber-400 px-5 py-3.5 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Save Website Settings</button>
             </div>
           </div>
         </section>
@@ -2447,8 +2452,9 @@
       upiId: "",
       upiQrImage: "upi-qr.jpg",
       heroTitle: "Learn faster. Study smarter. Build more.",
-      heroText: "",
       featuredBookId: null,
+      defaultTheme: "light",
+      themeSettings: { diwali: { enabled: true, showInSettings: true } },
       reviews: [],
       books: [] /* Real books are added by the admin; no demo products are published. */
       /* Previous fictional sample books intentionally removed from the default catalog.
@@ -2593,6 +2599,7 @@
       const { data, error } = await supabase.from("storefront_public").select("data").eq("id", 1).maybeSingle();
       if (error) throw error;
       if (data?.data && Array.isArray(data.data.books)) STORE = mergeStore(data.data);
+      applySiteConfig();
       renderCart();
       await loadPublicReviews();
       await loadBookPairs();
@@ -2606,7 +2613,9 @@
     }
 
     function mergeStore(saved) {
-      return { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: (Array.isArray(saved.books) ? saved.books : []).map(book => ({ ...clone(DEFAULT_STORE.books[0] || {}), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
+      const merged = { ...clone(DEFAULT_STORE), ...saved, reviews: [], books: (Array.isArray(saved.books) ? saved.books : []).map(book => ({ ...clone(DEFAULT_STORE.books[0] || {}), ...book, bookCode: book.bookCode || makeBookCode(book.title, book.id), fileLink: "", subjects: Array.isArray(book.subjects) ? book.subjects : String(book.subjects || "").split(",").map(s => s.trim()).filter(Boolean) })) };
+      delete merged.heroText; /* retired: hero description removed site-wide */
+      return merged;
     }
 
     async function loadPrivateLinks() {
@@ -2800,10 +2809,11 @@
     }
 
     function initializeTheme() {
-      // Respect the visitor's saved choice; new visitors start in light mode.
+      // Respect the visitor's saved choice; otherwise keep the head script's pick
+      // (the owner's default view from the site-config cache, else light).
       let savedTheme = null;
       try { savedTheme = localStorage.getItem(THEME_KEY); } catch {}
-      applyTheme(savedTheme === "dark" ? "dark" : "light");
+      applyTheme((savedTheme === "dark" || savedTheme === "light") ? savedTheme : (document.documentElement.dataset.theme === "dark" ? "dark" : "light"));
     }
 
     function bookSampleHref(book) {
@@ -2858,16 +2868,6 @@
 
     function renderHero() {
       document.querySelector("#home h1").textContent = STORE.heroTitle;
-      (function () {
-        const heroP = document.querySelector("#home p.mt-6");
-        const t = (STORE.heroText || "").trim();
-        const removed = [
-          "Coding guides, comics, self-improvement and more. Every kind of book we make, in one place.",
-          "Practical exam notes, coding guides, and original digital reads designed to help you learn without the clutter."
-        ];
-        heroP.textContent = removed.includes(t) ? "" : t;
-        heroP.hidden = !heroP.textContent;
-      })();
 
       if (!catalogueReady) return;
       const sceneCard = document.querySelector("#heroScene .hero-scene-card");
@@ -4696,9 +4696,94 @@
       showAdminToast("Featured book changed");
     }
 
+    /* ===== Website management: seasonal theme registry + site-config cache =====
+       New seasonal themes are added to THEME_REGISTRY; each theme's own script
+       (like diwali.js) checks its master switch in this localStorage cache. */
+    const SITE_CONFIG_CACHE_KEY = "crazyebook-site-config-v1";
+    const THEME_REGISTRY = [
+      { id: "diwali", icon: "\uD83E\uDE94", name: "Diwali Night", desc: "Festive banner, toran, diyas, rangoli and fireworks across the site." }
+    ];
+    function themeSetting(id) {
+      const all = (STORE.themeSettings && typeof STORE.themeSettings === "object") ? STORE.themeSettings : {};
+      const row = (all[id] && typeof all[id] === "object") ? all[id] : {};
+      return { enabled: row.enabled !== false, showInSettings: row.showInSettings !== false };
+    }
+    function setThemeSetting(id, patch) {
+      if (!STORE.themeSettings || typeof STORE.themeSettings !== "object") STORE.themeSettings = {};
+      STORE.themeSettings[id] = { ...themeSetting(id), ...patch };
+    }
+    function renderThemeManager() {
+      const list = document.getElementById("themeManagerList");
+      if (!list) return;
+      list.innerHTML = "";
+      THEME_REGISTRY.forEach(theme => {
+        const st = themeSetting(theme.id);
+        const card = document.createElement("div");
+        card.className = "rounded-xl border border-slate-200 bg-white p-4";
+        const toggleCls = on => "rounded-xl border px-3 py-2.5 text-left text-xs font-bold " + (on ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-300 bg-white text-slate-500");
+        card.innerHTML = `
+          <div class="flex items-start gap-2">
+            <span aria-hidden="true">${theme.icon}</span>
+            <div><p class="text-sm font-black">${escapeHtml(theme.name)}</p>
+            <p class="text-xs leading-5 text-slate-500">${escapeHtml(theme.desc)}</p></div>
+          </div>
+          <div class="mt-3 grid gap-2 sm:grid-cols-2">
+            <button type="button" data-theme-toggle="enabled" class="${toggleCls(st.enabled)}">Active on website: ${st.enabled ? "On" : "Off"}</button>
+            <button type="button" data-theme-toggle="showInSettings" class="${toggleCls(st.showInSettings)}">Show in customer Settings: ${st.showInSettings ? "On" : "Off"}</button>
+          </div>
+          ${st.enabled ? "" : `<p class="mt-2 text-[11px] font-bold text-slate-400">Hidden from visitors. The theme stays saved here - turn it back on anytime.</p>`}`;
+        card.querySelectorAll("[data-theme-toggle]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-theme-toggle");
+            setThemeSetting(theme.id, { [key]: !themeSetting(theme.id)[key] });
+            renderThemeManager();
+          });
+        });
+        list.appendChild(card);
+      });
+    }
+    function paintDefaultView() {
+      const mode = STORE.defaultTheme === "dark" ? "dark" : "light";
+      [["defaultViewLightBtn", "light"], ["defaultViewDarkBtn", "dark"]].forEach(([id, m]) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        const active = mode === m;
+        btn.className = "ce-default-view rounded-xl border px-4 py-2.5 text-xs font-black " + (active ? "border-slate-950 bg-slate-950 text-white" : "border-slate-300 bg-white text-slate-600");
+        btn.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    /* Push the owner's site-wide choices into the visitor's browser (a cached copy of
+       the Supabase storefront config) and reconcile the live page with them. */
+    function applySiteConfig() {
+      const dw = themeSetting("diwali");
+      const defaultTheme = STORE.defaultTheme === "dark" ? "dark" : "light";
+      try { localStorage.setItem(SITE_CONFIG_CACHE_KEY, JSON.stringify({ diwaliEnabled: dw.enabled, defaultTheme })); } catch {}
+      const diwaliRow = document.getElementById("ceDiwaliRow");
+      if (diwaliRow) diwaliRow.style.display = (dw.enabled && dw.showInSettings) ? "" : "none";
+      // Default view touches only visitors who never picked a theme themselves.
+      let visitorPicked = null;
+      try { visitorPicked = localStorage.getItem(THEME_KEY); } catch {}
+      if (visitorPicked !== "dark" && visitorPicked !== "light") applyTheme(defaultTheme);
+      // If the Diwali master switch no longer matches what the festive script applied
+      // at load, reload once so it boots with the cached config. At most one reload
+      // per browser session; a second owner change applies on the next natural load.
+      let visitorDiwaliOff = false;
+      try { visitorDiwaliOff = localStorage.getItem("crazyebook-diwali-v1") === "off"; } catch {}
+      const shouldBeApplied = dw.enabled && !visitorDiwaliOff;
+      const isApplied = document.documentElement.classList.contains("diwali-night");
+      if (shouldBeApplied !== isApplied) {
+        let reloaded = false;
+        try { reloaded = sessionStorage.getItem("ce-sitecfg-reload") === "1"; } catch {}
+        if (!reloaded) {
+          try { sessionStorage.setItem("ce-sitecfg-reload", "1"); } catch {}
+          window.location.reload();
+        }
+      }
+    }
+
     function loadShowcaseForm() {
       document.getElementById("heroTitleInput").value = STORE.heroTitle || "";
-      document.getElementById("heroTextInput").value = STORE.heroText || "";
 
       const select = document.getElementById("featuredBookSelect");
       select.innerHTML = STORE.books.map(book =>
@@ -4708,20 +4793,19 @@
         select.value = String(STORE.featuredBookId);
       }
 
-      const current = STORE.books.find(book => Number(book.id) === Number(STORE.featuredBookId)) || STORE.books[0];
-      document.getElementById("showcasePreviewCategory").textContent = current?.category || "";
-      document.getElementById("showcasePreviewTitle").textContent = current?.title || "No book selected";
-      document.getElementById("showcasePreviewText").textContent = current?.summary || "Add a book to preview the homepage showcase.";
+      renderThemeManager();
+      paintDefaultView();
     }
 
     async function saveShowcase() {
       STORE.heroTitle = document.getElementById("heroTitleInput").value.trim() || DEFAULT_STORE.heroTitle;
-      STORE.heroText = document.getElementById("heroTextInput").value.trim() || DEFAULT_STORE.heroText;
       STORE.featuredBookId = Number(document.getElementById("featuredBookSelect").value) || STORE.books[0]?.id || null;
+      delete STORE.heroText; /* hero description retired site-wide */
 
       if (!await saveStore()) return;
       renderHero();
-      showAdminToast("Homepage updated");
+      applySiteConfig();
+      showAdminToast("Website settings saved");
     }
 
     function exportStore() {
@@ -4735,7 +4819,8 @@
         upiId: STORE.upiId,
         upiQrImage: STORE.upiQrImage,
         heroTitle: STORE.heroTitle,
-        heroText: STORE.heroText,
+        defaultTheme: STORE.defaultTheme,
+        themeSettings: STORE.themeSettings,
         featuredBookId: STORE.featuredBookId,
         reviews: STORE.reviews,
         books: STORE.books
@@ -4772,6 +4857,7 @@
           }))
         };
         if (!await saveStore()) return;
+        applySiteConfig();
         setupLinks();
         renderFilters();
         renderBooks();
@@ -5035,6 +5121,8 @@
     });
     document.getElementById("bookForm").addEventListener("submit", saveBookFromForm);
     document.getElementById("saveShowcaseBtn").addEventListener("click", saveShowcase);
+    document.getElementById("defaultViewLightBtn").addEventListener("click", () => { STORE.defaultTheme = "light"; paintDefaultView(); });
+    document.getElementById("defaultViewDarkBtn").addEventListener("click", () => { STORE.defaultTheme = "dark"; paintDefaultView(); });
     document.getElementById("featuredBookSelect").addEventListener("change", loadShowcaseForm);
     document.getElementById("exportDataBtn").addEventListener("click", exportStore);
     document.getElementById("importDataBtn").addEventListener("click", importStore);
@@ -5268,9 +5356,10 @@
     })();
   </script>
   <script type="module" src="hero-3d.js"></script>
-  <!-- DIWALI THEME START: festive theme include. To remove the theme, delete this line and diwali.js,
-       or simply set DIWALI_ENABLED = false at the top of diwali.js. -->
-  <script src="diwali.js?v=14" defer></script>
+  <!-- DIWALI THEME START: festive theme include. Owner on/off and Settings visibility live in
+       Admin > Website Management > Theme manager. Hard retire: delete this line and diwali.js,
+       or set DIWALI_ENABLED = false at the top of diwali.js. -->
+  <script src="diwali.js?v=15" defer></script>
   <!-- DIWALI THEME END -->
 
   <!-- Local tap audio and desktop window controls. No account or payment state changes. -->
