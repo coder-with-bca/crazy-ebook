@@ -523,8 +523,10 @@
     .promo-arrow:hover { background:rgba(11,16,38,.92); }
     .promo-arrow.prev { left:.45rem; } .promo-arrow.next { right:.45rem; }
     .promo-dots { display:flex; gap:.45rem; justify-content:center; padding-top:.6rem; }
-    .promo-dot { width:8px; height:8px; padding:0; border-radius:999px; border:0; background:#c7cede; cursor:pointer; transition:transform .2s ease, background .2s ease; }
-    .promo-dot[aria-current="true"] { background:#FF8A00; transform:scale(1.35); }
+    .promo-dot { width:10px; height:10px; padding:0; margin:0; border-radius:999px; border:0; background-color:#7c8698; cursor:pointer; transition:transform .2s ease, background-color .2s ease, width .2s ease; }
+    html[data-theme="dark"] .promo-dot { background-color:#9aa6cc; }
+    .promo-dot[aria-current="true"] { background-color:#FF8A00; width:26px; transform:none; }
+    html[data-theme="dark"] .promo-dot[aria-current="true"] { background-color:#FF8A00; }
     .promo-carousel { position:relative; }
     .promo-si-card { display:flex; flex-direction:column; align-items:stretch; justify-content:center; gap:.55rem; border-color:rgba(129,140,248,.5); background:radial-gradient(ellipse at 80% 0%,#312e81,transparent 62%),linear-gradient(145deg,#0f172a,#1e1b4b); }
     .promo-si-kicker { color:#A5B4FC; }
@@ -964,7 +966,7 @@
     html[data-theme] p.text-indigo-600.uppercase, html[data-theme] div.text-indigo-600.uppercase { color:var(--ce-teal-ink) !important; }
     html[data-theme] .ce-save-badge { background:var(--ce-teal-soft) !important; color:var(--ce-teal-ink) !important; box-shadow:inset 0 0 0 1px rgba(20,216,196,.45) !important; }
     html[data-theme] .ce-set-pill { background:var(--ce-teal-soft) !important; color:var(--ce-teal-ink) !important; }
-    html[data-theme] .promo-dot[aria-current="true"] { box-shadow:0 0 0 3px rgba(34,195,245,.35); }
+    html[data-theme] .promo-dot[aria-current="true"] { box-shadow:0 0 7px 1px rgba(255,138,0,.5); }
     html[data-theme] .ce-bn-item { position:relative; transition:color .2s ease; }
     html[data-theme] .ce-bn-item::after { content:""; position:absolute; left:28%; right:28%; bottom:-2px; height:3px; border-radius:3px; background:var(--ce-teal-grad); transform:scaleX(0); opacity:0; transition:transform .25s ease, opacity .25s ease; }
     html[data-theme] .ce-bn-item:hover, html[data-theme] .ce-bn-item.is-active, html[data-theme] .ce-bn-item:focus-visible { color:var(--ce-teal-ink); }
@@ -1188,8 +1190,8 @@
       --ce-z-base: 1; --ce-z-sticky: 40; --ce-z-nav: 45; --ce-z-overlay: 70; --ce-z-modal: 80; --ce-z-toast: 90;
     }
 
-    /* 1) Carousel dots: 20px touch target, identical 8px visual (WCAG 2.5.8) */
-    .promo-dot { background-clip: content-box; padding: 6px; margin: -6px; }
+    /* 1) Carousel dots render at true size (v82): padding/clip touch-target trick removed -
+       background-clip:content-box lost to the background shorthand cascade, so dots are sized directly. */
 
     /* 2) Reduced motion: cover the animations added after the v53 guard */
     @media (prefers-reduced-motion: reduce) {
