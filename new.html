@@ -23,7 +23,6 @@
   <meta name="apple-mobile-web-app-title" content="Crazy E-Book" />
   <script>try { var __ceTheme = localStorage.getItem("crazyebook-theme-v1"); if (__ceTheme !== "dark" && __ceTheme !== "light") { var __ceCfg = null; try { __ceCfg = JSON.parse(localStorage.getItem("crazyebook-site-config-v1") || "null"); } catch (e2) {} __ceTheme = (__ceCfg && __ceCfg.defaultTheme === "dark") ? "dark" : "light"; } document.documentElement.dataset.theme = __ceTheme; } catch (e) { document.documentElement.dataset.theme = "light"; }</script>
   <script>try { var de = document.documentElement; de.dataset.uiTheme = localStorage.getItem("ce-ui-theme-v1") || "brutal"; /* v61b: Neo-Brutalism is the default UI theme for fresh/unset visitors (Akki) */ de.dataset.fxParallax = localStorage.getItem("ce-fx-parallax-v1") !== "0" ? "1" : "0"; de.dataset.fxHover = localStorage.getItem("ce-fx-hover-v1") !== "0" ? "1" : "0"; } catch (e) {}</script>
-  <script>try{if(localStorage.getItem("ce-design-v1")==="old"){location.replace("index.html"+location.search+location.hash);}}catch(e){}</script>
   <link rel="manifest" href="manifest.json?v=55" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=55" />
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=55" />
@@ -575,7 +574,6 @@
     body { padding-bottom: 86px; }
     .ce-glass-bar { background: rgba(255,255,255,.55); backdrop-filter: blur(20px) saturate(1.7); -webkit-backdrop-filter: blur(20px) saturate(1.7); border-bottom: 1px solid rgba(255,255,255,.35); box-shadow: 0 8px 30px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.45); }
     html[data-theme="dark"] .ce-glass-bar, html[data-theme="dark"] header.ce-glass-bar { background: rgba(23,31,70,.55) !important; border-bottom-color: rgba(255,255,255,.10); box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07); }
-    .ce-site-badge { margin-left: .25rem; border-radius: 9999px; padding: 2px 9px; font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; background: linear-gradient(120deg,#6366f1,#a855f7); color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,.35); }
     .ce-glass { background: rgba(255,255,255,.6); backdrop-filter: blur(18px) saturate(1.6); -webkit-backdrop-filter: blur(18px) saturate(1.6); border: 1px solid rgba(255,255,255,.4); box-shadow: 0 10px 34px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.5); }
     html[data-theme="dark"] .ce-glass { background: rgba(23,31,70,.92); border-color: rgba(255,255,255,.12); box-shadow: 0 10px 34px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08); }
     .ce-tiles { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
@@ -1908,13 +1906,6 @@
         <h2 class="text-lg font-black">Settings</h2>
       </div>
 
-      <div class="mt-3 border-b border-slate-400/20 pb-4">
-        <p class="text-xs font-black uppercase tracking-widest opacity-60">Design</p>
-        <p class="mt-1 text-sm">You're using <strong>Site 1</strong> — the new design.</p>
-        <button id="ceSwitchSite1" type="button" class="mt-3 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-extrabold text-white">Switch to Site 2 (classic design)</button>
-        <p class="mt-2 text-[11px] leading-4 opacity-60">Your choice is remembered on this browser and only changes from Settings.</p>
-      </div>
-
       <div class="flex items-center justify-between gap-3 border-b border-slate-400/20 py-3">
         <span class="text-sm font-extrabold">Theme</span>
         <button id="themeToggleBtn" type="button" class="theme-toggle rounded-full border border-white/30 px-3 py-2 text-sm font-bold" aria-label="Current theme: dark. Switch to light mode." aria-pressed="true"><span id="themeToggleIcon" aria-hidden="true">🌙</span> <span id="themeToggleLabel">Dark</span></button>
@@ -2079,19 +2070,6 @@
         <button id="ceExitGo" type="button" class="w-full rounded-xl border border-slate-400/40 px-4 py-3 text-sm font-bold">Exit</button>
       </div>
       <p id="ceExitNote" class="mt-3 hidden text-[11px] leading-4 opacity-70">Browser is page ko khud band nahi karne deta - tab ya app swipe karke band kar do 🙏</p>
-    </div>
-  </div>
-
-  <div id="ceSitePopup" class="fixed inset-0 z-[90] hidden items-end justify-center bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-label="Site design choice">
-    <div class="ce-glass w-full max-w-xs rounded-3xl p-5 text-center shadow-2xl">
-      <div class="ce-traffic"><button id="cePopupClose" type="button" class="ce-tl ce-tl-r" aria-label="Stay on Site 1"></button></div>
-      <p class="mt-2 text-2xl" aria-hidden="true">✨</p>
-      <h2 class="mt-1 text-base font-black">Prefer the classic look?</h2>
-      <p class="mt-2 text-xs leading-5 opacity-75">You're on <strong>Site 1</strong>, our new design. <strong>Site 2</strong>, the classic version, is still here whenever you want it - from Settings too.</p>
-      <div class="mt-4 grid gap-2">
-        <button id="cePopupGoOld" type="button" class="w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-extrabold text-white">Open Site 2</button>
-        <button id="cePopupStay" type="button" class="w-full rounded-xl border border-slate-400/40 px-4 py-3 text-sm font-bold">Stay on Site 1</button>
-      </div>
     </div>
   </div>
 
@@ -5206,15 +5184,9 @@
         el.addEventListener("click", function () { var t = byId("navTelegram"); if (t && t.href && !t.href.endsWith("#")) window.open(t.href, "_blank", "noopener"); });
       });
 
-      function goToSite2() {
-        try { localStorage.setItem("ce-design-v1", "old"); } catch (e) {}
-        location.href = "index.html" + location.search + location.hash;
-      }
-
       function openSheet() { window.ceShowWindow("settings"); }
       byId("ceSettingsBtn").addEventListener("click", openSheet);
       byId("ceSettingsClose").addEventListener("click", function () { window.ceWinBack(); });
-      byId("ceSwitchSite1").addEventListener("click", goToSite2);
 
       // Settings accordion rows
       document.querySelectorAll("[data-ce-acc]").forEach(function (btn) {
@@ -5321,27 +5293,6 @@
         });
       }
 
-      // One-time popup for first-time visitors: Site 2 (classic) stays available
-      var popup = byId("ceSitePopup");
-      var POPUP_KEY = "ce-site-popup-v1";
-      var designPref = null;
-      try { designPref = localStorage.getItem("ce-design-v1"); } catch (e) {}
-      var popupSeen = false;
-      try { popupSeen = !!localStorage.getItem(POPUP_KEY); } catch (e) {}
-      function closePopup() {
-        popup.classList.add("hidden"); popup.classList.remove("flex");
-        try { localStorage.setItem(POPUP_KEY, "1"); } catch (e) {}
-      }
-      if (!designPref && !popupSeen) {
-        setTimeout(function () { popup.classList.remove("hidden"); popup.classList.add("flex"); }, 1500);
-      }
-      byId("cePopupStay").addEventListener("click", closePopup);
-      byId("cePopupClose").addEventListener("click", closePopup);
-      byId("cePopupGoOld").addEventListener("click", function () {
-        try { localStorage.setItem(POPUP_KEY, "1"); } catch (e) {}
-        goToSite2();
-      });
-      popup.addEventListener("click", function (e) { if (e.target === popup) closePopup(); });
     })();
   </script>
   <script>
