@@ -159,6 +159,14 @@
     html[data-theme="dark"] [class~="bg-slate-50"] { background-color: #171F46 !important; }
     html[data-theme="dark"] [class~="bg-slate-100"] { background-color: #232c55 !important; }
     html[data-theme="dark"] [class~="bg-slate-200"] { background-color: #2e3966 !important; }
+
+    /* v81: My Library tabs - My Books vs Declined */
+    .ce-lib-tabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; border-radius:14px; background:#f1f5f9; border:1px solid #e2e8f0; }
+    .ce-lib-tab { border-radius:10px; padding:10px 8px; font-size:13px; font-weight:800; color:#64748b; background:transparent; border:0; cursor:pointer; transition:background-color .2s ease, color .2s ease, box-shadow .2s ease; }
+    .ce-lib-tab.is-active { background:#ffffff; color:#0f172a; box-shadow:0 1px 4px rgba(15,23,42,.14); }
+    html[data-theme="dark"] .ce-lib-tabs { background:#131a3e; border-color:#2a3560; }
+    html[data-theme="dark"] .ce-lib-tab { color:#d9d2b8; }
+    html[data-theme="dark"] .ce-lib-tab.is-active { background:#232c55; color:#FFF8EA; box-shadow:none; }
     html[data-theme="dark"] [class~="bg-indigo-50"] { background-color: #1b2750 !important; }
     html[data-theme="dark"] [class~="bg-indigo-100"] { background-color: #253363 !important; }
     html[data-theme="dark"] [class~="bg-cyan-100"] { background-color: #153247 !important; }
@@ -1873,6 +1881,10 @@
     <section id="libraryWin" class="ce-win hidden" aria-labelledby="libraryTitle">
       <div class="ce-pane-card bg-white shadow-2xl">
         <div class="flex items-center gap-3"><div class="ce-xwrap"><button id="closeLibrary" type="button" class="ce-xbtn" aria-label="Back to previous window"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg></button></div><div><h2 id="libraryTitle" class="text-xl font-black">My Library</h2><p class="mt-1 text-xs text-slate-500">Only approved purchases can be opened.</p></div></div>
+        <div class="ce-lib-tabs mt-4" role="tablist" aria-label="Library categories">
+          <button id="libraryTabBooks" type="button" role="tab" aria-selected="true" class="ce-lib-tab is-active">My Books</button>
+          <button id="libraryTabDeclined" type="button" role="tab" aria-selected="false" class="ce-lib-tab">Declined</button>
+        </div>
         <div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500 ce-book-loading" role="status">Loading your library&#8230;</p></div>
       </div>
     </section>
@@ -3690,23 +3702,70 @@
         return [...ids].filter(id => /^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(id)).map(id => ({ purchaseId: id, accessToken: localStorage.getItem(`crazyebook-purchase-token:${id}`) })).filter(ref => /^[a-f0-9]{64}$/.test(ref.accessToken || ""));
       } catch { return []; }
     }
+    let libraryActiveTab = "books";
+    let libraryTabData = { books: [], declined: [] };
+    let libraryEmptyNote = "No approved purchases are saved in this browser yet.";
+    function updateLibraryTabs() {
+      const booksBtn = document.getElementById("libraryTabBooks");
+      const declinedBtn = document.getElementById("libraryTabDeclined");
+      if (!booksBtn || !declinedBtn) return;
+      booksBtn.textContent = `My Books (${libraryTabData.books.length})`;
+      declinedBtn.textContent = `Declined (${libraryTabData.declined.length})`;
+      const booksActive = libraryActiveTab === "books";
+      booksBtn.classList.toggle("is-active", booksActive);
+      declinedBtn.classList.toggle("is-active", !booksActive);
+      booksBtn.setAttribute("aria-selected", String(booksActive));
+      declinedBtn.setAttribute("aria-selected", String(!booksActive));
+    }
+    function setLibraryTab(tab) {
+      libraryActiveTab = tab === "declined" ? "declined" : "books";
+      updateLibraryTabs();
+      renderLibraryItems();
+    }
     async function loadMyLibrary() {
       const list = document.getElementById("libraryItems");
       const references = getStoredPurchaseReferences();
-      if (!supabaseReady || !references.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No approved purchases are saved in this browser yet.</p>'; return; }
-      list.innerHTML = '<p class="text-sm text-slate-500 ce-book-loading" role="status">Checking approved purchases…</p>';
+      if (!supabaseReady || !references.length) {
+        libraryTabData = { books: [], declined: [] };
+        libraryEmptyNote = "No approved purchases are saved in this browser yet.";
+        updateLibraryTabs();
+        renderLibraryItems();
+        return;
+      }
+      list.innerHTML = '<p class="text-sm text-slate-500 ce-book-loading" role="status">Checking approved purchases\u2026</p>';
       const results = await Promise.all(references.map(async ref => {
         const { data, error } = await supabase.rpc("get_customer_purchase_items", { p_purchase_id: ref.purchaseId, p_access_token: ref.accessToken });
         return error ? [] : (data || []);
       }));
       const all = [];
       results.forEach((items, idx) => (items || []).forEach(item => all.push(Object.assign({}, item, { __pid: references[idx].purchaseId }))));
-      if (!all.length) { list.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No purchases found for this browser yet.</p>'; return; }
+      /* v81: newest order first - keep each purchase's editions together (cart order within the
+         order), sort orders by the real created_at timestamp, then split into the two tabs. */
+      const orderGroups = [];
+      const groupByPid = new Map();
+      all.forEach(item => {
+        let group = groupByPid.get(item.__pid);
+        if (!group) { group = { time: 0, items: [] }; groupByPid.set(item.__pid, group); orderGroups.push(group); }
+        const stamp = Date.parse(item.created_at || "");
+        if (!Number.isNaN(stamp) && stamp > group.time) group.time = stamp;
+        group.items.push(item);
+      });
+      orderGroups.sort((a, b) => b.time - a.time);
+      const sortedAll = [];
+      orderGroups.forEach(group => group.items.forEach(item => sortedAll.push(item)));
+      const isDeclined = item => String(item.order_status || "") === "Rejected";
+      libraryTabData = { books: sortedAll.filter(item => !isDeclined(item)), declined: sortedAll.filter(isDeclined) };
+      libraryEmptyNote = "No purchases found for this browser yet.";
+      updateLibraryTabs();
+      renderLibraryItems();
+    }
+    function renderLibraryItems() {
+      const list = document.getElementById("libraryItems");
       const statusOf = item => {
         const os = String(item.order_status || ""), ps = String(item.payment_status || "");
         if (os === "Rejected") return { label: "Declined", cls: "background:#fee2e2;color:#b91c1c", step: 0 };
         if (os === "Delivered") return { label: "Delivered", cls: "background:#d1fae5;color:#047857", step: 3 };
-        if (ps === "Paid" && ["Approved", "Paid"].includes(os)) return { label: "Paid · being prepared", cls: "background:#e0e7ff;color:#4338ca", step: 2 };
+        if (ps === "Paid" && ["Approved", "Paid"].includes(os)) return { label: "Paid \u00b7 being prepared", cls: "background:#e0e7ff;color:#4338ca", step: 2 };
         return { label: "Payment pending", cls: "background:#fef3c7;color:#92400e", step: 1 };
       };
       const tgBase = safeUrl(STORE.telegramLink);
@@ -3717,7 +3776,13 @@
         return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700">Ask on Telegram</a>`;
       };
       const stepPills = step => ["Ordered", "Paid", "Delivered"].map((lab, i) => `<span class="rounded-full px-2 py-1 text-[10px] font-black ${i < step ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400"}">${lab}</span>`).join("");
-      list.innerHTML = all.map(item => {
+      const items = libraryTabData[libraryActiveTab] || [];
+      if (!items.length) {
+        const note = libraryActiveTab === "declined" ? "No declined orders." : (libraryTabData.declined.length ? "No books here yet. Declined orders are in the Declined tab." : libraryEmptyNote);
+        list.innerHTML = `<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">${note}</p>`;
+        return;
+      }
+      list.innerHTML = items.map(item => {
         const cover = coverUrl(safeHrefOrBlank(item.cover_image));
         const delivery = safeHrefOrBlank(item.delivery_url);
         const st = statusOf(item);
@@ -3730,6 +3795,7 @@
       }).join("");
     }
     function openMyLibrary() {
+      libraryActiveTab = "books";
       window.ceShowWindow("library");
       loadMyLibrary();
     }
@@ -4853,6 +4919,8 @@
     document.getElementById("reviewReadModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeReviewRead(); });
     document.getElementById("reviewSubmitModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeReviewSubmit(); });
     document.getElementById("closeLibrary").addEventListener("click", () => window.ceWinBack());
+    document.getElementById("libraryTabBooks").addEventListener("click", () => setLibraryTab("books"));
+    document.getElementById("libraryTabDeclined").addEventListener("click", () => setLibraryTab("declined"));
     document.getElementById("closeCart").addEventListener("click", () => window.ceWinBack());
     document.getElementById("continueShopping").addEventListener("click", () => { scrollToCatalogue(); });
     document.getElementById("cartCheckout").addEventListener("click", () => {
