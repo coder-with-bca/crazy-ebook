@@ -24,8 +24,8 @@
     greetingSub: "Ask me a question or two!",
     disclosure: "Support ke liye aapki poori chat Crazy E-Book team ko bheji jayegi.",
     relayUrl: "https://ikrrdcyoeyzwedebgzbn.supabase.co/functions/v1/send-chat-telegram",
-    akkiLabel: "Akki se WhatsApp par baat karein",
-    akkiUrl: "https://wa.me/918887514125"
+    akkiLabel: "Aadi se WhatsApp par baat karein",
+    akkiUrl: "https://wa.me/918299144090"
   };
 
   /* ---------- tiny helpers ---------- */
@@ -335,7 +335,7 @@
       return withActs(head + "\n" + found.map(bookLine).join("\n") + "\n\nDetails dekhni ho to neeche tap karo.", acts);
     }
 
-    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya seedha Akki se baat kar lo.", [{ label: CONFIG.akkiLabel, url: CONFIG.akkiUrl }]);
+    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya seedha Aadi se baat kar lo.", [{ label: CONFIG.akkiLabel, url: CONFIG.akkiUrl }]);
   }
 
   /* ---------- UI build ---------- */
