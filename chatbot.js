@@ -22,13 +22,48 @@
     avatarEmoji: "\u{1F4DA}",
     greetingTitle: "Hello there!",
     greetingSub: "Ask me a question or two!",
-    disclosure: "Support ke liye aapki poori chat Crazy E-Book team ko bheji jayegi.",
+    disclosure: "Ye chat support team ko bheji jaati hai.",
     relayUrl: "https://ikrrdcyoeyzwedebgzbn.supabase.co/functions/v1/send-chat-telegram",
     supportContacts: [
       { label: "Akki se WhatsApp par baat karein", url: "https://wa.me/918887514125" },
       { label: "Aadi se WhatsApp par baat karein", url: "https://wa.me/918299144090" }
     ]
   };
+
+  /* Recognized buyer (paid order verified by its own access token, name
+     returned by the server for that order). Used only as a display label
+     for the disclosed support forwarding; never proof of identity. */
+  var buyerName = null;
+  var lookupState = "idle";
+  var lookupCbs = [];
+  function afterLookup(cb) { if (lookupState === "done") cb(); else lookupCbs.push(cb); }
+  function detectBuyer(done) {
+    try {
+      if (typeof getStoredPurchaseReferences !== "function" || typeof SUPABASE_URL === "undefined" || typeof SUPABASE_ANON_KEY === "undefined") return done();
+      var refs = getStoredPurchaseReferences();
+      if (!refs.length) return done();
+      var i = 0, finished = false;
+      var to = setTimeout(function () { finished = true; done(); }, 2500);
+      function finish() { if (finished) return; finished = true; clearTimeout(to); done(); }
+      function next() {
+        if (finished) return;
+        if (i >= refs.length) return finish();
+        var ref = refs[i++];
+        fetch(SUPABASE_URL + "/rest/v1/rpc/get_customer_purchase_name", {
+          method: "POST",
+          headers: { "apikey": SUPABASE_ANON_KEY, "Authorization": "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ p_purchase_id: ref.purchaseId, p_access_token: ref.accessToken })
+        }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+          var row = rows && rows[0];
+          if (row && row.payment_status === "Paid" && row.customer_name) {
+            buyerName = String(row.customer_name).replace(/\s+/g, " ").trim().slice(0, 60);
+            finish();
+          } else next();
+        }).catch(function () { next(); });
+      }
+      next();
+    } catch (e) { done(); }
+  }
 
   /* ---------- tiny helpers ---------- */
   function el(tag, cls, text) {
@@ -161,6 +196,7 @@
           part: ev.part,
           total: ev.total,
           text: ev.text,
+          customer: buyerName || undefined,
           page: location.pathname,
           ts: new Date().toISOString()
         })
@@ -419,15 +455,26 @@
         var ans = answer(userText);
         row.remove();
         addMsg(ans.text, false, ans.actions);
-        relay("bot", ans.text);
+        afterLookup(function () { relay("bot", ans.text); });
       }, 500 + Math.random() * 400);
     }
     function send(text) {
       var t = String(text || "").trim();
       if (!t) return;
-      if (!relayStarted) { relayStarted = true; relay("start", ""); }
+      if (!relayStarted) {
+        relayStarted = true;
+        lookupState = "running";
+        detectBuyer(function () {
+          lookupState = "done";
+          lookupCbs.forEach(function (cb) { try { cb(); } catch (e) {} });
+          lookupCbs = [];
+          relay("start", "");
+          relay("user", t);
+        });
+      } else {
+        relay("user", t);
+      }
       addMsg(t, true);
-      relay("user", t);
       input.value = "";
       botReply(t);
     }
@@ -438,7 +485,6 @@
       if (!greeted) {
         greeted = true;
         addDayDivider();
-        msgs.appendChild(el("div", "cecb-note", CONFIG.disclosure));
         addMsg("Hello! My name is " + CONFIG.botName + ", and I'm here to help answer your questions! \u{1F60A}", false);
         setTimeout(function () { addMsg("What can I help you with? Neeche topics se choose karo ya apna sawaal type karo.", false); }, 450);
       }
