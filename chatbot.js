@@ -1,9 +1,10 @@
 /* =========================================================
-   CRAZY E-BOOK - CUSTOM CHATBOT (v1, 2026-11-10)
-   Floating "Ask" assistant, JioHotstar-style pill above the
-   bottom nav. 100% client-side rule-based bot: answers come
-   from the live site store (STORE.books / STORE config) and
-   fixed site info. No external API calls, no data leaves the
+   CRAZY E-BOOK - CUSTOM CHATBOT (v2, 2026-11-10)
+   Floating "Ask" assistant -> full dark chat screen with
+   orange quick-topic chips (Tia-style reference from owner).
+   100% client-side rule-based bot: answers come from the
+   live site store (STORE.books / STORE config) and fixed
+   site info. No external API calls, no data leaves the
    visitor's browser.
 
    Owner-tunable settings are at the top:
@@ -19,7 +20,8 @@
     buttonLabel: "Ask",
     avatarUrl: "img/chatbot-avatar.png",
     avatarEmoji: "\u{1F4DA}",
-    tagline: "Books, prices aur site help"
+    greetingTitle: "Hello there!",
+    greetingSub: "Ask me a question or two!"
   };
 
   /* ---------- tiny helpers ---------- */
@@ -47,6 +49,7 @@
   function norm(s) { return String(s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
 
   /* ---------- styles ---------- */
+  var ORANGE = "#f5a623";
   var CSS = `
   .cecb-fab{position:fixed;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:7px;padding:7px 16px 7px 8px;border:0;border-radius:9999px;cursor:pointer;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 55%,#4338ca 100%);color:#fff;font:800 14px/1 Inter,system-ui,sans-serif;box-shadow:0 10px 26px rgba(49,46,129,.45),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .15s ease,box-shadow .15s ease}
   .cecb-fab:active{transform:scale(.94)}
@@ -54,48 +57,41 @@
   .cecb-fab .cecb-fab-ava{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:17px;overflow:hidden;flex:none}
   .cecb-fab .cecb-fab-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
   .cecb-fab .cecb-fab-label{letter-spacing:.2px}
+  .cecb-panel{position:fixed;inset:0;z-index:65;display:flex;flex-direction:column;background:#000;color:#e5e7eb;font-family:Inter,system-ui,sans-serif;animation:cecb-pop .18s ease}
   .cecb-panel[hidden]{display:none}
-  .cecb-panel{position:fixed;left:8px;right:8px;bottom:calc(82px + env(safe-area-inset-bottom));z-index:65;display:flex;flex-direction:column;height:min(66vh,560px);border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(15,23,42,.35),0 0 0 1px rgba(15,23,42,.06);font-family:Inter,system-ui,sans-serif;transform-origin:bottom right;animation:cecb-pop .18s ease}
-  html[data-theme="dark"] .cecb-panel{background:#111838;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08)}
-  @keyframes cecb-pop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-  @media (min-width:1024px){.cecb-panel{left:auto;right:24px;bottom:24px;width:384px;height:min(70vh,600px)}.cecb-fab{right:24px;bottom:calc(88px + env(safe-area-inset-bottom))}}
-  .cecb-head{display:flex;align-items:center;gap:10px;padding:11px 12px;background:linear-gradient(135deg,#1e1b4b,#4338ca);color:#fff;flex:none}
-  .cecb-head .cecb-ava{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex:none}
+  @keyframes cecb-pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @media (min-width:1024px){.cecb-panel{inset:auto;right:24px;bottom:24px;width:400px;height:min(78vh,640px);border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.1)}.cecb-fab{right:24px;bottom:calc(88px + env(safe-area-inset-bottom))}}
+  .cecb-head{display:flex;align-items:center;gap:12px;padding:14px 14px 12px;background:#000;border-bottom:1px solid rgba(255,255,255,.08);flex:none;padding-top:calc(14px + env(safe-area-inset-top))}
+  .cecb-head .cecb-ava{width:46px;height:46px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex:none;border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.5)}
   .cecb-head .cecb-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
   .cecb-head .cecb-ht{flex:1;min-width:0}
-  .cecb-head .cecb-ht b{display:block;font-size:14.5px;letter-spacing:.2px}
-  .cecb-head .cecb-ht span{display:block;font-size:11px;opacity:.8;margin-top:1px}
-  .cecb-close{border:0;background:rgba(255,255,255,.14);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;font-weight:800;line-height:1;flex:none}
+  .cecb-head .cecb-ht b{display:block;font-size:16.5px;font-weight:800;color:#fff;letter-spacing:.2px}
+  .cecb-head .cecb-ht span{display:block;font-size:12.5px;color:#9ca3af;margin-top:2px}
+  .cecb-close{border:0;background:rgba(255,255,255,.1);color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:15px;font-weight:800;line-height:1;flex:none}
   .cecb-close:active{transform:scale(.9)}
-  .cecb-msgs{flex:1;overflow-y:auto;padding:12px 10px 6px;display:flex;flex-direction:column;gap:8px;background:#f6f7fb}
-  html[data-theme="dark"] .cecb-msgs{background:#0c1230}
-  .cecb-row{display:flex;gap:7px;align-items:flex-end;max-width:100%}
+  .cecb-msgs{flex:1;overflow-y:auto;padding:14px 12px 8px;display:flex;flex-direction:column;gap:10px;background:#000}
+  .cecb-day{align-self:center;font-size:11.5px;color:#6b7280;margin:2px 0 4px;display:flex;align-items:center;gap:10px}
+  .cecb-day::before,.cecb-day::after{content:"";width:56px;height:1px;background:rgba(255,255,255,.14)}
+  .cecb-row{display:flex;gap:8px;align-items:flex-end;max-width:100%}
   .cecb-row.cecb-user{justify-content:flex-end}
-  .cecb-mini{width:22px;height:22px;border-radius:50%;background:#312e81;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;overflow:hidden;flex:none}
+  .cecb-mini{width:26px;height:26px;border-radius:50%;background:#111;border:1.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:13px;overflow:hidden;flex:none}
   .cecb-mini img{width:100%;height:100%;object-fit:cover}
-  .cecb-bub{max-width:82%;padding:9px 12px;border-radius:16px;font-size:13px;line-height:1.5;color:#1e293b;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.08);border-bottom-left-radius:5px;white-space:pre-line;word-break:break-word}
-  html[data-theme="dark"] .cecb-bub{background:#1b2450;color:#e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.3)}
-  .cecb-row.cecb-user .cecb-bub{background:#4338ca;color:#fff;border-bottom-left-radius:16px;border-bottom-right-radius:5px}
-  .cecb-bub .cecb-act{display:inline-block;margin-top:7px;margin-right:6px;padding:5px 11px;border:0;border-radius:9999px;background:#fef3c7;color:#92400e;font:800 11.5px Inter,system-ui,sans-serif;cursor:pointer}
-  html[data-theme="dark"] .cecb-bub .cecb-act{background:#4338ca;color:#fff}
+  .cecb-bub{max-width:80%;padding:10px 13px;border-radius:16px;font-size:13.5px;line-height:1.5;color:#111;background:#fff;border-bottom-left-radius:5px;white-space:pre-line;word-break:break-word;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  .cecb-row.cecb-user .cecb-bub{background:${ORANGE};color:#1a1305;font-weight:600;border-bottom-left-radius:16px;border-bottom-right-radius:5px}
+  .cecb-bub .cecb-act{display:inline-block;margin-top:7px;margin-right:6px;padding:5px 12px;border:0;border-radius:9999px;background:#111;color:#fff;font:800 11.5px Inter,system-ui,sans-serif;cursor:pointer}
   .cecb-bub .cecb-act:active{transform:scale(.94)}
   .cecb-typing{display:inline-flex;gap:4px;padding:4px 2px}
-  .cecb-typing i{width:6px;height:6px;border-radius:50%;background:#94a3b8;animation:cecb-b 1s infinite}
+  .cecb-typing i{width:6px;height:6px;border-radius:50%;background:#9ca3af;animation:cecb-b 1s infinite}
   .cecb-typing i:nth-child(2){animation-delay:.15s}.cecb-typing i:nth-child(3){animation-delay:.3s}
   @keyframes cecb-b{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
-  .cecb-chips{display:flex;gap:6px;overflow-x:auto;padding:8px 10px 4px;flex:none;background:#f6f7fb}
-  html[data-theme="dark"] .cecb-chips{background:#0c1230}
-  .cecb-chips::-webkit-scrollbar{display:none}
-  .cecb-chip{flex:none;border:1px solid #c7d2fe;background:#fff;color:#3730a3;border-radius:9999px;padding:6px 12px;font:700 11.5px Inter,system-ui,sans-serif;cursor:pointer}
-  html[data-theme="dark"] .cecb-chip{background:#1b2450;border-color:#3730a3;color:#c7d2fe}
+  .cecb-chips{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px 8px;flex:none;background:#000;border-top:1px solid rgba(255,255,255,.08)}
+  .cecb-chip{border:0;background:${ORANGE};color:#1a1305;border-radius:14px;padding:9px 16px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer}
   .cecb-chip:active{transform:scale(.94)}
-  .cecb-input{display:flex;gap:8px;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e2e8f0;flex:none}
-  html[data-theme="dark"] .cecb-input{background:#111838;border-top-color:rgba(255,255,255,.09)}
-  .cecb-input input{flex:1;min-width:0;border:1px solid #e2e8f0;border-radius:9999px;padding:9px 14px;font:500 13px Inter,system-ui,sans-serif;background:#f8fafc;color:#0f172a;outline:none}
-  html[data-theme="dark"] .cecb-input input{background:#0c1230;border-color:#334155;color:#e2e8f0}
-  .cecb-input input:focus{border-color:#6366f1}
-  .cecb-send{border:0;border-radius:50%;width:38px;height:38px;background:#4338ca;color:#fff;font-size:15px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
-  .cecb-send:active{transform:scale(.9)}
+  .cecb-input{display:flex;gap:10px;align-items:center;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:#fff;flex:none}
+  .cecb-input input{flex:1;min-width:0;border:0;border-radius:10px;padding:10px 4px;font:500 14px Inter,system-ui,sans-serif;background:#fff;color:#111;outline:none}
+  .cecb-input input::placeholder{color:#9ca3af}
+  .cecb-send{border:0;background:none;color:#4b5563;font:800 14px Inter,system-ui,sans-serif;cursor:pointer;padding:8px 4px;flex:none}
+  .cecb-send:active{transform:scale(.94)}
   `;
 
   /* ---------- avatar (image with emoji fallback) ---------- */
@@ -120,7 +116,7 @@
   }
   function searchBooks(q) {
     var books = activeBooks();
-    var words = norm(q).split(" ").filter(function (w) { return w.length > 1 && !["book", "books", "kitab", "price", "kitne", "kitna", "hai", "ka", "ki", "ke", "kaisa", "batao", "dikhao", "chahiye", "the", "is", "of", "for", "ka?", "kya"].includes(w); });
+    var words = norm(q).split(" ").filter(function (w) { return w.length > 1 && !["book", "books", "kitab", "price", "kitne", "kitna", "hai", "ka", "ki", "ke", "kaisa", "batao", "dikhao", "chahiye", "the", "is", "of", "for", "kya"].includes(w); });
     if (!words.length) return [];
     var scored = books.map(function (b) {
       var hay = norm([b.title, b.editionTitle, b.category, (b.subjects || []).join(" "), b.summary].join(" "));
@@ -156,7 +152,10 @@
     return out.join("\n");
   }
   function howToBuy() {
-    return "Kharidna super easy hai:\n1. Book kholo aur Buy Now dabao\n2. UPI se payment karo (QR scan ya UPI ID)\n3. Payment ke baad order humein milta hai, hum approve karte hain\n4. Approve hote hi book aapki My Library mein khul jaati hai\n\nLibrary neeche bottom nav mein hai. Koi dikkat ho to support pe message kar do.";
+    return "Kharidna super easy hai:\n1. Book kholo aur Buy Now dabao\n2. UPI se payment karo (QR scan ya UPI ID)\n3. Payment ke baad order humein milta hai, hum approve karte hain\n4. Approve hote hi book aapki My Library mein khul jaati hai\n\nLibrary neeche bottom nav mein hai. Koi dikkat ho to Support pe message kar do.";
+  }
+  function downloadText() {
+    return "Download/Access aise milta hai:\n1. Payment approve hote hi book My Library mein khulti hai\n2. Library mein apni order ke paas 'Open Ebook' dabao\n3. PDF wahin khul jaati hai - padh lo ya save kar lo\n\nAgar Library khaali dikhe ya order Pending ho, to thoda wait karo - hum approve kar rahe honge. Zyada der ho to Support pe bata do.";
   }
   function supportText() {
     var st = store() || {};
@@ -164,7 +163,7 @@
     if (st.supportEmail) lines.push("\u2022 Email: " + st.supportEmail);
     if (st.telegramLink) lines.push("\u2022 Telegram: " + st.telegramLink);
     if (st.instagramLink) lines.push("\u2022 Instagram: " + st.instagramLink);
-    lines.push("Footer mein bhi ye links milte hain.");
+    lines.push("Site ke footer mein bhi ye links milte hain.");
     return lines.join("\n");
   }
 
@@ -176,19 +175,18 @@
 
     if (!q) return withActs("Kuch likho to sahi, phir batata hoon!");
     if (/^(hi+|hello+|hey+|namaste|hola|yo|hii+)\b/.test(q))
-      return withActs("Hey! Main " + CONFIG.botName + " hoon \u{1F44B} Books, prices, offers ya khareedne ka tareeka - kuch bhi pooch lo.");
+      return withActs("Hello! Main " + CONFIG.botName + " hoon \u{1F44B} Books, prices, offers, payment ya download - kuch bhi pooch lo.");
     if (/thank|shukriya|dhanyavad/.test(q))
       return withActs("Arre koi baat nahi! \u{1F60A} Aur kuch poochna ho to main yahin hoon.");
     if (/(kaun ho|who are you|tum kya|what are you)/.test(q))
       return withActs("Main " + CONFIG.botName + " hoon - Crazy E-Book ka chhota sa helper. Books, prices, offers aur site use karne mein help karta hoon.");
 
     if (/(offer|discount|coupon|code|deal|sale|combo)/.test(q)) return withActs(offersText());
-    if (/(kaise kharide|kaise kharidu|how to buy|buy kaise|purchase|order kaise|payment|pay kaise|upi)/.test(q)) return withActs(howToBuy());
-    if (/(deliver|delivery|kab milegi|kab milega|access kab|library mein kab|approve)/.test(q))
-      return withActs("Payment ke baad hum order approve karte hain - approve hote hi book turant aapki My Library mein aa jaati hai. Library bottom nav mein hai. Zyada der lage to support pe bata do.");
+    if (/(payment|pay|paisa|paise|upi|qr|kaise kharide|kaise kharidu|how to buy|buy kaise|purchase|order kaise|price kaise)/.test(q)) return withActs(howToBuy());
+    if (/(download|access|open ebook|pdf kaise|library|deliver|delivery|kab milegi|kab milega|approve|order status|pending)/.test(q)) return withActs(downloadText());
     if (/(sample|free sample|preview|try)/.test(q))
       return withActs("Har book ke card par 'Free Sample' button hai - usse sample PDF free mein dekh sakte ho, bina kharide.");
-    if (/(support|contact|help|email|telegram|instagram|baat karni|refund|problem|issue|dikkat)/.test(q)) return withActs(supportText());
+    if (/(support|contact|help|email|telegram|instagram|baat karni|refund|problem|issue|dikkat|complaint)/.test(q)) return withActs(supportText());
     if (/(kitni book|how many books|total books|catalog)/.test(q))
       return withActs("Abhi " + activeBooks().length + " books live hain. Categories: " + categoriesList().join(", ") + ". Kis topic ki book chahiye?");
 
@@ -211,7 +209,7 @@
       return withActs(head + "\n" + found.map(bookLine).join("\n") + "\n\nDetails dekhni ho to neeche tap karo.", acts);
     }
 
-    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, samples, payment aur delivery mein help kar sakta hoon. Ya support se baat karni ho to bata do.");
+    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho.");
   }
 
   /* ---------- UI build ---------- */
@@ -230,8 +228,8 @@
     var head = el("div", "cecb-head");
     head.appendChild(avatarNode("cecb-ava"));
     var ht = el("div", "cecb-ht");
-    ht.appendChild(el("b", null, CONFIG.botName));
-    ht.appendChild(el("span", null, CONFIG.tagline));
+    ht.appendChild(el("b", null, CONFIG.greetingTitle));
+    ht.appendChild(el("span", null, CONFIG.greetingSub));
     head.appendChild(ht);
     var closeBtn = el("button", "cecb-close", "\u2715"); closeBtn.type = "button"; closeBtn.setAttribute("aria-label", "Close chat");
     head.appendChild(closeBtn);
@@ -239,16 +237,16 @@
     var msgs = el("div", "cecb-msgs"); msgs.id = "cecbMsgs";
 
     var chips = el("div", "cecb-chips");
-    ["Saari books", "Offers", "Kaise kharidein?", "Free samples", "Support"].forEach(function (c) {
-      var chip = el("button", "cecb-chip", c); chip.type = "button";
-      chip.addEventListener("click", function () { send(c); });
+    [["Books", "Saari books"], ["Payment", "Payment kaise karein?"], ["Download", "Download kaise karein?"], ["Offers", "Offers"], ["Free Samples", "Free samples"], ["Support", "Support"]].forEach(function (c) {
+      var chip = el("button", "cecb-chip", c[0]); chip.type = "button";
+      chip.addEventListener("click", function () { send(c[1]); });
       chips.appendChild(chip);
     });
 
     var inputBar = el("form", "cecb-input");
     var input = document.createElement("input");
-    input.type = "text"; input.placeholder = "Apna sawaal likho..."; input.setAttribute("aria-label", "Type your question"); input.maxLength = 300;
-    var sendBtn = el("button", "cecb-send", "\u27A4"); sendBtn.type = "submit"; sendBtn.setAttribute("aria-label", "Send");
+    input.type = "text"; input.placeholder = "Type your message here!"; input.setAttribute("aria-label", "Type your message"); input.maxLength = 300;
+    var sendBtn = el("button", "cecb-send", "Send"); sendBtn.type = "submit"; sendBtn.setAttribute("aria-label", "Send");
     inputBar.appendChild(input); inputBar.appendChild(sendBtn);
 
     panel.appendChild(head); panel.appendChild(msgs); panel.appendChild(chips); panel.appendChild(inputBar);
@@ -256,6 +254,11 @@
 
     var greeted = false;
     function scrollDown() { msgs.scrollTop = msgs.scrollHeight; }
+    function addDayDivider() {
+      var d = new Date();
+      var label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ", " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+      msgs.appendChild(el("div", "cecb-day", label));
+    }
     function addMsg(text, fromUser, actions) {
       var row = el("div", "cecb-row" + (fromUser ? " cecb-user" : ""));
       if (!fromUser) row.appendChild(avatarNode("cecb-mini"));
@@ -301,10 +304,9 @@
       panel.hidden = false; fab.style.display = "none";
       if (!greeted) {
         greeted = true;
-        botReply("__greet__");
-        setTimeout(function () {
-          var last = msgs.lastElementChild; /* replace generic answer for greet */
-        }, 0);
+        addDayDivider();
+        addMsg("Hello! My name is " + CONFIG.botName + ", and I'm here to help answer your questions! \u{1F60A}", false);
+        setTimeout(function () { addMsg("What can I help you with? Neeche topics se choose karo ya apna sawaal type karo.", false); }, 450);
       }
       setTimeout(function () { input.focus(); }, 220);
     }
@@ -312,15 +314,6 @@
     fab.addEventListener("click", open);
     closeBtn.addEventListener("click", close);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) close(); });
-
-    /* friendly greeting instead of the generic intent for __greet__ */
-    var origAnswer = answer;
-    answer = function (q) {
-      if (q === "__greet__") {
-        return { text: "Hey! Main " + CONFIG.botName + " hoon \u{1F44B} Books, prices, offers ya khareedne ka tareeka - kuch bhi pooch lo.", actions: [] };
-      }
-      return origAnswer(q);
-    };
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
