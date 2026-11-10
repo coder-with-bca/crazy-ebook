@@ -308,7 +308,11 @@
         addMsg("Hello! My name is " + CONFIG.botName + ", and I'm here to help answer your questions! \u{1F60A}", false);
         setTimeout(function () { addMsg("What can I help you with? Neeche topics se choose karo ya apna sawaal type karo.", false); }, 450);
       }
-      setTimeout(function () { input.focus(); }, 220);
+      // Auto-focus only where there is no on-screen keyboard (mouse/trackpad).
+      // On touch devices the keyboard opens only when the visitor taps the input.
+      if (window.matchMedia && window.matchMedia("(pointer: fine)").matches) {
+        setTimeout(function () { input.focus(); }, 220);
+      }
     }
     function close() { panel.hidden = true; fab.style.display = ""; fab.focus(); }
     fab.addEventListener("click", open);
