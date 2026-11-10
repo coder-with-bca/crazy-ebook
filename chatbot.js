@@ -25,8 +25,8 @@
     disclosure: "Support ke liye aapki poori chat Crazy E-Book team ko bheji jayegi.",
     relayUrl: "https://ikrrdcyoeyzwedebgzbn.supabase.co/functions/v1/send-chat-telegram",
     supportContacts: [
-      { label: "Aadi se WhatsApp par baat karein", url: "https://wa.me/918299144090" },
-      { label: "Akki se WhatsApp par baat karein", url: "https://wa.me/918887514125" }
+      { label: "Akki se WhatsApp par baat karein", url: "https://wa.me/918887514125" },
+      { label: "Aadi se WhatsApp par baat karein", url: "https://wa.me/918299144090" }
     ]
   };
 
