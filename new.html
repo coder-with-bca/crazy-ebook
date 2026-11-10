@@ -1546,7 +1546,8 @@
       <div class="relative mx-auto max-w-7xl px-4 pb-4 pt-6 sm:px-6 lg:px-8">
         <div class="hero-intro reveal">
           <p class="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Original ebooks by Akki &amp; Aadi</p>
-          <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-3xl">Learn faster. Study smarter. Build more.</h1>
+          <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-3xl">Ebooks made for students.</h1>
+          <p class="mt-2 max-w-xl text-sm font-semibold opacity-70">Coding guides, comics and self-improvement books in Hindi &amp; English - from just &#8377;9. Read a free sample before you buy.</p>
           <a href="#books" class="mt-4 inline-block rounded-xl bg-amber-400 px-6 py-3 text-sm font-extrabold text-slate-950">Browse books</a>
         </div>
 
@@ -2055,6 +2056,7 @@
           <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Checkout</p>
           <h2 id="buyModalTitle" class="mt-1 text-2xl font-black">Buy Now</h2>
           <p id="buyModalBook" class="mt-1 text-sm text-slate-500"></p>
+          <p class="mt-2 text-[11px] font-bold leading-5 text-slate-500">1. Your details &nbsp;&rarr;&nbsp; 2. Pay by UPI &nbsp;&rarr;&nbsp; 3. Manual verification (usually 5&ndash;15 min) &nbsp;&rarr;&nbsp; 4. Book opens in My Library</p>
         </div>
       </div>
 
@@ -2397,7 +2399,7 @@
       supportEmail: "crazyebook.official@gmail.com",
       upiId: "",
       upiQrImage: "upi-qr.jpg",
-      heroTitle: "Learn faster. Study smarter. Build more.",
+      heroTitle: "Ebooks made for students.",
       featuredBookId: null,
       defaultTheme: "light",
       themeSettings: {},
@@ -2853,9 +2855,9 @@
       category.textContent = book.category || "Digital Book";
       title.textContent = book.title;
       summary.textContent = book.summary || "";
-      const heroRating = Number(book.rating);
-      rating.textContent = Number.isFinite(heroRating) && heroRating > 0 ? `${heroRating.toFixed(1)} / 5` : "";
-      stars.textContent = Number.isFinite(heroRating) && heroRating > 0 ? "★" : "";
+      /* Ratings are admin-set values, not review-based; keep the showcase clear of them. */
+      rating.textContent = "";
+      stars.textContent = "";
       tag.textContent = publicBookTag(book);
       mrp.textContent = "";
       price.textContent = money(book.price);
@@ -4010,14 +4012,10 @@
       document.getElementById("detailsCategory").textContent = book.category || "Ebook";
       document.getElementById("bookDetailsTitle").textContent = (editionSiblings(book).length && book.editionTitle) ? book.editionTitle : book.title;
       const ratingEl = document.getElementById("detailsRating");
-      const bookRating = Number(book.rating);
-      if (Number.isFinite(bookRating) && bookRating > 0) {
-        ratingEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="text-amber-500 font-black" aria-hidden="true">★</span> <span class="font-extrabold text-slate-900">${bookRating.toFixed(1)}</span> <span class="text-xs font-semibold text-slate-500">/ 5 rating</span></span>`;
-        ratingEl.classList.remove("hidden");
-      } else {
-        ratingEl.innerHTML = "";
-        ratingEl.classList.add("hidden");
-      }
+      /* Ratings are admin-set values, not computed from buyer reviews. Hidden on the
+         storefront until real verified reviews exist (owner-approved clarity change). */
+      ratingEl.innerHTML = "";
+      ratingEl.classList.add("hidden");
       const detailsPrice = document.getElementById("detailsPrice");
       detailsPrice.innerHTML = `${money(book.price)}${Number(book.mrp) > Number(book.price) && Number.isFinite(Number(book.mrp)) ? ` <del class="ml-2 text-base font-semibold text-slate-500">${money(book.mrp)}</del>` : ''}`;
       const detailsBarPrice = document.getElementById("detailsBarPrice");
@@ -4044,7 +4042,10 @@
       const language = String(book.programmingLanguage || book.language || "").trim();
       const tags = [...new Set([...(Array.isArray(book.tags) ? book.tags : String(book.tags || "").split(",")), book.tag].map(value => String(value || "").trim()).filter(value => value && !/^best\s*seller$/i.test(value)))];
       const renderMetadataChips = values => values.map(value => `<span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">${escapeHtml(value)}</span>`).join(" ");
+      const bookFacts = ["Format: PDF ebook (mobile-friendly)", "Access: opens in My Library after payment approval"];
+      if (editionSiblings(book).length) bookFacts.push("Reading language: Hindi + English");
       metadata.innerHTML = [
+        `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Good to know</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(bookFacts)}</div></div>`,
         language ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Programming language</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips([language])}</div></div>` : "",
         subjects.length ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Topics & subjects</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(subjects)}</div></div>` : "",
         tags.length ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Tags</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(tags)}</div></div>` : ""
@@ -4177,7 +4178,7 @@
         const ceView = document.documentElement.getAttribute("data-ce-view") || "home";
         authorsSection.classList.toggle("hidden", reviews.length === 0 || ceView !== "offers");
       }
-      document.getElementById("reviewCount").textContent = `${reviews.length} comment${reviews.length === 1 ? "" : "s"}`;
+      document.getElementById("reviewCount").textContent = reviews.length ? `${reviews.length} comment${reviews.length === 1 ? "" : "s"}` : "Reviews coming soon";
 
       if (!reviews.length) {
         grid.innerHTML = `<div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center"><p class="text-sm text-slate-600">No comments yet. Approved customers can be the first to review a book.</p></div>`;
