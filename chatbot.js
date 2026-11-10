@@ -1,11 +1,11 @@
 /* =========================================================
-   CRAZY E-BOOK - CUSTOM CHATBOT (v2, 2026-11-10)
+   CRAZY E-BOOK - CUSTOM CHATBOT (v3, 2026-11-10)
    Floating "Ask" assistant -> full dark chat screen with
    orange quick-topic chips (Tia-style reference from owner).
-   100% client-side rule-based bot: answers come from the
-   live site store (STORE.books / STORE config) and fixed
-   site info. No external API calls, no data leaves the
-   visitor's browser.
+   Rule-based bot: answers come from the live site store
+   (STORE.books / STORE config) and fixed site info. With the
+   on-screen disclosure, the chat transcript is also sent to the
+   team's private Telegram channel through our own edge function.
 
    Owner-tunable settings are at the top:
    - AVATAR_URL: bot image. Drop the chatbot image at this
@@ -21,7 +21,11 @@
     avatarUrl: "img/chatbot-avatar.png",
     avatarEmoji: "\u{1F4DA}",
     greetingTitle: "Hello there!",
-    greetingSub: "Ask me a question or two!"
+    greetingSub: "Ask me a question or two!",
+    disclosure: "Support ke liye aapki poori chat Crazy E-Book team ko bheji jayegi.",
+    relayUrl: "https://ikrrdcyoeyzwedebgzbn.supabase.co/functions/v1/send-chat-telegram",
+    akkiLabel: "Akki se WhatsApp par baat karein",
+    akkiUrl: "https://wa.me/918887514125"
   };
 
   /* ---------- tiny helpers ---------- */
@@ -47,6 +51,40 @@
     return "\u20B9" + (Number.isInteger(r) ? String(r) : r.toFixed(2));
   }
   function norm(s) { return String(s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
+
+  /* ---------- transcript relay (disclosed to the visitor) ---------- */
+  var sessionId = (function () {
+    try {
+      var sid = sessionStorage.getItem("cecbSid");
+      if (!sid) {
+        sid = "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        sessionStorage.setItem("cecbSid", sid);
+      }
+      return sid;
+    } catch (e) { return "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  })();
+  var relayStarted = false;
+  function relay(kind, text) {
+    if (!CONFIG.relayUrl) return;
+    try {
+      var headers = { "Content-Type": "application/json" };
+      if (typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY) {
+        headers["Authorization"] = "Bearer " + SUPABASE_ANON_KEY;
+        headers["apikey"] = SUPABASE_ANON_KEY;
+      }
+      fetch(CONFIG.relayUrl, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          session_id: sessionId,
+          kind: kind,
+          text: String(text || "").slice(0, 600),
+          page: location.pathname,
+          ts: new Date().toISOString()
+        })
+      }).catch(function () {});
+    } catch (e) {}
+  }
 
   /* ---------- styles ---------- */
   var ORANGE = "#f5a623";
@@ -87,6 +125,8 @@
   .cecb-chips{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px 8px;flex:none;background:#000;border-top:1px solid rgba(255,255,255,.08)}
   .cecb-chip{border:0;background:${ORANGE};color:#1a1305;border-radius:14px;padding:9px 16px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer}
   .cecb-chip:active{transform:scale(.94)}
+  .cecb-note{align-self:center;max-width:92%;text-align:center;font-size:11px;line-height:1.45;color:#9ca3af;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:6px 10px;margin:2px 0 4px}
+  .cecb-privacy{flex:none;text-align:center;font-size:10.5px;line-height:1.4;color:#6b7280;background:#000;padding:6px 14px 4px}
   .cecb-input{display:flex;gap:10px;align-items:center;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:#fff;flex:none}
   .cecb-input input{flex:1;min-width:0;border:0;border-radius:10px;padding:10px 4px;font:500 14px Inter,system-ui,sans-serif;background:#fff;color:#111;outline:none}
   .cecb-input input::placeholder{color:#9ca3af}
@@ -185,7 +225,8 @@
     if (/(download|access|open ebook|pdf kaise|library|deliver|delivery|kab milegi|kab milega|approve|order status|pending)/.test(q)) return withActs(downloadText());
     if (/(sample|free sample|preview|try)/.test(q))
       return withActs("Har book ke card par 'Free Sample' button hai - usse sample PDF free mein dekh sakte ho, bina kharide.");
-    if (/(support|contact|help|email|telegram|instagram|baat karni|refund|problem|issue|dikkat|complaint)/.test(q)) return withActs(supportText());
+    if (/(support|contact|help|email|telegram|instagram|baat karni|refund|problem|issue|dikkat|complaint)/.test(q))
+      return withActs(supportText(), [{ label: CONFIG.akkiLabel, url: CONFIG.akkiUrl }]);
     if (/(kitni book|how many books|total books|catalog)/.test(q))
       return withActs("Abhi " + activeBooks().length + " books live hain. Categories: " + categoriesList().join(", ") + ". Kis topic ki book chahiye?");
 
@@ -208,7 +249,7 @@
       return withActs(head + "\n" + found.map(bookLine).join("\n") + "\n\nDetails dekhni ho to neeche tap karo.", acts);
     }
 
-    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho.");
+    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya seedha Akki se baat kar lo.", [{ label: CONFIG.akkiLabel, url: CONFIG.akkiUrl }]);
   }
 
   /* ---------- UI build ---------- */
@@ -248,7 +289,8 @@
     var sendBtn = el("button", "cecb-send", "Send"); sendBtn.type = "submit"; sendBtn.setAttribute("aria-label", "Send");
     inputBar.appendChild(input); inputBar.appendChild(sendBtn);
 
-    panel.appendChild(head); panel.appendChild(msgs); panel.appendChild(chips); panel.appendChild(inputBar);
+    var privacy = el("div", "cecb-privacy", CONFIG.disclosure);
+    panel.appendChild(head); panel.appendChild(msgs); panel.appendChild(chips); panel.appendChild(privacy); panel.appendChild(inputBar);
     document.body.appendChild(fab); document.body.appendChild(panel);
 
     var greeted = false;
@@ -266,6 +308,7 @@
         actions.forEach(function (a) {
           var btn = el("button", "cecb-act", a.label); btn.type = "button";
           btn.addEventListener("click", function () {
+            if (a.url) { window.open(a.url, "_blank", "noopener"); return; }
             try {
               if (typeof openBookDetails === "function") { openBookDetails(String(a.id)); return; }
             } catch (e) {}
@@ -288,12 +331,15 @@
         var ans = answer(userText);
         row.remove();
         addMsg(ans.text, false, ans.actions);
+        relay("bot", ans.text);
       }, 500 + Math.random() * 400);
     }
     function send(text) {
       var t = String(text || "").trim();
       if (!t) return;
+      if (!relayStarted) { relayStarted = true; relay("start", ""); }
       addMsg(t, true);
+      relay("user", t);
       input.value = "";
       botReply(t);
     }
@@ -304,6 +350,7 @@
       if (!greeted) {
         greeted = true;
         addDayDivider();
+        msgs.appendChild(el("div", "cecb-note", CONFIG.disclosure));
         addMsg("Hello! My name is " + CONFIG.botName + ", and I'm here to help answer your questions! \u{1F60A}", false);
         setTimeout(function () { addMsg("What can I help you with? Neeche topics se choose karo ya apna sawaal type karo.", false); }, 450);
       }
