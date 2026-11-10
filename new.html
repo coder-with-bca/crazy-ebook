@@ -66,6 +66,8 @@
       overflow: hidden;
     }
     .modal-open { overflow: hidden; }
+    /* The chat launcher (z-index:60) floats above the shop modals (z-50); hide it while any modal is open so it never covers modal actions. It returns as soon as the modal closes. */
+    body.modal-open .cecb-fab { display: none; }
 
     .admin-btn {
       border: 1px solid rgba(255,255,255,.18);
