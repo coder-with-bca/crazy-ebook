@@ -104,7 +104,7 @@ If an order creation error occurs, verify that `supabase-setup.sql` ran successf
 
 ## Existing links
 
-- Instagram: @crazyebook.official
+- Instagram: @crazyebooks.official
 - Telegram: https://t.me/crazyebookofficial
 
 ## Contact and delivery
@@ -114,7 +114,7 @@ If an order creation error occurs, verify that `supabase-setup.sql` ran successf
 - Purchase notifications: [@crazyebook](https://t.me/crazyebook). Bot: [@CrazyEbookPurchaseBot](https://t.me/CrazyEbookPurchaseBot).
 - UPI ID is read from Admin → Settings for Copy UPI, Pay Now, and the generated payment QR.
 - Support email: `crazyebook.official@gmail.com`.
-- Instagram: [@crazyebook.official](https://www.instagram.com/crazyebook.official?stkn=YmNlZm9iN2Nlczhl).
+- Instagram: [@crazyebooks.official](https://www.instagram.com/crazyebooks.official?stkn=YmNlZm9iN2Nlczhl).
 
 Delivery unlocks on the website after payment approval. The customer uses **Download Your Ebook** to open the matching book's private Drive link. **Mark Delivered** is for admin tracking. Use **Copy Purchase Details** when needed. Add only real books and real customer-approved reviews in Admin; starter/demo books are not published.
 
