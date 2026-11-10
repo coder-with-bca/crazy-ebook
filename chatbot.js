@@ -24,8 +24,10 @@
     greetingSub: "Ask me a question or two!",
     disclosure: "Support ke liye aapki poori chat Crazy E-Book team ko bheji jayegi.",
     relayUrl: "https://ikrrdcyoeyzwedebgzbn.supabase.co/functions/v1/send-chat-telegram",
-    akkiLabel: "Aadi se WhatsApp par baat karein",
-    akkiUrl: "https://wa.me/918299144090"
+    supportContacts: [
+      { label: "Aadi se WhatsApp par baat karein", url: "https://wa.me/918299144090" },
+      { label: "Akki se WhatsApp par baat karein", url: "https://wa.me/918887514125" }
+    ]
   };
 
   /* ---------- tiny helpers ---------- */
@@ -312,7 +314,7 @@
     if (/(sample|free sample|preview|try)/.test(q))
       return withActs("Har book ke card par 'Free Sample' button hai - usse sample PDF free mein dekh sakte ho, bina kharide.");
     if (/(support|contact|help|email|telegram|instagram|baat karni|refund|problem|issue|dikkat|complaint)/.test(q))
-      return withActs(supportText(), [{ label: CONFIG.akkiLabel, url: CONFIG.akkiUrl }]);
+      return withActs(supportText(), CONFIG.supportContacts.slice());
     if (/(kitni book|how many books|total books|catalog)/.test(q))
       return withActs("Abhi " + activeBooks().length + " books live hain. Categories: " + categoriesList().join(", ") + ". Kis topic ki book chahiye?");
 
@@ -335,7 +337,7 @@
       return withActs(head + "\n" + found.map(bookLine).join("\n") + "\n\nDetails dekhni ho to neeche tap karo.", acts);
     }
 
-    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya seedha Aadi se baat kar lo.", [{ label: CONFIG.akkiLabel, url: CONFIG.akkiUrl }]);
+    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya seedha Aadi ya Akki se baat kar lo.", CONFIG.supportContacts.slice());
   }
 
   /* ---------- UI build ---------- */
