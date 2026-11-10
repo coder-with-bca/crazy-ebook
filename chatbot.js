@@ -52,7 +52,12 @@
   }
   function norm(s) { return String(s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
 
-  /* ---------- transcript relay (disclosed to the visitor) ---------- */
+  /* ---------- transcript relay (disclosed to the visitor) ----------
+     Full-fidelity within bounds: bot answers are split into ordered
+     chunks instead of truncated, failed sends retry a bounded number
+     of times, the server deduplicates by event id, and the visitor
+     sees a note if forwarding cannot deliver. Chat always keeps
+     working locally. */
   var sessionId = (function () {
     try {
       var sid = sessionStorage.getItem("cecbSid");
@@ -64,26 +69,107 @@
     } catch (e) { return "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
   })();
   var relayStarted = false;
+  var relaySeq = 0;
+  var relayQueue = [];
+  var relayBusy = false;
+  var relayWarned = false;
+  var RELAY_CHUNK = 550;
+  var RELAY_MAX_TRIES = 3;
+
+  function relayNote(text) {
+    if (relayWarned) return;
+    var msgs = document.getElementById("cecbMsgs");
+    if (!msgs) return;
+    relayWarned = true;
+    msgs.appendChild(el("div", "cecb-note", text));
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function chunkText(text) {
+    var t = String(text || "");
+    var parts = [];
+    while (t.length > RELAY_CHUNK) {
+      var cut = t.lastIndexOf("\n", RELAY_CHUNK);
+      if (cut < RELAY_CHUNK / 2) cut = RELAY_CHUNK;
+      parts.push(t.slice(0, cut));
+      t = t.slice(cut).replace(/^\n+/, "");
+    }
+    if (t) parts.push(t);
+    return parts.length ? parts : [""];
+  }
+
   function relay(kind, text) {
     if (!CONFIG.relayUrl) return;
-    try {
-      var headers = { "Content-Type": "application/json" };
-      if (typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY) {
-        headers["Authorization"] = "Bearer " + SUPABASE_ANON_KEY;
-        headers["apikey"] = SUPABASE_ANON_KEY;
+    var parts = chunkText(text);
+    for (var i = 0; i < parts.length; i++) {
+      relayQueue.push({
+        id: sessionId + "-" + (++relaySeq),
+        kind: kind,
+        part: i + 1,
+        total: parts.length,
+        text: parts[i],
+        tries: 0
+      });
+    }
+    flushRelay();
+  }
+
+  function flushRelay() {
+    if (relayBusy || !relayQueue.length) return;
+    relayBusy = true;
+    var ev = relayQueue[0];
+    var headers = { "Content-Type": "application/json" };
+    if (typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY) {
+      headers["Authorization"] = "Bearer " + SUPABASE_ANON_KEY;
+      headers["apikey"] = SUPABASE_ANON_KEY;
+    }
+    var done = false;
+    function finish(ok, dropped) {
+      if (done) return;
+      done = true;
+      if (ok && !dropped) {
+        relayQueue.shift();
+        relayWarned = false;
+      } else if (dropped) {
+        relayQueue.shift();
+        relayNote("Support forwarding abhi limit ho gayi hai, isliye kuch messages team tak nahi pahunch payenge. Aapki chat yahin chalti rahegi.");
+      } else {
+        ev.tries++;
+        if (ev.tries >= RELAY_MAX_TRIES) {
+          relayQueue.shift();
+          relayNote("Support forwarding abhi kaam nahi kar rahi, isliye ye chat team tak nahi pahunch rahi. Aapki chat yahin chalti rahegi.");
+        } else {
+          relayBusy = false;
+          setTimeout(flushRelay, 4000 * ev.tries);
+          return;
+        }
       }
+      relayBusy = false;
+      if (relayQueue.length) flushRelay();
+    }
+    var timer = setTimeout(function () { finish(false); }, 9000);
+    try {
       fetch(CONFIG.relayUrl, {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
+          event_id: ev.id,
           session_id: sessionId,
-          kind: kind,
-          text: String(text || "").slice(0, 600),
+          kind: ev.kind,
+          part: ev.part,
+          total: ev.total,
+          text: ev.text,
           page: location.pathname,
           ts: new Date().toISOString()
         })
-      }).catch(function () {});
-    } catch (e) {}
+      }).then(function (res) {
+        res.json().catch(function () { return {}; }).then(function (data) {
+          clearTimeout(timer);
+          if (res.ok && data && data.ok) finish(true, !!data.dropped);
+          else finish(false);
+        });
+      }).catch(function () { clearTimeout(timer); finish(false); });
+    } catch (e) { clearTimeout(timer); finish(false); }
   }
 
   /* ---------- styles ---------- */
