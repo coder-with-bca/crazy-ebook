@@ -4226,7 +4226,7 @@
         readMore.onclick = () => {
           document.getElementById("reviewReadRating").textContent = `${"★".repeat(stars)}${"☆".repeat(5 - stars)} · ${stars}/5`;
           document.getElementById("reviewReadTitle").textContent = `Review by ${review.name}`;
-          document.getElementById("reviewReadBook").textContent = book ? `Verified purchase · ${book.title}` : (review.verifiedPurchase ? "Verified purchase" : "Featured comment · purchase not verified");
+          document.getElementById("reviewReadBook").textContent = review.verifiedPurchase ? (book ? `Verified purchase · ${book.title}` : "Verified purchase") : (book ? `Featured comment · purchase not verified · ${book.title}` : "Featured comment · purchase not verified");
           document.getElementById("reviewReadComment").textContent = comment;
           reviewModalReturnFocus = readMore;
           openTransientOverlay("reviewRead");
