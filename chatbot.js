@@ -40,29 +40,41 @@
   function detectBuyer(done) {
     try {
       if (typeof getStoredPurchaseReferences !== "function" || typeof SUPABASE_URL === "undefined" || typeof SUPABASE_ANON_KEY === "undefined") return done();
-      var refs = getStoredPurchaseReferences();
+      var refs = getStoredPurchaseReferences() || [];
       if (!refs.length) return done();
-      var i = 0, finished = false;
-      var to = setTimeout(function () { finished = true; done(); }, 2500);
+      var finished = false, pending = refs.length;
+      var to = setTimeout(function () { if (!finished) { finished = true; done(); } }, 6000);
       function finish() { if (finished) return; finished = true; clearTimeout(to); done(); }
-      function next() {
-        if (finished) return;
-        if (i >= refs.length) return finish();
-        var ref = refs[i++];
+      refs.forEach(function (ref) {
         fetch(SUPABASE_URL + "/rest/v1/rpc/get_customer_purchase_name", {
           method: "POST",
           headers: { "apikey": SUPABASE_ANON_KEY, "Authorization": "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" },
           body: JSON.stringify({ p_purchase_id: ref.purchaseId, p_access_token: ref.accessToken })
         }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
           var row = rows && rows[0];
-          if (row && row.payment_status === "Paid" && row.customer_name) {
+          if (!finished && row && row.payment_status === "Paid" && row.customer_name) {
             buyerName = String(row.customer_name).replace(/\s+/g, " ").trim().slice(0, 60);
             finish();
-          } else next();
-        }).catch(function () { next(); });
-      }
-      next();
+          } else if (--pending === 0) finish();
+        }).catch(function () { if (--pending === 0) finish(); });
+      });
     } catch (e) { done(); }
+  }
+
+  /* Start the one lookup early (at chat open) so the name is usually
+     resolved before the first message goes out. Callbacks fire in the
+     order registered, so relay order stays start -> user -> bot. */
+  var lookupStarted = false;
+  var startFlushed = false;
+  function startLookup() {
+    if (lookupStarted) return;
+    lookupStarted = true;
+    lookupState = "running";
+    detectBuyer(function () {
+      lookupState = "done";
+      var cbs = lookupCbs; lookupCbs = [];
+      cbs.forEach(function (cb) { try { cb(); } catch (e) {} });
+    });
   }
 
   /* ---------- tiny helpers ---------- */
@@ -463,14 +475,10 @@
       if (!t) return;
       if (!relayStarted) {
         relayStarted = true;
-        lookupState = "running";
-        detectBuyer(function () {
-          lookupState = "done";
-          lookupCbs.forEach(function (cb) { try { cb(); } catch (e) {} });
-          lookupCbs = [];
-          relay("start", "");
-          relay("user", t);
-        });
+        startLookup();
+        afterLookup(function () { relay("start", ""); relay("user", t); startFlushed = true; });
+      } else if (!startFlushed) {
+        afterLookup(function () { relay("user", t); });
       } else {
         relay("user", t);
       }
@@ -482,6 +490,7 @@
 
     function open() {
       panel.hidden = false; fab.style.display = "none";
+      startLookup();
       if (!greeted) {
         greeted = true;
         addDayDivider();
