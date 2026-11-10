@@ -2003,15 +2003,21 @@
         </div>
       </div>
 
-      <div class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-white/10 pt-4 text-xs text-slate-500">
+      <div class="tc-row mt-5 border-t border-white/10 pt-4 text-xs text-slate-500">
         <div>© <span id="year"></span> <span id="copyrightBrand">Crazy E-Book</span>. All rights reserved.</div>
         <button id="tcOpen" type="button" class="font-semibold text-slate-400 underline-offset-2 transition hover:text-white hover:underline">Terms &amp; Conditions</button>
       </div>
     </div>
   </footer>
 
-  <div id="tcModal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="tcTitle">
-    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-5 shadow-2xl">
+  <style>
+    .tc-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: .75rem; row-gap: .25rem; }
+    #tcModal { z-index: 120; background: rgba(0,0,0,.6); }
+    #tcModal.flex { display: flex; }
+    #tcModal .tc-card { width: 100%; max-width: 28rem; }
+  </style>
+  <div id="tcModal" class="fixed inset-0 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="tcTitle">
+    <div class="tc-card rounded-2xl border border-white/10 bg-slate-900 p-5 shadow-2xl">
       <div class="flex items-center justify-between">
         <h2 id="tcTitle" class="text-base font-black text-white">Terms &amp; Conditions</h2>
         <button id="tcClose" type="button" aria-label="Close" class="rounded-lg px-2 py-1 text-lg font-bold text-slate-400 transition hover:text-white">✕</button>
