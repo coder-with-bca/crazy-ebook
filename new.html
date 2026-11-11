@@ -2250,6 +2250,14 @@
           <button id="libraryTabBooks" type="button" role="tab" aria-selected="true" class="ce-lib-tab is-active">My Books</button>
           <button id="libraryTabDeclined" type="button" role="tab" aria-selected="false" class="ce-lib-tab">Declined</button>
         </div>
+        <div class="mt-3"><button id="restoreToggle" type="button" class="rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700" aria-expanded="false" aria-controls="restorePanel">Restore my books</button></div>
+        <form id="restorePanel" class="hidden mt-3 space-y-3 rounded-xl border p-3" autocomplete="off" novalidate>
+          <p class="text-xs text-slate-500">Cleared your browser or using a new device? Enter the WhatsApp number you used at checkout and your order ID (it looks like CEB-20261103-XXXXXXXXXXXXXXXX). Only approved orders are restored.</p>
+          <label class="block text-xs font-bold">WhatsApp number<input id="restorePhone" type="tel" inputmode="tel" maxlength="20" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm" placeholder="10-digit number"></label>
+          <label class="block text-xs font-bold">Order ID<input id="restoreOrder" type="text" maxlength="40" autocapitalize="characters" spellcheck="false" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm" placeholder="CEB-20261103-XXXXXXXXXXXXXXXX"></label>
+          <p id="restoreStatus" class="hidden text-xs font-bold" role="status" aria-live="polite"></p>
+          <button id="restoreSubmit" type="submit" class="w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950">Restore</button>
+        </form>
         <div id="libraryItems" class="mt-4 space-y-3"><p class="text-sm text-slate-500 ce-book-loading" role="status">Loading your library&#8230;</p></div>
       </div>
     </section>
@@ -4091,7 +4099,7 @@
     }
     let libraryActiveTab = "books";
     let libraryTabData = { books: [], declined: [] };
-    let libraryEmptyNote = "No approved purchases are saved in this browser yet.";
+    let libraryEmptyNote = "No approved purchases are saved in this browser yet. Use 'Restore my books' above if you ordered before.";
     function updateLibraryTabs() {
       const booksBtn = document.getElementById("libraryTabBooks");
       const declinedBtn = document.getElementById("libraryTabDeclined");
@@ -4112,9 +4120,10 @@
     async function loadMyLibrary() {
       const list = document.getElementById("libraryItems");
       const references = getStoredPurchaseReferences();
-      if (!supabaseReady || !references.length) {
+      const restoredItems = getRestoredItems();
+      if (!supabaseReady || (!references.length && !restoredItems.length)) {
         libraryTabData = { books: [], declined: [] };
-        libraryEmptyNote = "No approved purchases are saved in this browser yet.";
+        libraryEmptyNote = "No approved purchases are saved in this browser yet. Use 'Restore my books' above if you ordered before.";
         updateLibraryTabs();
         renderLibraryItems();
         return;
@@ -4126,6 +4135,8 @@
       }));
       const all = [];
       results.forEach((items, idx) => (items || []).forEach(item => all.push(Object.assign({}, item, { __pid: references[idx].purchaseId }))));
+      const havePids = new Set(all.map(i => i.__pid));
+      restoredItems.forEach(item => { if (!havePids.has(item.purchase_id)) all.push(Object.assign({}, item, { __pid: item.purchase_id })); });
       /* v81: newest order first - keep each purchase's editions together (cart order within the
          order), sort orders by the real created_at timestamp, then split into the two tabs. */
       const orderGroups = [];
@@ -4181,6 +4192,47 @@
         return `<article class="rounded-xl border p-3"><div class="flex items-start gap-3">${cover ? `<img src="${escapeHtml(cover)}" alt="" class="h-20 w-14 shrink-0 rounded-lg object-cover">` : '<div class="h-20 w-14 shrink-0 rounded-lg bg-slate-100"></div>'}<div class="min-w-0 flex-1"><h3 class="break-words text-sm font-bold">${escapeHtml(item.book_title)}</h3><p class="mt-1 break-all text-[11px] text-slate-500">Order ${escapeHtml(item.__pid)}</p><div class="mt-0.5 flex flex-wrap items-center gap-2"><p class="text-[11px] text-slate-500">${new Date(item.created_at).toLocaleDateString()}</p>${action}</div></div></div><div class="mt-2 flex flex-wrap items-center gap-1.5">${stepPills(st.step)}${statusPill}</div></article>`;
       }).join("");
     }
+    /* Restore my books: phone + order ID, strict server-side match, approved orders only. */
+    const RESTORED_KEY = "crazyebook-restored-v1";
+    function getRestoredItems() {
+      try {
+        const arr = JSON.parse(localStorage.getItem(RESTORED_KEY) || "[]");
+        return (Array.isArray(arr) ? arr : []).filter(i => i && /^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(i.purchase_id || "") && i.payment_status === "Paid");
+      } catch { return []; }
+    }
+    function saveRestoredItems(items) {
+      try {
+        const keep = getRestoredItems().filter(o => !items.some(n => n.purchase_id === o.purchase_id));
+        localStorage.setItem(RESTORED_KEY, JSON.stringify(keep.concat(items)));
+      } catch {}
+    }
+    (function setupRestore() {
+      const toggle = document.getElementById("restoreToggle"), form = document.getElementById("restorePanel");
+      if (!toggle || !form) return;
+      const status = document.getElementById("restoreStatus"), btn = document.getElementById("restoreSubmit");
+      const say = (msg, ok) => { status.textContent = msg; status.classList.remove("hidden"); status.style.color = ok ? "#059669" : "#dc2626"; };
+      toggle.addEventListener("click", () => { const hidden = form.classList.toggle("hidden"); toggle.setAttribute("aria-expanded", String(!hidden)); if (!hidden) document.getElementById("restorePhone").focus(); });
+      form.addEventListener("submit", async ev => {
+        ev.preventDefault();
+        const phone = document.getElementById("restorePhone").value.trim();
+        const order = document.getElementById("restoreOrder").value.trim().toUpperCase();
+        if (!supabaseReady) { say("Service unavailable right now. Please try again shortly.", false); return; }
+        if (phone.replace(/\D/g, "").length < 10 || !/^CEB-[0-9]{8}-[A-F0-9]{16}$/.test(order)) { say("We couldn't find an approved order with those details.", false); return; }
+        btn.disabled = true; btn.textContent = "Checking\u2026"; status.classList.add("hidden");
+        try {
+          const { data, error } = await supabase.rpc("restore_purchase_by_contact", { p_phone: phone, p_order_id: order });
+          if (error) { say(/rate_limited/.test(error.message || "") ? "Too many attempts. Please wait 15 minutes and try again." : "Something went wrong. Please try again.", false); return; }
+          const rows = (data || []).filter(r => r && r.purchase_id === order && r.payment_status === "Paid");
+          if (!rows.length) { say("We couldn't find an approved order with those details.", false); return; }
+          saveRestoredItems(rows);
+          document.getElementById("restorePhone").value = ""; document.getElementById("restoreOrder").value = "";
+          say("Restored " + rows.length + (rows.length === 1 ? " book" : " books") + " to this device.", true);
+          libraryActiveTab = "books";
+          loadMyLibrary();
+        } catch (e) { say("Something went wrong. Please try again.", false); }
+        finally { btn.disabled = false; btn.textContent = "Restore"; }
+      });
+    })();
     function openMyLibrary() {
       libraryActiveTab = "books";
       window.ceShowWindow("library");
