@@ -6470,6 +6470,19 @@ html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][
 }
 </style>
 
+<style id="ce-polish-v105">
+/* ===== v105 (polish pass): look/feel only - no feature, payment or Settings changes.
+   A) Footer Terms & Conditions panel: last line sat ~3px under the fixed bottom nav
+      on phones - clearance inside the panel so it always scrolls fully clear.
+   B) Checkout payment step: #checkoutSavedMessage flashed as an empty amber bar while
+      the order status loads - hide it until it has text.
+   C) Checkout steps line: the wrap left "Library" alone on the last line on phones -
+      pretty wrap keeps words together. ===== */
+#tcPanel { padding-bottom: 20px; }
+#checkoutSavedMessage:empty { display: none; }
+#buyModalBook + p { text-wrap: pretty; }
+</style>
+
 </body>
 </html>
 
