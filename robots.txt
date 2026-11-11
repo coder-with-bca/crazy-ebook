@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://crazyebooksofficial.github.io/crazy-ebooks/sitemap.xml
