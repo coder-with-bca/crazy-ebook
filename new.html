@@ -6297,6 +6297,179 @@
   <!-- v80: custom chatbot - floating Ask assistant (self-contained, client-side only).
        Hard retire: delete this line and chatbot.js. Bot image: img/chatbot-avatar.png. -->
   <script src="chatbot.js?v=11" defer></script>
+  <style id="ce-contrast-v104">
+    /* ===== v104 (Akki audit): contrast repair. Look/feel only - no feature, payment-identity,
+       popup or saved-choice changes.
+       A) Light mode + active Colour palette: palette surfaces must beat the older style-specific
+          "white glass / cream" light rules from glossy-default (v48), neu and clay, so text never
+          lands light-on-white. Doubling [data-theme="light"] + placing this block last wins ties.
+       B) Amber buttons take the palette's dark ink (they kept near-white text on a light gradient).
+       C) Small muted texts (MRP, off badge, sample link, banner sub, nav active tab, aurora promo
+          button, neu dark promo kickers, hero hint) bumped to readable contrast. ===== */
+
+    /* --- A: palette surfaces win in light+palette --- */
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-tile { background:var(--ce-surface) !important; color:var(--ce-text2) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-glass,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-search { background:var(--ce-surface2) !important; color:var(--ce-text) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-bottom-nav { background:var(--ce-bg) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .book-card { background:linear-gradient(165deg,var(--ce-surface2) 0%,var(--ce-surface) 100%) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .book-card h3 { color:var(--ce-text) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .hero-scene-card { background:var(--ce-surface2) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .hero-scene-card h3 { color:var(--ce-text) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .hero-scene-summary { color:var(--ce-muted) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .hero-scene-hint { background:var(--ce-surface2) !important; color:var(--ce-muted) !important; border-color:var(--ce-border) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-card { background:radial-gradient(ellipse at 20% 0%,var(--ce-surface2),transparent 60%),linear-gradient(145deg,var(--ce-bg),var(--ce-surface)) !important; color:var(--ce-text) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-title { color:var(--ce-text) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-title b { color:var(--ce-accent) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-kicker { color:var(--ce-accent) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-text { color:var(--ce-text) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-note { color:var(--ce-faint) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .promo-si-card { background:radial-gradient(ellipse at 80% 0%,var(--ce-surface2),transparent 62%),linear-gradient(145deg,var(--ce-surface),var(--ce-surface)) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .promo-si-kicker { color:var(--ce-accent) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .promo-si-price { color:var(--ce-accent) !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-tile,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .book-card,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .hero-scene-card,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-card,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .promo-si-card,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-glass,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-search,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-bottom-nav { border:2px solid rgba(var(--ce-accent-rgb),.26) !important; box-shadow:0 14px 30px rgba(2,6,23,.45) !important; }
+
+    /* --- B: amber buttons -> palette ink --- */
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .bg-amber-400,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .deep-promo-btn { color:var(--ce-accent-ink) !important; text-shadow:none !important; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .bg-amber-400 [class~="text-white"] { color:var(--ce-accent-ink) !important; }
+
+    /* --- C: small-text and stray fixes --- */
+    html[data-theme="dark"] .book-mrp { color:#A9B6D0; }
+    html[data-theme="light"][data-ui-palette="auto"] .book-mrp { color:#526179; }
+    html[data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .book-mrp { color:var(--ce-muted) !important; }
+    html[data-ui-theme="brutal"] .book-mrp { opacity:.85; }
+    html[data-theme="light"][data-ui-palette="auto"] .ce-off-pct { color:#166534; }
+    html[data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-off-pct { color:#4ADE80 !important; }
+    html[data-theme="dark"] a.sample-btn:not([disabled]) { color:#FFD166 !important; border-color:rgba(255,209,102,.55) !important; }
+    html[data-theme="dark"] a.sample-btn:not([disabled]):hover { background:rgba(255,209,102,.12) !important; border-color:#FFD166 !important; }
+    html[data-theme="light"][data-ui-palette="auto"] a.sample-btn:not([disabled]) { color:#92400E !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"] header.ce-glass-bar.ce-banner .ce-banner-sub,
+    html[data-theme="light"][data-theme="light"][data-theme="light"] header.ce-glass-bar.ce-banner #siteCreators { color:#E7D9B8 !important; opacity:1 !important; }
+    html[data-theme="light"][data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) header.ce-glass-bar.ce-banner .ce-banner-sub,
+    html[data-theme="light"][data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) header.ce-glass-bar.ce-banner #siteCreators { color:var(--ce-muted) !important; }
+    html[data-theme="light"][data-ui-palette="auto"] { --ce-teal-ink:#0A6A62; }
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-bn-item.is-active,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-bn-item:hover,
+    html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-bn-item:focus-visible { color:var(--ce-accent) !important; }
+    html[data-ui-theme="neu"][data-theme="dark"] .deep-promo-card .deep-promo-kicker,
+    html[data-ui-theme="neu"][data-theme="dark"] .promo-si-card .promo-si-kicker { color:#FFD54F !important; }
+    html[data-theme="light"][data-ui-palette="auto"] .hero-scene-hint { color:#3A4763 !important; }
+  
+/* residual round-2: bento pastel tiles (0,5,1) beat palette surfaces */
+html[data-ui-theme="bento"][data-theme="light"][data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-tile:nth-child(n){ background: var(--ce-surface) !important; color: var(--ce-text2) !important; }
+/* book category chip: palette unify leaves muted light slate on light tint */
+html[data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) #bookGrid .book-category{ color: #0E7490 !important; }
+/* aurora promo buttons: orange gradient + white text in BOTH themes */
+html[data-ui-theme="aurora"] .bg-amber-400, html[data-ui-theme="aurora"] .deep-promo-btn{ background-image: linear-gradient(135deg,#C2410C,#BE185D 55%,#6D28D9) !important; color: #FFFFFF !important; }
+/* aurora dark: dark-ink !important ID rules beat the class-level white on the two dark-gradient buttons */
+html[data-ui-theme="aurora"][data-theme="dark"] #checkoutNextBtn, html[data-ui-theme="aurora"][data-theme="dark"] #heroBuyBtn{ color: #FFFFFF !important; }
+
+/* ============ part 2: style identity (Aditya/Akki feedback) ============ */
+/* D1) v59 hard offset mint shadows leaked into every style - they belong to Neo-Brutalism only */
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .ce-tile,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .book-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .hero-scene-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .deep-promo-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .promo-si-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .ce-glass,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .ce-search,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .ce-bottom-nav{
+  box-shadow: 0 14px 30px rgba(2,6,23,.45) !important;
+}
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .ce-tile,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .book-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .hero-scene-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .deep-promo-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .promo-si-card,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .ce-glass,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .ce-search,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .ce-bottom-nav{
+  box-shadow: 0 10px 24px rgba(15,23,42,.10) !important;
+}
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .bg-amber-400,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .deep-promo-btn,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .bg-slate-950,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .bg-indigo-600,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .ce-cart-topbar,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .category-btn,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .toast,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .purchase-filter,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme][data-theme][data-theme]:not([data-ui-theme="brutal"]) .ce-sv-viewbtn{
+  box-shadow: 0 8px 20px rgba(2,6,23,.40) !important;
+}
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .bg-amber-400,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .deep-promo-btn,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .bg-slate-950,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .bg-indigo-600,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .ce-cart-topbar,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .category-btn,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .toast,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .purchase-filter,
+html[data-ui-theme][data-ui-theme][data-ui-theme][data-theme="light"][data-theme="light"][data-theme="light"]:not([data-ui-theme="brutal"])[data-ui-palette="auto"] .ce-sv-viewbtn{
+  box-shadow: 0 5px 14px rgba(16,27,45,.14) !important;
+}
+html[data-ui-theme]:not([data-ui-theme="brutal"]) #purchaseForm input:focus,
+html[data-ui-theme]:not([data-ui-theme="brutal"]) #couponCodeInputCheckout:focus{
+  box-shadow: 0 0 0 3px rgba(45,212,191,.35) !important;
+}
+/* D2) Neo-Brutalism gets its hard corners back (palettes only recolor, they must not round it) */
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .book-card,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .ce-tile,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .ce-glass,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .hero-scene-card,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .deep-promo-card,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .promo-si-card,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .ce-cart-topbar,
+html[data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"][data-ui-theme="brutal"] .ce-search{
+  border-radius: 6px !important;
+}
+/* D3) default style = genuine glass */
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"] header.ce-glass-bar{
+  backdrop-filter: blur(16px) saturate(1.4) !important; -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
+}
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"][data-theme="light"][data-ui-palette="auto"] .book-card{
+  background: linear-gradient(160deg, rgba(255,255,255,.62), rgba(255,255,255,.40)) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important; -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
+}
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"][data-theme="light"][data-ui-palette="auto"] .ce-tile{
+  background: rgba(255,255,255,.55) !important;
+  backdrop-filter: blur(14px) saturate(1.4) !important; -webkit-backdrop-filter: blur(14px) saturate(1.4) !important;
+}
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"][data-theme="dark"] .book-card{
+  background: linear-gradient(160deg, rgba(31,42,85,.62), rgba(23,31,70,.48)) !important;
+  backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important;
+}
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"][data-theme="dark"] .ce-tile{
+  background: rgba(31,42,85,.50) !important;
+  backdrop-filter: blur(14px) !important; -webkit-backdrop-filter: blur(14px) !important;
+}
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="dark"][data-theme="dark"] .ce-glass{
+  background: rgba(23,31,70,.55) !important;
+  backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important;
+}
+html[data-ui-theme="default"][data-ui-palette="navy-mint"]{ --ce-glass-hi: 31,42,85; --ce-glass-lo: 23,31,70; }
+html[data-ui-theme="default"][data-ui-palette="sunset"]{ --ce-glass-hi: 55,42,30; --ce-glass-lo: 42,31,22; }
+html[data-ui-theme="default"][data-ui-palette="forest"]{ --ce-glass-hi: 28,56,43; --ce-glass-lo: 20,41,31; }
+html[data-ui-theme="default"][data-ui-palette="orchid"]{ --ce-glass-hi: 47,34,96; --ce-glass-lo: 36,26,74; }
+html[data-ui-theme="default"][data-ui-palette="rosewood"]{ --ce-glass-hi: 71,34,41; --ce-glass-lo: 56,25,31; }
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .book-card{
+  background: linear-gradient(160deg, rgba(var(--ce-glass-hi),.62), rgba(var(--ce-glass-lo),.48)) !important;
+  backdrop-filter: blur(16px) saturate(1.3) !important; -webkit-backdrop-filter: blur(16px) saturate(1.3) !important;
+}
+html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][data-theme="light"][data-theme="light"][data-ui-palette]:not([data-ui-palette="auto"]) .ce-tile{
+  background: rgba(var(--ce-glass-hi),.55) !important;
+  backdrop-filter: blur(14px) saturate(1.3) !important; -webkit-backdrop-filter: blur(14px) saturate(1.3) !important;
+}
+</style>
+
 </body>
 </html>
 
