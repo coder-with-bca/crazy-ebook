@@ -2967,7 +2967,9 @@
        ========================================================= */
     /* Prefer the WebP twin of any repo-hosted cover; fall back to the JPG on error. */
     function coverUrl(u) {
-      return String(u || "").replace(/(https:\/\/coder-with-bca\.github\.io\/crazy-ebook\/covers\/[^?#]+)\.jpg$/i, "$1.webp");
+      const s = String(u || "");
+      const m = s.match(/^https:\/\/(?:coder-with-bca|crazyebookofficial)\.github\.io\/crazy-ebooks?\/(covers\/[^/?#]+)\.jpe?g$/i);
+      return m ? m[1] + ".webp" : s;
     }
     document.addEventListener("error", function (e) {
       const t = e.target;
