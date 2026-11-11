@@ -225,12 +225,12 @@
   /* ---------- styles ---------- */
   var ORANGE = "#f5a623";
   var CSS = `
-  .cecb-fab{position:fixed;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:7px;padding:7px 16px 7px 8px;border:0;border-radius:9999px;cursor:pointer;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 55%,#4338ca 100%);color:#fff;font:800 14px/1 Inter,system-ui,sans-serif;box-shadow:0 10px 26px rgba(49,46,129,.45),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .15s ease,box-shadow .15s ease}
+  .cecb-fab{position:fixed;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;padding:4px;border:0;border-radius:9999px;cursor:pointer;background:transparent;color:#fff;font:800 14px/1 Inter,system-ui,sans-serif;box-shadow:none;transition:transform .15s ease}
   .cecb-fab:active{transform:scale(.94)}
-  .cecb-fab:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(49,46,129,.55),inset 0 1px 0 rgba(255,255,255,.18)}
-  .cecb-fab .cecb-fab-ava{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:17px;overflow:hidden;flex:none}
+  .cecb-fab:hover{transform:translateY(-2px) scale(1.05)}
+  .cecb-fab .cecb-fab-ava{width:42px;height:42px;box-shadow:0 8px 20px rgba(0,0,0,.4);border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:17px;overflow:hidden;flex:none}
   .cecb-fab .cecb-fab-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-  .cecb-fab .cecb-fab-label{letter-spacing:.2px}
+  .cecb-fab .cecb-fab-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .cecb-panel{position:fixed;inset:0;z-index:65;display:flex;flex-direction:column;background:#000;color:#e5e7eb;font-family:Inter,system-ui,sans-serif;animation:cecb-pop .18s ease}
   .cecb-panel[hidden]{display:none}
   @keyframes cecb-pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
