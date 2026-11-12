@@ -6483,6 +6483,44 @@ html[data-ui-theme="default"][data-ui-theme="default"][data-ui-theme="default"][
 #buyModalBook + p { text-wrap: pretty; }
 </style>
 
+<style id="ce-polish-v106">
+
+/* ===== v106 (professional pass): look/feel only - no feature, payment or Settings changes.
+
+   A) Featured card and catalogue card buttons wrapped ("Free / Sample", "Buy / Now") - keep on one line.
+
+   B) Cart top bar "Continue shopping" wrapped on phones.
+
+   C) Reviews carousel arrows were plain white blobs on the default glass style - match the glass look. ===== */
+
+.hero-scene-actions a, .hero-scene-actions button,
+
+.book-card .book-actions a, .book-card .book-actions button { white-space: nowrap; }
+
+#continueShopping, #cartCheckout { white-space: nowrap; }
+
+@media (max-width: 420px) {
+  
+  .hero-scene-actions { gap: 6px; }
+  
+  #continueShopping, #cartCheckout { padding-left: 6px; padding-right: 6px; font-size: .8rem; }
+  
+}html[data-ui-theme="default"] .review-arrow {
+  
+  background: rgba(255,255,255,.09);
+  
+  border-color: rgba(178,199,255,.35);
+  
+  color: #EAF2FF;  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  
+  transition: background .18s ease, border-color .18s ease, transform .12s ease;
+  
+}html[data-ui-theme="default"] .review-arrow:hover { background: rgba(255,255,255,.17); border-color: rgba(178,199,255,.55); }
+
+html[data-ui-theme="default"] .review-arrow:active { transform: scale(.94); }
+
+</style>
+
 </body>
 </html>
 
